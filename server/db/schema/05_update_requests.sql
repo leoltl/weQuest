@@ -1,0 +1,3 @@
+ALTER TABLE requests
+  ADD COLUMN winning_bid_id INTEGER REFERENCES bids(id) DEFAULT NULL,
+  ADD COLUMN current_bid_id INTEGER REFERENCES bids(id) DEFAULT NULL;
