@@ -5,8 +5,8 @@
   "main": "build/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node build/server.js",
-    "local": "./node_modules/.bin/nodemon -L  --watch build",
+    "start": "npm run build && node build/server.js",
+    "local": "./node_modules/.bin/nodemon -L --config \"./nodemon.json\"/",
     "build": "rm -rf ./build/ && tsc",
     "db:reset": "node bin/resetdb.js"
   },

@@ -1,6 +1,6 @@
 const { src, dest, watch, series, parallel } = require('gulp');
 const projectSrc = 'build/';
-const projectDest = '../server/public/';
+const projectDest = '../server/build/public/';
 
 const copyBuildtoBackend = function(cb) {
   return src(`${projectSrc}**/*.*`)
