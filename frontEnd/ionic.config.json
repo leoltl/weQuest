@@ -1,7 +1,5 @@
 {
-  "name": "ionic-react-conference-app",
-  "integrations": {
-    "capacitor": {}
-  },
+  "name": "frontEnd",
+  "integrations": {},
   "type": "react"
 }
