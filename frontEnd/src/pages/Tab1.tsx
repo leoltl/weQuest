@@ -18,7 +18,6 @@ import {
 import { book, build, colorFill, grid } from "ionicons/icons";
 import React from "react";
 import "./Tab1.scss";
-import Login from "../components/Login";
 
 const Tab1: React.FC = () => {
   return (

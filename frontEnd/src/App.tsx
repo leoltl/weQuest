@@ -10,12 +10,12 @@ import {
   IonTabs
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { apps, flash, send } from "ionicons/icons";
+import { apps, flash, list } from "ionicons/icons";
 import Tab1 from "./pages/Tab1";
 import Tab2 from "./pages/Tab2";
-import Tab3 from "./pages/Tab3";
 import LoginScreen from "./pages/LoginScreen";
 import Details from "./pages/Details";
+import RequestFeed from "./pages/RequestFeed";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -44,7 +44,7 @@ const App: React.FC = () => (
           <Route path="/tab1" component={Tab1} exact={true} />
           <Route path="/tab2" component={Tab2} exact={true} />
           <Route path="/tab2/details" component={Details} />
-          <Route path="/tab3" component={Tab3} />
+          <Route path="/requestFeed" component={RequestFeed} />
           <Route path="/login" component={LoginScreen} />
           <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
         </IonRouterOutlet>
@@ -57,12 +57,12 @@ const App: React.FC = () => (
             <IonIcon icon={apps} />
             <IonLabel>Tab Two</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon icon={send} />
-            <IonLabel>Tab Three</IonLabel>
+          <IonTabButton tab="requestFeed" href="/requestFeed">
+            <IonIcon icon={list} />
+            <IonLabel>Request Feed</IonLabel>
           </IonTabButton>
           <IonTabButton tab="tab4" href="/login">
-            <IonIcon icon={send} />
+            <IonIcon icon={apps} />
             <IonLabel>Login</IonLabel>
           </IonTabButton>
         </IonTabBar>

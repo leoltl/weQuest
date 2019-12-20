@@ -1,5 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
-import { render } from "react-dom";
+import React, { useState } from "react";
 import Login from "../components/Login";
 import Register from "../components/Register";
 import {

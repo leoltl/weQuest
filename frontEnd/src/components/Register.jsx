@@ -1,9 +1,7 @@
-import React, { useState, Fragment } from "react";
-import { render } from "react-dom";
+import React, { useState } from "react";
 import {
   IonHeader,
   IonToolbar,
-  IonTitle,
   IonContent,
   IonItem,
   IonLabel,
