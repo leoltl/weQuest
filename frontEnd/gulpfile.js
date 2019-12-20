@@ -1,17 +1,18 @@
 const { src, dest, watch, series, parallel } = require('gulp');
 const projectSrc = 'build/';
-const projectDest = '../server/public/';
+const projectDest = '../server/build/public/';
 
-const copyTStoBackend = function(cb) {
+const copyBuildtoBackend = function(cb) {
   return src(`${projectSrc}**/*.*`)
     .pipe(dest(projectDest));
 
 };
 
-// const watchFiles = function(cb) {
-//   console.log('Watching files. Hit ^C to stop.');
-//   watch(`${projectSrc}*`, {delay: 200}, copyTStoBackend);
-// };
+function watchFiles(cb) {
+  console.log('Watching files. Hit ^C to stop.');
+  watch(`${projectSrc}**/*.*`, {delay: 200}, copyBuildtoBackend);
+}
 
-exports.default = copyTStoBackend;
-exports.build = copyTStoBackend;
+exports.default = copyBuildtoBackend;
+exports.build = copyBuildtoBackend;
+exports.watch = watchFiles;

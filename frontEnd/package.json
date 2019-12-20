@@ -1,5 +1,5 @@
 {
-  "name": "frontEnd",
+  "name": "wequest-front-end",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
@@ -21,8 +21,8 @@
     "typescript": "3.6.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "concurrently \"PORT=3003 react-scripts start\" \"gulp build\" \"gulp watch\"",
+    "build": "react-scripts build && gulp build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -43,7 +43,8 @@
   },
   "description": "An Ionic project",
   "devDependencies": {
-    "typescript": "3.6.3",
-    "gulp": "4.0.2"
+    "concurrently": "^5.0.2",
+    "gulp": "4.0.2",
+    "typescript": "3.6.3"
   }
 }
