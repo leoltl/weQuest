@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   IonHeader,
   IonToolbar,
@@ -8,12 +8,12 @@ import {
   IonInput,
   IonList,
   IonButton
-} from "@ionic/react";
-import { logIn } from "ionicons/icons";
+} from '@ionic/react';
+import { logIn } from 'ionicons/icons';
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const [formErrors, setFormErrors] = useState({});
 
@@ -48,7 +48,7 @@ const Login = () => {
                 name="email"
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onIonChange={e => setEmail(e.target.value)}
               />
             </IonItem>
             <IonItem>
@@ -57,7 +57,7 @@ const Login = () => {
                 name="password"
                 type="password"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onIonChange={e => setPassword(e.target.value)}
               />
             </IonItem>
           </IonList>
