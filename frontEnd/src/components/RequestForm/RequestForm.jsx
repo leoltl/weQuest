@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { IonContent, IonButton, IonText } from '@ionic/react';
 
 import { AuthContext } from '../../contexts/authContext';
@@ -19,52 +19,51 @@ const RequestForm = () => {
     ${budget},
     ${startDate},
     ${endDate}`);
+    setItem('');
+    setBudget(null);
+    setStartDate(new Date());
+    setEndDate(new Date());
   };
 
+  const { isLoggedIn, user, hardChangeAuth } = useContext(AuthContext);
+
   return (
-    <AuthContext.Consumer>
-      {context => {
-        const { isLoggedIn, user, hardChangeAuth } = context;
-        return (
-          <IonContent>
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-                submit();
-              }}
-            >
-              <RequestFieldGroup
-                setters={{ setBudget, setItem, setStartDate, setEndDate }}
-                values={{ budget, item, startDate, endDate }}
-              />
-              <IonButton
-                className="ion-margin"
-                disabled={isLoggedIn ? false : true}
-                expand="block"
-                type="submit"
-              >
-                Request It
-              </IonButton>
-              <IonButton expand="block" fill="clear" type="cancel">
-                Cancel
-              </IonButton>
-              <br />
-              <br />
-              <br />
-              <br />
-              development temperpory configs:
-              <br />
-              <IonText className="ion-text-center">
-                Logged In as: {user || 'Not Logged In'}
-              </IonText>
-              <IonButton onClick={hardChangeAuth} expand="block" fill="clear">
-                Hard Log in
-              </IonButton>
-            </form>
-          </IonContent>
-        );
-      }}
-    </AuthContext.Consumer>
+    <IonContent>
+      <form
+        onSubmit={e => {
+          e.preventDefault();
+          submit();
+        }}
+      >
+        <RequestFieldGroup
+          formSetters={{ setBudget, setItem, setStartDate, setEndDate }}
+          formValues={{ budget, item, startDate, endDate }}
+        />
+        <IonButton
+          className="ion-margin"
+          disabled={isLoggedIn ? false : true}
+          expand="block"
+          type="submit"
+        >
+          Request It
+        </IonButton>
+        <IonButton expand="block" fill="clear" type="cancel">
+          Cancel
+        </IonButton>
+        <br />
+        <br />
+        <br />
+        <br />
+        development temperpory configs:
+        <br />
+        <IonText className="ion-margin">
+          Logged In as: {user || 'Not Logged In'}
+        </IonText>
+        <IonButton onClick={hardChangeAuth} expand="block" fill="clear">
+          Hard Log in
+        </IonButton>
+      </form>
+    </IonContent>
   );
 };
 

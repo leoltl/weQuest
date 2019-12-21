@@ -7,9 +7,9 @@ import {
   IonDatetime
 } from '@ionic/react';
 
-const RequestFieldGroup = ({ setters, values }) => {
-  const { setItem, setBudget, setStartDate, setEndDate } = setters;
-  const { item, budget, startDate, endDate } = values;
+const RequestFieldGroup = ({ formSetters, formValues }) => {
+  const { setItem, setBudget, setStartDate, setEndDate } = formSetters;
+  const { item, budget, startDate, endDate } = formValues;
   return (
     <IonList className="my-list">
       <IonItem className="my-list--input">
