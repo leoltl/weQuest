@@ -6,7 +6,7 @@
  */
 import * as express from 'express';
 import { Request, Response } from 'express';
-import UserService from '../services/UserService';
+import * as UserService from '../services/UserService';
 
 interface User {
   id: number;
@@ -33,8 +33,7 @@ export default class UserController {
   private initRoutes() {
     this.router.get('/', async (req: Request, res: Response) => {
       try {
-        // const users: Users = await UserService.findAll();
-        const users = 'test';
+        const users: Users = await UserService.findAll();
         res.status(200).send(users);
       } catch (err) {
         res.status(400).send(err.message);
@@ -45,7 +44,7 @@ export default class UserController {
     this.router.get('/:id', async (req: Request, res: Response) => {
       const id: number = parseInt(req.params.id, 10);
       try {
-        // const user: User = await UserService.find(id);
+        const user: User = await UserService.find(id);
         const user = 'test';
         res.status(200).send(user);
       } catch (err) {
@@ -57,7 +56,7 @@ export default class UserController {
     this.router.post('/', async (req: Request, res: Response) => {
       try {
         const user: User = req.body.user;
-        // await UserService.create(user);
+        await UserService.create(user);
         res.status(201);
       } catch (err) {
         res.status(500).send(err.message);
@@ -68,7 +67,7 @@ export default class UserController {
     this.router.put('/', async (req: Request, res: Response) => {
       try {
         const user: User = req.body.user;
-        // await UserService.update(user);
+        await UserService.update(user);
         res.status(200);
       } catch (err) {
         res.status(500).send(err.message);
@@ -79,7 +78,7 @@ export default class UserController {
     this.router.delete('/:id', async (req: Request, res: Response) => {
       try {
         const id: number = parseInt(req.params.id, 10);
-        // await UserService.remove(id);
+        await UserService.remove(id);
         res.status(200);
       } catch (err) {
         res.status(500).send(err.message);
