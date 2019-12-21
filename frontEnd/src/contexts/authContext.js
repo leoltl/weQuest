@@ -11,7 +11,9 @@ class AuthContextProvider extends React.Component {
     };
   }
 
-  //temp hard coded change authtication function
+  // temp hard coded change authtication function
+  // we can probably reuse this when we do the login/ signup function
+  // and keep the authenticate state in this context.
   hardChangeAuthState() {
     this.setState(prevState => ({
       ...prevState,
