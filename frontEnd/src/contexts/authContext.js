@@ -10,9 +10,24 @@ class AuthContextProvider extends React.Component {
       user: null
     };
   }
+
+  //temp hard coded change authtication function
+  hardChangeAuthState() {
+    this.setState(prevState => ({
+      ...prevState,
+      isLoggedIn: !prevState.isLoggedIn,
+      user: prevState.user ? null : 'Leo'
+    }));
+  }
+
   render() {
     return (
-      <AuthContext.Provider value={{ ...this.state }}>
+      <AuthContext.Provider
+        value={{
+          ...this.state,
+          hardChangeAuth: this.hardChangeAuthState.bind(this)
+        }}
+      >
         {this.props.children}
       </AuthContext.Provider>
     );

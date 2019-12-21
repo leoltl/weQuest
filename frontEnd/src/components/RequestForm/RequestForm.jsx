@@ -22,6 +22,7 @@ const RequestForm = () => {
   const [formErrors, setFormErrors] = useState({});
 
   const submit = () => {
+    window.alert('attempt submit');
     console.log({
       item,
       budget,
@@ -33,7 +34,8 @@ const RequestForm = () => {
   return (
     <AuthContext.Consumer>
       {context => {
-        const { isLoggedIn, user } = context;
+        const { isLoggedIn, hardChangeAuth } = context;
+        console.log(hardChangeAuth);
         return (
           <IonContent>
             <form
@@ -98,6 +100,9 @@ const RequestForm = () => {
               </IonButton>
               <IonButton expand="block" fill="clear" type="cancel">
                 Cancel
+              </IonButton>
+              <IonButton onClick={hardChangeAuth} expand="block" fill="clear">
+                Hard Log in
               </IonButton>
             </form>
           </IonContent>
