@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   IonHeader,
   IonToolbar,
@@ -8,14 +8,14 @@ import {
   IonInput,
   IonList,
   IonButton
-} from "@ionic/react";
-import { logIn } from "ionicons/icons";
+} from '@ionic/react';
+import { logIn } from 'ionicons/icons';
 
 const Register = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
   const [formErrors, setFormErrors] = useState({});
 
@@ -50,7 +50,7 @@ const Register = () => {
                 name="name"
                 type="name"
                 value={name}
-                onChange={e => setName(e.target.value)}
+                onIonChange={e => setName(e.target.value)}
               />
             </IonItem>
             <IonItem>
@@ -59,7 +59,7 @@ const Register = () => {
                 name="email"
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onIonChange={e => setEmail(e.target.value)}
               />
             </IonItem>
             <IonItem>
@@ -68,7 +68,7 @@ const Register = () => {
                 name="password"
                 type="password"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onIonChange={e => setPassword(e.target.value)}
               />
             </IonItem>
             <IonItem>
@@ -77,7 +77,7 @@ const Register = () => {
                 name="passwordConfirmation"
                 type="passwordConfirmation"
                 value={passwordConfirmation}
-                onChange={e => setPasswordConfirmation(e.target.value)}
+                onIonChange={e => setPasswordConfirmation(e.target.value)}
               />
             </IonItem>
           </IonList>
