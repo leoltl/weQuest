@@ -6,7 +6,8 @@ import {
   IonInput,
   IonList,
   IonButton,
-  IonDatetime
+  IonDatetime,
+  IonText
 } from '@ionic/react';
 
 import { AuthContext } from '../../contexts/authContext';
@@ -34,7 +35,7 @@ const RequestForm = () => {
   return (
     <AuthContext.Consumer>
       {context => {
-        const { isLoggedIn, hardChangeAuth } = context;
+        const { isLoggedIn, user, hardChangeAuth } = context;
         console.log(hardChangeAuth);
         return (
           <IonContent>
@@ -101,6 +102,9 @@ const RequestForm = () => {
               <IonButton expand="block" fill="clear" type="cancel">
                 Cancel
               </IonButton>
+              <IonText className="ion-text-center">
+                Logged In as: {user || 'Not Logged In'}
+              </IonText>
               <IonButton onClick={hardChangeAuth} expand="block" fill="clear">
                 Hard Log in
               </IonButton>
