@@ -2,13 +2,14 @@ import App from './app';
 
 import * as bodyParser from 'body-parser';
 import morgan = require('morgan');
+import UserController from './routes/user.router';
 
 import { config } from 'dotenv';
 config();
 
 const app = new App({
   port: process.env.PORT || '8080',
-  controllers: [],
+  controllers: [new UserController()],
   middleWares: [
     bodyParser.json(),
     bodyParser.urlencoded({ extended: true }),
