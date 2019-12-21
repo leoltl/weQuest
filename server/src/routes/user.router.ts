@@ -4,14 +4,30 @@
  * these routes are mounted onto /users
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
-import express, { Request, Response } from 'express';
+import * as express from 'express';
+import { Request, Response } from 'express';
 import UserService from '../services/UserService';
 
 export const userRouter = express.Router();
 
-userRouter.GET('/', async (req: Request, res: Response) => {
+interface User {
+  id: number;
+  name: string;
+  password_digest: string;
+  email: string;
+  postal_code: string;
+  latitude: number;
+  longtitude: number;
+}
+
+interface Users {
+  user_list: Array<User>;
+}
+
+userRouter.get('/', async (req: Request, res: Response) => {
   try {
-    const users: Users = await UserService.findAll();
+    // const users: Users = await UserService.findAll();
+    const users = 'test';
     res.status(200).send(users);
   } catch (err) {
     res.status(400).send(err.message);
@@ -19,10 +35,11 @@ userRouter.GET('/', async (req: Request, res: Response) => {
 });
 
 /* GET users/:id */
-userRouter.GET('/:id', async (req: Request, res: Response) => {
+userRouter.get('/:id', async (req: Request, res: Response) => {
   const id: number = parseInt(req.params.id, 10);
   try {
-    const user: User = await UserService.find(id);
+    // const user: User = await UserService.find(id);
+    const user = 'test';
     res.status(200).send(user);
   } catch (err) {
     res.status(400).send(err.message);
@@ -30,10 +47,10 @@ userRouter.GET('/:id', async (req: Request, res: Response) => {
 });
 
 /* POST users/ */
-userRouter.POST('/', async (req: Request, res: Response) => {
+userRouter.post('/', async (req: Request, res: Response) => {
   try {
     const user: User = req.body.user;
-    await UserService.create(user);
+    // await UserService.create(user);
     res.status(201);
   } catch (err) {
     res.status(500).send(err.message);
@@ -41,10 +58,10 @@ userRouter.POST('/', async (req: Request, res: Response) => {
 });
 
 /* PUT users/ */
-userRouter.PUT('/', async (req: Request, res: Response) => {
+userRouter.put('/', async (req: Request, res: Response) => {
   try {
     const user: User = req.body.user;
-    await UserService.update(user);
+    // await UserService.update(user);
     res.status(200);
   } catch (err) {
     res.status(500).send(err.message);
@@ -52,10 +69,10 @@ userRouter.PUT('/', async (req: Request, res: Response) => {
 });
 
 /* DELETE users/:id */
-userRouter.DELETE('/:id', async (req: Request, res: Response) => {
+userRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const id: number = parseInt(req.params.id, 10);
-    await UserService.remove(id);
+    // await UserService.remove(id);
     res.status(200);
   } catch (err) {
     res.status(500).send(err.message);
