@@ -1,18 +1,10 @@
 import React, { useState } from 'react';
-import {
-  IonContent,
-  IonItem,
-  IonLabel,
-  IonInput,
-  IonList,
-  IonButton,
-  IonDatetime,
-  IonText
-} from '@ionic/react';
+import { IonContent, IonButton, IonText } from '@ionic/react';
 
 import { AuthContext } from '../../contexts/authContext';
 
 import './RequestForm.scss';
+import RequestFieldGroup from './RequestFieldGroup';
 
 const RequestForm = () => {
   const [item, setItem] = useState('');
@@ -20,23 +12,19 @@ const RequestForm = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  const [formErrors, setFormErrors] = useState({});
-
   const submit = () => {
-    window.alert('attempt submit');
-    console.log({
-      item,
-      budget,
-      startDate,
-      endDate
-    });
+    window.alert(`attempt submit! 
+    values: 
+    ${item},
+    ${budget},
+    ${startDate},
+    ${endDate}`);
   };
 
   return (
     <AuthContext.Consumer>
       {context => {
         const { isLoggedIn, user, hardChangeAuth } = context;
-        console.log(hardChangeAuth);
         return (
           <IonContent>
             <form
@@ -45,52 +33,10 @@ const RequestForm = () => {
                 submit();
               }}
             >
-              <div>{formErrors ? formErrors.message : null}</div>
-              <IonList className="my-list">
-                <IonItem className="my-list--input">
-                  <IonLabel position="floating">
-                    What are you looking for today?
-                    <ion-text color="danger">*</ion-text>
-                  </IonLabel>
-                  <IonInput
-                    name="item"
-                    type="item"
-                    value={item}
-                    onIonChange={e => setItem(e.target.value)}
-                  />
-                </IonItem>
-                <IonItem className="my-list--input">
-                  <IonLabel position="floating">
-                    What is your budget?<ion-text color="danger">*</ion-text>
-                  </IonLabel>
-                  <IonInput
-                    name="budget"
-                    type="budget"
-                    value={budget}
-                    onIonChange={e => setBudget(e.target.value)}
-                  />
-                </IonItem>
-                <IonItem className="my-list--input">
-                  <IonLabel>Start Date</IonLabel>
-                  <IonDatetime
-                    value={startDate}
-                    min={new Date().getFullYear()}
-                    max={new Date().getFullYear() + 2}
-                    displayFormat="DDD. MMM DD, YYYY"
-                    onIonChange={e => setStartDate(e.target.value)}
-                  ></IonDatetime>
-                </IonItem>
-                <IonItem className="my-list--input">
-                  <IonLabel>End Date</IonLabel>
-                  <IonDatetime
-                    value={endDate}
-                    min={new Date().getFullYear()}
-                    max={new Date().getFullYear() + 2}
-                    displayFormat="DDD. MMM DD, YYYY"
-                    onIonChange={e => setEndDate(e.target.value)}
-                  ></IonDatetime>
-                </IonItem>
-              </IonList>
+              <RequestFieldGroup
+                setters={{ setBudget, setItem, setStartDate, setEndDate }}
+                values={{ budget, item, startDate, endDate }}
+              />
               <IonButton
                 className="ion-margin"
                 disabled={isLoggedIn ? false : true}
@@ -102,6 +48,12 @@ const RequestForm = () => {
               <IonButton expand="block" fill="clear" type="cancel">
                 Cancel
               </IonButton>
+              <br />
+              <br />
+              <br />
+              <br />
+              development temperpory configs:
+              <br />
               <IonText className="ion-text-center">
                 Logged In as: {user || 'Not Logged In'}
               </IonText>
