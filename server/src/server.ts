@@ -14,7 +14,6 @@ import morgan = require('morgan');
 // instantiate express
 const app = express();
 
-<<<<<<< HEAD
 app.use(morgan('dev'));
 
 // app.get('/', (req, res) => {
@@ -25,11 +24,3 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // tslint:disable-next-line
 app.listen(PORT, () => console.log(`weQuest app listening on port ${PORT}`));
-=======
-app.get('/', (req, res) => {
-  res.send('Hloerfkldsajflk;sjadklf;as1j2l');
-});
-
-// tslint:disable-next-line
-app.listen(PORT, () => console.log(`Fuudi app listening on port ${PORT}`));
->>>>>>> db-setup
