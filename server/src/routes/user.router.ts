@@ -6,7 +6,7 @@
  */
 import * as express from 'express';
 import { Request, Response } from 'express';
-import * as UserService from '../services/UserService';
+import * as UserService from '../models/UserService';
 
 interface User {
   id: number;
@@ -19,7 +19,7 @@ interface User {
 }
 
 interface Users {
-  user_list: Array<User>;
+  user_list: User[];
 }
 
 export default class UserController {
@@ -45,7 +45,6 @@ export default class UserController {
       const id: number = parseInt(req.params.id, 10);
       try {
         const user: User = await UserService.find(id);
-        const user = 'test';
         res.status(200).send(user);
       } catch (err) {
         res.status(400).send(err.message);

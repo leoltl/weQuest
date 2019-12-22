@@ -9,12 +9,12 @@ interface User {
 }
 
 interface Users {
-  user_list: Array<User>;
+  user_list: User[];
 }
 
 type SQLQuery = Promise<String>;
 
-export default class UserService {
+class UserService {
   public findAll(): SQLQuery {
     try {
       return Promise.resolve('test');
@@ -60,3 +60,5 @@ export default class UserService {
     }
   }
 }
+
+export default new UserService();
