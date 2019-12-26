@@ -7,20 +7,7 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
 import * as UserService from '../models/UserService';
-
-interface User {
-  id: number;
-  name: string;
-  password_digest: string;
-  email: string;
-  postal_code: string;
-  latitude: number;
-  longtitude: number;
-}
-
-interface Users {
-  user_list: User[];
-}
+import { User, Users } from '../interfaces/users';
 
 export default class UserController {
   public path = '/users';
@@ -33,7 +20,7 @@ export default class UserController {
   private initRoutes() {
     this.router.get('/', async (req: Request, res: Response) => {
       try {
-        const users: Users = await UserService.findAll();
+        const users = await UserService.findAll();
         res.status(200).send(users);
       } catch (err) {
         res.status(400).send(err.message);
@@ -44,7 +31,7 @@ export default class UserController {
     this.router.get('/:id', async (req: Request, res: Response) => {
       const id: number = parseInt(req.params.id, 10);
       try {
-        const user: User = await UserService.find(id);
+        const user = await UserService.find(id);
         res.status(200).send(user);
       } catch (err) {
         res.status(400).send(err.message);

@@ -1,20 +1,10 @@
 /**
  Middleware to related to users
 **/
-
-interface User {
-  id: number;
-  name: string;
-  password: string;
-  email: string;
-  postal_code: string;
-  latitude: number;
-  longtitude: number;
-}
-
 import bcrypt = require('bcrypt');
 import expressSession = require('express-session');
 import { Response, Request, NextFunction } from 'express';
+import { User, Users } from '../interfaces/users';
 
 const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
   if (req.session) {
@@ -63,12 +53,39 @@ const logout = (req: Request) => {
   }
 };
 
+const validateInput = (user: User): User => {
+  return user;
+};
+
+const getLocation = () => {
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0,
+  };
+
+  function success(pos: Position) {
+    return pos.coords;
+
+    // console.log('Your current position is:');
+    // console.log(`Latitude : ${crd.latitude}`);
+    // console.log(`Longitude: ${crd.longitude}`);
+    // console.log(`More or less ${crd.accuracy} meters.`);
+  }
+
+  function error(err: PositionError) {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  }
+
+  return navigator.geolocation.getCurrentPosition(success, error, options);
+};
+
 const create = async (db: any, user: User) => {
   try {
     const safeUser = validateInput(user);
-    const { username, email, phone, password } = safeUser;
+    const { name, email, password } = safeUser;
 
-    return db.transaction(async query => {
+    return db.transaction(async (query: any) => {
       // TODO: implement getLocation
       // returns POSTAL_CODE, LAT, LONG
       const location = getLocation();
@@ -79,7 +96,7 @@ const create = async (db: any, user: User) => {
         VALUES ($1, $2, $3, $4, $5)
         RETURNING *;
       `,
-        [email, bcrypt.hashSync(password, 10), ...location],
+        [email, bcrypt.hashSync(password, 10), location],
       );
 
       const [{ id: userId, username: bookedUsername }] = bookedUser;
