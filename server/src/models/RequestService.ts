@@ -6,8 +6,8 @@ class UserService {}
 
 export function findAll(): SQLQuery {
   try {
-    return Promise.resolve('test');
-    // return db.query('SELECT * FROM users');
+    // return Promise.resolve('test');
+    return db.query('SELECT * FROM requests LIMIT 10');
   } catch (err) {
     throw Error(`Could not retrieve all users. Error: ${err.message}`);
   }

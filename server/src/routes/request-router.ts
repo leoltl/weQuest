@@ -27,7 +27,7 @@ export default class RequestController {
       }
     });
 
-    /* GET users/:id */
+    /* GET reqeusts/:id */
     this.router.get('/:id', async (req: Request, res: Response) => {
       const id: number = parseInt(req.params.id, 10);
       try {

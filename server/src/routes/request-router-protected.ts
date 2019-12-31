@@ -19,7 +19,9 @@ export default class ProtectedRequestController {
   }
 
   private initRoutes() {
+    /* using authentication method provided in user service.*/
     this.router.use(isAuthenticated);
+
     /* POST requests/ */
     this.router.post('/', async (req: Request, res: Response) => {
       console.log(req.body);
