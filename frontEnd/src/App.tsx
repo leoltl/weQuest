@@ -10,10 +10,11 @@ import {
   IonTabs
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { apps, flash, list } from "ionicons/icons";
+import { apps, flash, list, add } from "ionicons/icons";
 import Tab1 from "./pages/Tab1";
 import Tab2 from "./pages/Tab2";
 import LoginScreen from "./pages/LoginScreen";
+import BidScreen from "./pages/BidScreen";
 import Details from "./pages/Details";
 import RequestFeed from "./pages/RequestFeed";
 
@@ -44,6 +45,7 @@ const App: React.FC = () => (
           <Route path="/tab1" component={Tab1} exact={true} />
           <Route path="/tab2" component={Tab2} exact={true} />
           <Route path="/tab2/details" component={Details} />
+          <Route path="/bid/:id" component={BidScreen} />
           <Route path="/requestFeed" component={RequestFeed} />
           <Route path="/login" component={LoginScreen} />
           <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
@@ -54,7 +56,7 @@ const App: React.FC = () => (
             <IonLabel>Tab One</IonLabel>
           </IonTabButton>
           <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon icon={apps} />
+            <IonIcon icon={add} />
             <IonLabel>Tab Two</IonLabel>
           </IonTabButton>
           <IonTabButton tab="requestFeed" href="/requestFeed">
