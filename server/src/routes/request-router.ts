@@ -20,7 +20,7 @@ export default class RequestController {
   private initRoutes() {
     this.router.get('/', async (req: Request, res: Response) => {
       try {
-        const requests = await RequestService.findAll();
+        const requests = await RequestService.mockFindAll();
         res.status(200).send(requests);
       } catch (err) {
         res.status(400).send(err.message);

@@ -10,7 +10,7 @@ import * as RequestService from '../models/RequestService';
 import { Request as UserRequest, Requests } from '../interfaces/requests';
 import { isAuthenticated } from '../services/users';
 
-export default class ProtectedRequestController {
+export default class RequestControllerProtected {
   public path = '/requests';
   public router = express.Router();
 

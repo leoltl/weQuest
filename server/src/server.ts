@@ -5,7 +5,7 @@ import morgan = require('morgan');
 import cors = require('cors');
 import UserController from './routes/user.router';
 import RequestController from './routes/request-router';
-import ProtectedRequestController from './routes/request-router-protected';
+import RequestControllerProtected from './routes/request-router-protected';
 
 import { config } from 'dotenv';
 config();
@@ -15,7 +15,7 @@ const app = new App({
   controllers: [
     new UserController(),
     new RequestController(),
-    new ProtectedRequestController(),
+    new RequestControllerProtected(),
   ],
   middleWares: [
     cors(),
