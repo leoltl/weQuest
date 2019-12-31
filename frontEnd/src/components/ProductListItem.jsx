@@ -1,13 +1,17 @@
 import React from 'react';
-import { IonAvatar, IonImg, IonSegmentButton, IonLabel } from '@ionic/react';
+import { IonAvatar, IonIcon, IonImg, IonSegmentButton, IonLabel } from '@ionic/react';
 
-export default function ProductListItem({id}) {
+export default function ProductListItem({ id, name, pictureUrl, isIcon = false}) {
   return (
     <IonSegmentButton value={id}>
       <IonAvatar>
-        <IonImg src={'https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y'} alt={`Product ${id}`} title={`Product ${id}`} />
+        {
+          isIcon ?
+            <IonIcon icon={pictureUrl} /> :
+            <IonImg src={pictureUrl} alt={name} title={name} />
+        }
       </IonAvatar>
-      <IonLabel>{`Product ${id}`}</IonLabel>
+      <IonLabel>{name}</IonLabel>
     </IonSegmentButton>
   );
 

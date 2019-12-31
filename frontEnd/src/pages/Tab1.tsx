@@ -16,6 +16,7 @@ import {
   IonToolbar
 } from "@ionic/react";
 import { book, build, colorFill, grid } from "ionicons/icons";
+import BidScreen from "../pages/BidScreen";
 import React from "react";
 import "./Tab1.scss";
 
@@ -72,6 +73,7 @@ const Tab1: React.FC = () => {
             <IonLabel>Theme Your App</IonLabel>
           </IonItem>
         </IonList>
+        <BidScreen />
       </IonContent>
     </IonPage>
   );
