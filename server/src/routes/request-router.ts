@@ -37,38 +37,5 @@ export default class RequestController {
         res.status(400).send(err.message);
       }
     });
-
-    /* POST users/ */
-    this.router.post('/', async (req: Request, res: Response) => {
-      try {
-        const user: UserRequest = req.body.user;
-        await RequestService.create(user);
-        res.status(201);
-      } catch (err) {
-        res.status(500).send(err.message);
-      }
-    });
-
-    /* PUT users/ */
-    this.router.put('/', async (req: Request, res: Response) => {
-      try {
-        const request: UserRequest = req.body.user;
-        await RequestService.update(request);
-        res.status(200);
-      } catch (err) {
-        res.status(500).send(err.message);
-      }
-    });
-
-    /* DELETE users/:id */
-    this.router.delete('/:id', async (req: Request, res: Response) => {
-      try {
-        const id: number = parseInt(req.params.id, 10);
-        await RequestService.remove(id);
-        res.status(200);
-      } catch (err) {
-        res.status(500).send(err.message);
-      }
-    });
   }
 }

@@ -6,53 +6,6 @@ import expressSession = require('express-session');
 import { Response, Request, NextFunction } from 'express';
 import { User, Users } from '../interfaces/users';
 
-const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
-  if (req.session) {
-    if (!req.session.userId) {
-      return res.status(403).json({ error: 'not authorized' });
-    }
-  }
-};
-
-const getCurrentUser = (req: Request, res: Response) => {
-  req.session
-    ? req.session.userId
-    : res.status(403).json({ error: 'no available session' });
-};
-
-const login = async (
-  db: any,
-  req: Request,
-  res: Response,
-  email: string,
-  password: string,
-  id: number,
-) => {
-  try {
-    let userId = req!.session!.Id || id;
-    let user: User;
-
-    if (!userId) {
-      user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
-      if (!bcrypt.compareSync(password, user.password)) {
-        throw Error('Incorrect Password | email does not exist in our system');
-      }
-
-      userId = user.id;
-    } else {
-      user = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
-    }
-  } catch (err) {
-    throw Error(`Failed to login: ERROR: ${err}`);
-  }
-};
-
-const logout = (req: Request) => {
-  if (req.session) {
-    req.session.userId && delete req.session.userId;
-  }
-};
-
 const validateInput = (user: User): User => {
   return user;
 };

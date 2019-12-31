@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { IonContent, IonButton, IonText } from '@ionic/react';
+import axios from 'axios';
 
 import { AuthContext } from '../../contexts/authContext';
 
@@ -13,6 +14,17 @@ const RequestForm = () => {
   const [endDate, setEndDate] = useState(new Date());
 
   const submit = () => {
+    const data = {
+      item,
+      budget,
+      startDate,
+      endDate
+    };
+    axios
+      .post('http://localhost:8080/requests', { payload: data })
+      .then(res => {
+        console.log(res);
+      });
     window.alert(`attempt submit! 
     values: 
     ${item},
@@ -47,7 +59,7 @@ const RequestForm = () => {
         >
           Request It
         </IonButton>
-        <IonButton expand="block" fill="clear" type="cancel">
+        <IonButton expand="block" fill="clear" type="button">
           Cancel
         </IonButton>
         <br />

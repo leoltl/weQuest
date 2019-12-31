@@ -6,12 +6,17 @@ import expressSession = require('express-session');
 import { Response, Request, NextFunction } from 'express';
 import { User, Users } from '../interfaces/users';
 
-const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
-  if (req.session) {
-    if (!req.session.userId) {
+export const isAuthenticated = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (true) {
+    if (!req.session?.userId) {
       return res.status(403).json({ error: 'not authorized' });
     }
   }
+  next();
 };
 
 const getCurrentUser = (req: Request, res: Response) => {
