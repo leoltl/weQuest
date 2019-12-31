@@ -3,12 +3,15 @@ type SQLQuery = Promise<String>;
 
 /* Could not export UserService class without singleton Why?? */
 class UserService {}
+
+/* */
+/* */
+/* temp db connection for mock purpose*/
 const { Pool }: any = require('pg');
 
 import { config } from 'dotenv';
 config();
 
-/* temp db connection for mock purpose*/
 const dbParams = {
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -18,7 +21,6 @@ const dbParams = {
 };
 
 const db = new Pool(dbParams);
-
 export async function mockFindAll(): SQLQuery {
   try {
     // return Promise.resolve('test');
@@ -28,6 +30,9 @@ export async function mockFindAll(): SQLQuery {
     throw Error(`Could not retrieve all users. Error: ${err.message}`);
   }
 }
+/* end temp*/
+/* */
+/* */
 
 export function findAll(): SQLQuery {
   try {
