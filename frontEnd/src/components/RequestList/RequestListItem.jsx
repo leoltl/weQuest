@@ -8,14 +8,20 @@ import {
 } from '@ionic/react';
 
 const RequestListItem = props => {
-  console.log(props.requestDetails);
   return (
     <IonCard onClick={props.selectCard}>
       <IonCardHeader>
-        <IonCardTitle>Card Title</IonCardTitle>
-        <IonCardSubtitle>SubTittle</IonCardSubtitle>
+        <div className="request-card--header">
+          <IonCardTitle>Request Title</IonCardTitle>
+          <IonCardSubtitle>$30.00</IonCardSubtitle>
+        </div>
+        <IonCardContent>
+          <div className="request-card--user">
+            <img alt="user avatar" src="https://i.pravatar.cc/50"></img>4/5
+          </div>
+        </IonCardContent>
       </IonCardHeader>
-      {props.selected ? (
+      {props.isSelected ? (
         <IonCardContent>{props.requestDetails.description}</IonCardContent>
       ) : (
         ''

@@ -3,19 +3,23 @@ import { IonContent, IonList } from '@ionic/react';
 import RequestListItem from './RequestListItem';
 import Axios from 'axios';
 
+import './RequestList.scss';
+
 const RequestList = props => {
   const [requests, setRequests] = useState([]);
+
   useEffect(() => {
     Axios.get('http://localhost:8080/requests').then(res =>
       setRequests(res.data)
     );
   }, []);
+
   const renderedRequestItem = requests.map(listItem => {
     return (
       <RequestListItem
         key={listItem.id}
         requestDetails={listItem}
-        selected={listItem.id === props.value}
+        isSelected={listItem.id === props.value}
         selectCard={() =>
           props.onClick(listItem.id === props.value ? null : listItem.id)
         }
