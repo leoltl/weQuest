@@ -1,30 +1,31 @@
-import React from "react";
-import { IonContent, IonList } from "@ionic/react";
-import RequestListItem from "./RequestListItem";
+import React, { useEffect, useState } from 'react';
+import { IonContent, IonList } from '@ionic/react';
+import RequestListItem from './RequestListItem';
+import Axios from 'axios';
 
 const RequestList = props => {
-  let requests = props.request;
-  const renderRequestItem = listItem => {
+  const [requests, setRequests] = useState([]);
+  useEffect(() => {
+    Axios.get('http://localhost:8080/requests').then(res =>
+      setRequests(res.data)
+    );
+  }, []);
+  const renderedRequestItem = requests.map(listItem => {
     return (
       <RequestListItem
         key={listItem.id}
-        name={listItem.name}
-        item={listItem.item}
-        currentBid={listItem.currentBid}
-        noOfBids={listItem.noOfBids}
-        avatar={listItem.url}
-        rating={listItem.rating}
+        requestDetails={listItem}
         selected={listItem.id === props.value}
         selectCard={() =>
           props.onClick(listItem.id === props.value ? null : listItem.id)
         }
       ></RequestListItem>
     );
-  };
+  });
 
   return (
     <IonContent id="request-list-item">
-      <IonList>{requests.map(listItem => renderRequestItem(listItem))}</IonList>
+      <IonList>{renderedRequestItem}</IonList>
     </IonContent>
   );
 };

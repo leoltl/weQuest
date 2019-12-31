@@ -1,13 +1,14 @@
-import React from "react";
+import React from 'react';
 import {
   IonCard,
   IonCardHeader,
   IonCardSubtitle,
   IonCardTitle,
   IonCardContent
-} from "@ionic/react";
+} from '@ionic/react';
 
 const RequestListItem = props => {
+  console.log(props.requestDetails);
   return (
     <IonCard onClick={props.selectCard}>
       <IonCardHeader>
@@ -15,13 +16,9 @@ const RequestListItem = props => {
         <IonCardSubtitle>SubTittle</IonCardSubtitle>
       </IonCardHeader>
       {props.selected ? (
-        <IonCardContent>
-          Keep close to Nature's heart... and break clear away, once in awhile,
-          and climb a mountain or spend a week in the woods. Wash your spirit
-          clean.
-        </IonCardContent>
+        <IonCardContent>{props.requestDetails.description}</IonCardContent>
       ) : (
-        ""
+        ''
       )}
     </IonCard>
   );
