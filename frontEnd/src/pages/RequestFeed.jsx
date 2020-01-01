@@ -4,8 +4,10 @@ import {
   IonToolbar,
   IonPage,
   IonTitle,
-  IonContent
+  IonContent,
+  useIonViewDidEnter
 } from "@ionic/react";
+import axios from "axios";
 import RequestList from "../components/RequestList";
 
 const requests = [
@@ -29,7 +31,14 @@ const requests = [
 ];
 
 const RequestFeed = () => {
+  const [state, setState] = useState(requests);
   const [selected, setSelected] = useState(null);
+
+  useIonViewDidEnter(() => {
+    axios.get("/api/requests").then(requests => {
+      setState(requests);
+    });
+  });
 
   return (
     <IonPage>
@@ -40,7 +49,7 @@ const RequestFeed = () => {
       </IonHeader>
       <IonContent>
         <RequestList
-          request={requests}
+          request={state}
           value={selected}
           onClick={setSelected}
         ></RequestList>
