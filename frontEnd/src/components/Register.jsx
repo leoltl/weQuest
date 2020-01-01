@@ -24,10 +24,14 @@ const Register = () => {
   const [formErrors, setFormErrors] = useState({});
 
   const submit = async e => {
-    try {
-      console.log(e);
-    } catch (e) {
-      setFormErrors(e);
+    if (password !== passwordConfirmation) {
+      setFormErrors({ message: "Passwords Do Not Match" });
+    } else {
+      try {
+        console.log(e);
+      } catch (e) {
+        setFormErrors(e);
+      }
     }
   };
 
@@ -51,7 +55,7 @@ const Register = () => {
                 name="name"
                 type="name"
                 value={name}
-                ionChange={e => setName(e.target.value)}
+                onIonChange={e => setName(e.target.value)}
               />
             </IonItem>
             <IonItem>
@@ -60,7 +64,7 @@ const Register = () => {
                 name="email"
                 type="email"
                 value={email}
-                ionChange={e => setEmail(e.target.value)}
+                onIonChange={e => setEmail(e.target.value)}
               />
             </IonItem>
             <IonItem>
@@ -69,7 +73,7 @@ const Register = () => {
                 name="password"
                 type="password"
                 value={password}
-                ionChange={e => setPassword(e.target.value)}
+                onIonChange={e => setPassword(e.target.value)}
               />
             </IonItem>
             <IonItem>
@@ -78,7 +82,7 @@ const Register = () => {
                 name="passwordConfirmation"
                 type="passwordConfirmation"
                 value={passwordConfirmation}
-                ionChange={e => setPasswordConfirmation(e.target.value)}
+                onIonChange={e => setPasswordConfirmation(e.target.value)}
               />
             </IonItem>
           </IonList>

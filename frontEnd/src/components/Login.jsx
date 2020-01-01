@@ -9,11 +9,10 @@ import {
   IonList,
   IonButton
 } from "@ionic/react";
-import { logIn } from "ionicons/icons";
 
 const Login = () => {
-  const [email, setEmail] = useState("a");
-  const [password, setPassword] = useState("1");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const [formErrors, setFormErrors] = useState({});
 
@@ -45,7 +44,7 @@ const Login = () => {
                 name="email"
                 type="email"
                 value={email}
-                ionChange={e => setEmail(e.target.value)}
+                onIonChange={e => setEmail(e.target.value)}
               />
             </IonItem>
             <IonItem>
@@ -54,7 +53,7 @@ const Login = () => {
                 name="password"
                 type="password"
                 value={password}
-                ionChange={e => setPassword(e.target.value)}
+                onIonChange={e => setPassword(e.target.value)}
               />
             </IonItem>
           </IonList>
