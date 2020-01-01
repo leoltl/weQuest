@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { IonContent, IonButton, IonText } from '@ionic/react';
 import axios from 'axios';
+import moment from 'moment';
 
 import { AuthContext } from '../../contexts/authContext';
 
@@ -10,8 +11,12 @@ import RequestFieldGroup from './RequestFieldGroup';
 const RequestForm = () => {
   const [item, setItem] = useState('');
   const [budget, setBudget] = useState(null);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(moment().format());
+  const [endDate, setEndDate] = useState(
+    moment()
+      .add(1, 'days')
+      .format()
+  );
 
   const submit = () => {
     const data = {
@@ -20,21 +25,34 @@ const RequestForm = () => {
       startDate,
       endDate
     };
-    axios
-      .post('http://localhost:8080/requests', { payload: data })
-      .then(res => {
-        console.log(res);
-      });
-    window.alert(`attempt submit! 
-    values: 
-    ${item},
-    ${budget},
-    ${startDate},
-    ${endDate}`);
-    setItem('');
-    setBudget(null);
-    setStartDate(new Date());
-    setEndDate(new Date());
+
+    if (isValid(data)) {
+      axios
+        .post('http://localhost:8080/requests', { payload: data })
+        .then(res => {
+          console.log(res);
+        });
+      setItem('');
+      setBudget(null);
+      setStartDate(moment().format());
+      setEndDate(
+        moment()
+          .add(1, 'days')
+          .format()
+      );
+    } else {
+      window.alert('invalid form');
+    }
+  };
+
+  const isValid = data => {
+    return (
+      data.item &&
+      data.budget &&
+      data.startDate &&
+      data.endDate &&
+      data.startDate <= data.endDate
+    );
   };
 
   const { isLoggedIn, user, hardChangeAuth } = useContext(AuthContext);

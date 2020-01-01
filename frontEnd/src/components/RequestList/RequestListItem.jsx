@@ -32,7 +32,7 @@ const RequestListItem = props => {
         </div>
         <IonCardContent className="request-card--user">
           <img alt="user avatar" src="https://i.pravatar.cc/50"></img>
-          <span class="request-card--user-rating"></span>4/5
+          <span class="request-card--user-rating">4/5</span>
         </IonCardContent>
       </IonCardHeader>
       {props.isSelected ? (
