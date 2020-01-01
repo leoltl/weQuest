@@ -135,7 +135,7 @@ export default function BidScreen(props) {
   }, []);
 
   const setProduct = useCallback((product) => {
-    bidDispatch({ type: bidActions.SET_PRODUCT, payload: { product: parseInt(product) } })
+    bidDispatch({ type: bidActions.SET_PRODUCT, payload: { product: parseInt(product) || null } })
   }, []);
 
   // TODO: add spinner??

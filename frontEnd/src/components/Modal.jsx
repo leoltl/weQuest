@@ -12,7 +12,7 @@ import {
 } from '@ionic/react';
 import { arrowBack } from 'ionicons/icons';
 
-export default function Modal({ showModal, setShowModal, showSpinner, title, children }) {
+export default function Modal({ showModal, setShowModal, showSpinner = false, title, children }) {
   return (
     <IonModal isOpen={showModal} onIonModalWillDismiss={(e) => setShowModal(false)}>
       <IonHeader>
