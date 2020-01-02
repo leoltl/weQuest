@@ -42,8 +42,8 @@ export default class UserController {
     this.router.post('/', async (req: Request, res: Response) => {
       try {
         const user: User = req.body.user;
-        await UserService.create(user);
-        res.status(201);
+        const newUser: any = await UserService.create(user);
+        res.send(newUser);
       } catch (err) {
         res.status(500).send(err.message);
       }
@@ -111,6 +111,7 @@ userRouter.post('/', async (req: Request, res: Response) => {
 
 /* PUT users/ */
 userRouter.put('/', async (req: Request, res: Response) => {
+  console.log(req.body.user);
   try {
     const user: User = req.body.user;
     // await UserService.update(user);
