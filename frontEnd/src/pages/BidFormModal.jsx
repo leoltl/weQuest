@@ -116,32 +116,19 @@ export default function BidFormModal({ showModal, setShowModal, request }) {
   const [bidState, bidDispatch] = useReducer(bidReducer, bidInitialState);
 
   const setProduct = useCallback((product) => {
-    bidDispatch({ type: bidActions.SET_PRODUCT, payload: { product: parseInt(product) || null } })
+    bidDispatch({ type: bidActions.SET_PRODUCT, payload: { product: parseInt(product) || null } });
   }, []);
 
   const addProduct = useCallback((product) => {
-
-    console.log('adding product');
-    setShowSpinner(true);
-    
-    // TODO: replace resolve with axios call
-    new Promise((resolve, _) => {
-      setTimeout(() => resolve({ data: product }), 3000)
-    })
-    .then(({ data: product }) => {
-      console.log('axios responded with', product);
-      bidDispatch({ type: bidActions.ADD_PRODUCT, payload: { product } })
-    })
-    .catch((err) => setErrorMessage(err.message))
-    .finally(() => setShowSpinner(false));
+    bidDispatch({ type: bidActions.ADD_PRODUCT, payload: { product } });
   }, []);
 
   const setPrice = useCallback((price) => {
-    bidDispatch({ type: bidActions.SET_PRICE, payload: { price: Math.min(parseInt(price), request.currentPrice * 100) } })
+    bidDispatch({ type: bidActions.SET_PRICE, payload: { price: Math.min(parseInt(price), request.currentPrice * 100) } });
   }, [request]);
 
   const setNotes = useCallback((notes) => {
-    bidDispatch({ type: bidActions.SET_NOTES, payload: { notes } })
+    bidDispatch({ type: bidActions.SET_NOTES, payload: { notes } });
   }, []);
 
   const submitBid = (e) => {
@@ -152,17 +139,17 @@ export default function BidFormModal({ showModal, setShowModal, request }) {
     if (!bidState.product) return setErrorMessage('You must select an item to bid with!');
     if (bidState.price >= request.currentPrice) return setErrorMessage('Your price is too high relative to the latest bids!');
     
-    setShowSpinner(true);
+    setShowSpinner('Saving...');
 
     const bid = {
       request: request.id,
       product: bidState.product,
       price: bidState.price,
       notes: bidState.notes
-    }
+    };
     // TODO: replace resolve with axios call
-    new Promise((resolve, _) => {
-      setTimeout(() => resolve({ data: bid }), 3000)
+    new Promise((resolve) => {
+      setTimeout(() => resolve({ data: bid }), 3000);
     })
     .then(({ data: bid }) => {
       setShowModal(false);
@@ -184,8 +171,8 @@ export default function BidFormModal({ showModal, setShowModal, request }) {
     setShowSpinner(true);
     
     // TODO: replace resolve with axios call
-    new Promise((resolve, _) => {
-      setTimeout(() => resolve({ data: dummyProducts }), 3000)
+    new Promise((resolve) => {
+      setTimeout(() => resolve({ data: dummyProducts }), 3000);
     })
     .then(({ data: products }) => {
       bidDispatch({ type: bidActions.PRODUCT_DATA, payload: { products } });

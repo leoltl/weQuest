@@ -21,7 +21,7 @@ export default function ProductList({ products, product, setProduct, addProduct 
       setProduct(value);
     }
 
-  },[setProduct])
+  },[setProduct]);
 
   return (
     <>

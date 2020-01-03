@@ -27,8 +27,8 @@ export default function Modal({ showModal, setShowModal, showSpinner = false, ti
       </IonHeader>
       <IonContent>
         {
-          showSpinner ?
-            <IonLoading isOpen={showModal} message={'Loading...'} /> :
+          showSpinner !== false ?
+            <IonLoading isOpen={showModal} message={showSpinner === true ? 'Loading...' : showSpinner} /> :
             children
         }
       </IonContent>

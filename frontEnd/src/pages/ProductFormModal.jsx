@@ -32,9 +32,15 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess})
   const [description, setDescription] = useState('');
   const [pictureUrl, setPictureUrl] = useState('');
 
+  const resetProduct = useCallback(() => {
+    setName('');
+    setDescription('');
+    setPictureUrl('');
+  }, []);
+
   const loadPicture = useCallback((e) => {
     e.preventDefault();
-    setShowSpinner(true);
+    setShowSpinner('Saving...');
 
     const file = e.currentTarget.querySelector('input').files[0];
     if (!file) return setShowSpinner(false);
@@ -56,27 +62,25 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess})
     if (!description) return setErrorMessage('The description field cannot be blank!');
     if (!pictureUrl) return setErrorMessage('You must attach a picture!');
     
-    setShowSpinner(true);
+    setShowSpinner('Saving...');
 
     const product = {
       id: 6,
       name,
       description,
       pictureUrl
-    }
+    };
     // TODO: replace resolve with axios call
-    new Promise((resolve, _) => {
-      setTimeout(() => resolve({ data: product }), 3000)
+    new Promise((resolve) => {
+      setTimeout(() => resolve({ data: product }), 3000);
     })
     .then(({ data: product }) => {
       setShowModal(false);
-      setShowSpinner(false);
+      resetProduct();
       onSuccess(product);
     })
-    .catch((err) => {
-      setErrorMessage(err.message);
-      setShowSpinner(false)
-    });
+    .catch((err) => setErrorMessage(err.message))
+    .finally(() => setShowSpinner(false));
 
   };
   
