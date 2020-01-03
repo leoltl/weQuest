@@ -23,7 +23,6 @@ const getCurrentUser = (req: Request, res: Response) => {
 const login = async (
   db: any,
   req: Request,
-  res: Response,
   email: string,
   password: string,
   id: number,
@@ -117,4 +116,12 @@ const create = async (db: any, user: User) => {
       `User could not be created due to an error. Error: ${err.message}.`,
     );
   }
+};
+
+module.exports = {
+  isAuthenticated,
+  getCurrentUser,
+  login,
+  logout,
+  createUser: create,
 };

@@ -6,35 +6,45 @@
  */
 import * as express from 'express';
 import { Request, Response } from 'express';
-import * as UserService from '../models/UserService';
+const {
+  getCurrentUser,
+  login,
+  logout,
+  resetUserCookies,
+  createUser,
+} = require('../services/users');
 import { User, Users } from '../interfaces/users';
 
 export default class UserController {
   public path = '/users';
   public router = express.Router();
 
-  constructor() {
-    this.initRoutes();
+  constructor(db: any) {
+    this.initRoutes(db);
   }
 
-  private initRoutes() {
-    this.router.get('/', async (req: Request, res: Response) => {
+  private initRoutes(db: any) {
+    this.router.post('/', async (req: Request, res: Response) => {
       try {
-        const users = await UserService.findAll();
-        res.status(200).send(users);
+        const userId = await createUser(db, req.body);
+        const userData = await login(db, req, null, null, userId);
+        res.json({ ...userData, isLoggedIn: true });
       } catch (err) {
         res.status(400).send(err.message);
       }
     });
 
     /* GET users/:id */
-    this.router.get('/:id', async (req: Request, res: Response) => {
+    this.router.get('/login', async (req: Request, res: Response) => {
       const id: number = parseInt(req.params.id, 10);
       try {
-        const user = await UserService.find(id);
-        res.status(200).send(user);
+        const user = getCurrentUser(req);
+        if (!user) throw Error('User not logged in.');
+
+        const userData = await login(db, req);
+        res.json({ ...userData, isLoggedIn: true });
       } catch (err) {
-        res.status(400).send(err.message);
+        res.status(403).json({ error: err.message, isLoggedIn: false });
       }
     });
 

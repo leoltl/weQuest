@@ -7,8 +7,7 @@ class UserService {}
 
 export function findAll(): SQLQuery {
   try {
-    return Promise.resolve('test');
-    // return db.query('SELECT * FROM users');
+    return db.query('SELECT * FROM users');
   } catch (err) {
     throw Error(`Could not retrieve all users. Error: ${err.message}`);
   }
@@ -16,10 +15,9 @@ export function findAll(): SQLQuery {
 
 export function find(id: number): SQLQuery {
   try {
-    return Promise.resolve('test');
-    // return db.query('SELECT * FROM users');
+    return db.query('SELECT * FROM users WHERE id = $1', [id]);
   } catch (err) {
-    throw Error(`Could not retrieve all users. Error: ${err.message}`);
+    throw Error(`Could not retrieve user. Error: ${err.message}`);
   }
 }
 
