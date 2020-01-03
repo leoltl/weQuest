@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useReducer, useCallback } from 'react';
-import { IonButton, } from '@ionic/react';
+import { IonList, IonItem, IonLabel, IonButton, IonInput, IonTextarea } from '@ionic/react';
 
 import Modal from '../components/Modal';
-import BidForm from '../components/BidForm';
+import ErrorAlert from '../components/ErrorAlert';
+import ProductList from "../components/ProductList";
 
 // dummy data
-
 const dummyProducts = [
   {
     id: 1,
@@ -31,23 +31,13 @@ const dummyProducts = [
     description: 'product description',
     pictureUrl: 'https://images.unsplash.com/photo-1545112719-ce81d7de0b71?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1622&q=80'
   },
+  {
+    id: 5,
+    name: 'Camera',
+    description: 'product description',
+    pictureUrl: 'https://images.unsplash.com/photo-1519638831568-d9897f54ed69?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80'
+  }
 ];
-
-const dummyProduct = {
-  id: 5,
-  name: 'Camera',
-  description: 'product description',
-  pictureUrl: 'https://images.unsplash.com/photo-1519638831568-d9897f54ed69?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80'
-}
-
-
-/*
-PROPS:
-- requestId
-- maxPrice (current bid - 0.5 or whatever step we choose)
-- showBidScreen
-- setShowBidScreen
-*/
 
 const bidInitialState = {
   products: [],
@@ -84,7 +74,7 @@ function bidReducer(state, { type, payload }) {
     case bidActions.ADD_PRODUCT:
       return {
         ...state,
-        products: payload.products.concat(payload.product),
+        products: state.products.concat(payload.product),
         product: payload.product.id
       };
           
@@ -104,7 +94,7 @@ function bidReducer(state, { type, payload }) {
       return {
         ...state,
         product: null,
-        price: 0,
+        price: payload.price - 50,
         notes: '',
       };
 
@@ -115,45 +105,40 @@ function bidReducer(state, { type, payload }) {
 
 }
 
-export default function BidScreen(props) {
+export default function BidFormModal({ showModal, setShowModal, request }) {
 
   console.log('rendering bid');
-  
-  // should get from props
-  const requestId = 2 || props.requestId;
-  const maxPrice = 20 || props.maxPrice;
 
-  // should be lifted to request feed (where 'bid' button should be)
-  const [showBidScreen, setShowBidScreen] = useState(false);
   const [showSpinner, setShowSpinner] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  //state reducer
+  // state reducer
   const [bidState, bidDispatch] = useReducer(bidReducer, bidInitialState);
-
-  const resetBid = useCallback(() => {
-    bidDispatch({ type: bidActions.RESET });
-  }, []);
 
   const setProduct = useCallback((product) => {
     bidDispatch({ type: bidActions.SET_PRODUCT, payload: { product: parseInt(product) || null } })
   }, []);
 
-  // TODO: add spinner??
   const addProduct = useCallback((product) => {
 
+    console.log('adding product');
+    setShowSpinner(true);
+    
     // TODO: replace resolve with axios call
     new Promise((resolve, _) => {
       setTimeout(() => resolve({ data: product }), 3000)
     })
     .then(({ data: product }) => {
+      console.log('axios responded with', product);
       bidDispatch({ type: bidActions.ADD_PRODUCT, payload: { product } })
     })
-    .catch(err => console.log(`Error: ${err.message}`));
+    .catch((err) => setErrorMessage(err.message))
+    .finally(() => setShowSpinner(false));
   }, []);
 
   const setPrice = useCallback((price) => {
-    bidDispatch({ type: bidActions.SET_PRICE, payload: { price: Math.min(parseInt(price), maxPrice * 100) } })
-  }, [maxPrice]);
+    bidDispatch({ type: bidActions.SET_PRICE, payload: { price: Math.min(parseInt(price), request.currentPrice * 100) } })
+  }, [request]);
 
   const setNotes = useCallback((notes) => {
     bidDispatch({ type: bidActions.SET_NOTES, payload: { notes } })
@@ -161,10 +146,16 @@ export default function BidScreen(props) {
 
   const submitBid = (e) => {
     e.preventDefault();
+    e.stopPropagation();
+    console.log('submitting bid');
+
+    if (!bidState.product) return setErrorMessage('You must select an item to bid with!');
+    if (bidState.price >= request.currentPrice) return setErrorMessage('Your price is too high relative to the latest bids!');
+    
     setShowSpinner(true);
 
     const bid = {
-      requestId,
+      request: request.id,
       product: bidState.product,
       price: bidState.price,
       notes: bidState.notes
@@ -174,18 +165,17 @@ export default function BidScreen(props) {
       setTimeout(() => resolve({ data: bid }), 3000)
     })
     .then(({ data: bid }) => {
-      resetBid();
-      
+      setShowModal(false);
     })
-    .catch(err => console.log(`Error: ${err.message}`))
-    .finally(() => setShowSpinner(false))
+    .catch((err) => setErrorMessage(err.message))
+    .finally(() => setShowSpinner(false));
 
   };
 
-  // reset form if request id changes
+  // reset form if request id or currentPrice change
   useEffect(() => {
-    resetBid();
-  }, [requestId, resetBid]);
+    bidDispatch({ type: bidActions.RESET, payload: { price: request.currentPrice } });
+  }, [request.id, request.currentPrice]);
 
   // load product data
   useEffect(() => {
@@ -200,17 +190,37 @@ export default function BidScreen(props) {
     .then(({ data: products }) => {
       bidDispatch({ type: bidActions.PRODUCT_DATA, payload: { products } });
     })
-    .catch(err => console.log(`Error: ${err.message}`))
-    .finally(() => setShowSpinner(false))
+    .catch((err) => setErrorMessage(err.message))
+    .finally(() => setShowSpinner(false));
 
   }, []);
 
   return (
-    <>
-      <Modal {...{ showModal: showBidScreen, setShowModal: setShowBidScreen, showSpinner, title: `Bid on Tesla ${ requestId}` }}>
-        <BidForm {...{ bidState, setProduct, addProduct, setPrice, setNotes, submitBid, maxPrice }} />
-      </Modal>
-      <IonButton onClick={(e) => setShowBidScreen(true)}>Show Bid Screen</IonButton>
-    </>
+    <Modal {...{ showModal, setShowModal, showSpinner, title: `Bid on Tesla ${ request.id}` }}>
+      {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
+      <form onSubmit={submitBid}>
+        {/* <h3>Pick a Product</h3> */}
+        <IonList>
+          {/* Label and product list should be under one and the same item component. Need to fix formatting */}
+          <IonItem>
+            <IonLabel position='stacked' style={{ marginBottom: 20 }}>Pick a Product</IonLabel>
+          </IonItem>
+          <IonItem>
+            <ProductList { ...{ products: bidState.products, product: bidState.product, setProduct, addProduct } } />
+          </IonItem>
+          {/* <h3>Name Your Price</h3> */}
+          <IonItem>
+            <IonLabel position='floating'>Name Your Price</IonLabel>
+            <IonInput type='number' name='price' max={(request.currentPrice - 50) / 100} value={bidState.price / 100} step={0.5} inputmode='decimal' onIonChange={(e) => setPrice(e.currentTarget.value * 100)} debounce={100} required></IonInput>
+          </IonItem>
+          {/* <h3>Notes</h3> */}
+          <IonItem>
+            <IonLabel position='floating'>Notes</IonLabel>
+            <IonTextarea name='notes' value={bidState.notes} rows={4} spellcheck onIonChange={(e) => setNotes(e.currentTarget.value)} debounce={100}></IonTextarea>
+          </IonItem>
+        </IonList>
+        <IonButton type='submit'>Bid</IonButton>
+      </form>
+    </Modal>
   );
 }

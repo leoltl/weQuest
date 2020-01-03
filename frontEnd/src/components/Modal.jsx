@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useCallback } from 'react';
+import React from 'react';
 import {
   IonModal,
   IonHeader,

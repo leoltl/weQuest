@@ -1,9 +1,9 @@
 import React from 'react';
 import { IonAvatar, IonIcon, IonImg, IonSegmentButton, IonLabel } from '@ionic/react';
 
-export default function ProductListItem({ id, name, pictureUrl, isIcon = false }) {
+export default function ProductListItem({ id, name, pictureUrl, isSelected, isIcon = false }) {
   return (
-    <IonSegmentButton value={id}>
+    <IonSegmentButton value={id} style={{ border: 'none' }} checked={isSelected}>
       <IonAvatar>
         {
           isIcon ?
