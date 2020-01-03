@@ -34,7 +34,6 @@ export default class UserController {
       }
     });
 
-    /* GET users/:id */
     this.router.get('/login', async (req: Request, res: Response) => {
       const id: number = parseInt(req.params.id, 10);
       try {
@@ -48,29 +47,30 @@ export default class UserController {
       }
     });
 
-    /* POST users/ */
-    this.router.post('/', async (req: Request, res: Response) => {
+    this.router.post('/login', async (req: Request, res: Response) => {
       try {
-        const user: User = req.body.user;
-        const newUser: any = await UserService.create(user);
-        res.send(newUser);
+        if (!req.body.username || !req.body.password) {
+          throw Error('No credentials supplied.');
+        }
+        const userData = await login(
+          db,
+          req,
+          req.body.username,
+          req.body.password,
+        );
+        res.json({ ...userData, isLoggedIn: true });
       } catch (err) {
-        res.status(500).send(err.message);
+        res.status(403).json({ error: err.message, isLoggedIn: false });
       }
     });
 
-    /* PUT users/ */
-    this.router.put('/', async (req: Request, res: Response) => {
-      try {
-        const user: User = req.body.user;
-        await UserService.update(user);
-        res.status(200);
-      } catch (err) {
-        res.status(500).send(err.message);
-      }
+    // logout
+    this.router.get('/logout', (req, res) => {
+      logout(req);
+      res.json({ isLoggedIn: false });
     });
 
-    /* DELETE users/:id */
+    /* DELETE users/:id
     this.router.delete('/:id', async (req: Request, res: Response) => {
       try {
         const id: number = parseInt(req.params.id, 10);
@@ -80,64 +80,6 @@ export default class UserController {
         res.status(500).send(err.message);
       }
     });
+    */
   }
 }
-
-/* Old Implementation */
-export const userRouter = express.Router();
-
-userRouter.get('/', async (req: Request, res: Response) => {
-  try {
-    // const users: Users = await UserService.findAll();
-    const users = 'test';
-    res.status(200).send(users);
-  } catch (err) {
-    res.status(400).send(err.message);
-  }
-});
-
-/* GET users/:id */
-userRouter.get('/:id', async (req: Request, res: Response) => {
-  const id: number = parseInt(req.params.id, 10);
-  try {
-    // const user: User = await UserService.find(id);
-    const user = 'test';
-    res.status(200).send(user);
-  } catch (err) {
-    res.status(400).send(err.message);
-  }
-});
-
-/* POST users/ */
-userRouter.post('/', async (req: Request, res: Response) => {
-  try {
-    const user: User = req.body.user;
-    await UserService.create(user);
-    res.status(201);
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-});
-
-/* PUT users/ */
-userRouter.put('/', async (req: Request, res: Response) => {
-  console.log(req.body.user);
-  try {
-    const user: User = req.body.user;
-    // await UserService.update(user);
-    res.status(200);
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-});
-
-/* DELETE users/:id */
-userRouter.delete('/:id', async (req: Request, res: Response) => {
-  try {
-    const id: number = parseInt(req.params.id, 10);
-    // await UserService.remove(id);
-    res.status(200);
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-});
