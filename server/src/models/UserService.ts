@@ -1,4 +1,5 @@
 import { User, Users } from '../interfaces/users';
+const db = require('server/db/database.ts');
 type SQLQuery = Promise<Object>;
 
 /* Could not export UserService class without singleton Why?? */
@@ -24,8 +25,11 @@ export function find(id: number): SQLQuery {
 
 export function create(user: User): SQLQuery {
   try {
-    return Promise.resolve({ user_id: 1 });
-    // return db.query('SELECT * FROM users');
+    // return Promise.resolve({ user_id: 1 });
+    return db.query(
+      'INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *',
+      [user.email, user.password],
+    );
   } catch (err) {
     throw Error(`Could not retrieve all users. Error: ${err.message}`);
   }

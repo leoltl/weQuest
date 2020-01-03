@@ -102,7 +102,7 @@ userRouter.get('/:id', async (req: Request, res: Response) => {
 userRouter.post('/', async (req: Request, res: Response) => {
   try {
     const user: User = req.body.user;
-    // await UserService.create(user);
+    await UserService.create(user);
     res.status(201);
   } catch (err) {
     res.status(500).send(err.message);
