@@ -27,10 +27,12 @@ interface ModelInterface {
 }
 
 type ColumnInput = {
-  [column: string]: any | [any, string];
+  [alias: string]: any | [any, string];
 };
 
 type ColumnAliases = string[];
+
+type PermittedColumns = WeakMap<Model, ColumnAliases>;
 
 class Model {
 
@@ -56,22 +58,33 @@ class Model {
     this.joins[alias] = join;
   }
 
-  public validate(input: ColumnAliases | ColumnInput): ColumnAliases | ColumnInput {
-    return input instanceof Array ? this.validateColumnAliases(input) : this.validateColumnInput(input);
+  public validate(input: ColumnAliases | ColumnInput, permitJoins = true, enforceRequired = false, permitOnly?: PermittedColumns): ColumnAliases | ColumnInput {
+
+    if (enforceRequired) {
+      const inputColumns: ColumnAliases = input instanceof Array ? input : Object.keys(input);
+      this.requiredColumns.forEach((alias: string) => {
+        if (!inputColumns.includes(alias)) throw Error(`Missing required column: ${alias}`);
+      });
+    }
+
+    return input instanceof Array ? this.validateColumnAliases(input, permitJoins, enforceRequired) : this.validateColumnInput(input, permitJoins, enforceRequired);
   }
 
-  private validateColumnAliases(input: ColumnAliases): ColumnAliases {
+  private validateColumnAliases(input: ColumnAliases, permitJoins = true, enforceRequired = false, permitOnly?: PermittedColumns): ColumnAliases {
     return input.reduce(
       (safeInput: ColumnAliases, alias): ColumnAliases => {
 
         // split alias by '.' to access join tables
         const joins = alias.split('.');
         if (joins.length > 1) {
+          if (!permitJoins) throw Error(`Join relations not permitted: ${joins[0]}`);
           if (!(joins[0] in this.joins)) throw Error(`Unknown join relation: ${joins[0]}`);
-          this.joins[joins[0]].foreignModel.validateColumnAliases([joins.slice(1).join('.')]) && safeInput.push(alias);
+          this.joins[joins[0]].foreignModel.validate([joins.slice(1).join('.')], permitJoins, enforceRequired, permitOnly) && safeInput.push(alias);
 
         } else {
-          if (!(alias in this.columns)) { throw Error(`Unknown column: ${alias}`); }
+          if (alias !== '*' && !(alias in this.columns)) throw Error(`Unknown column: ${alias}`);
+          if (permitOnly && (!permitOnly.has(this) || !permitOnly.get(this)!.includes(alias))) throw Error(`Restricted column: ${alias}`);
+          if (alias === '*' && enforceRequired) throw Error('Wildcard is not permitted');
           safeInput.push(alias);
         }
 
@@ -81,24 +94,29 @@ class Model {
 
   }
 
-  private validateColumnInput(input: ColumnInput): ColumnInput {
+  private validateColumnInput(input: ColumnInput, permitJoins = true, enforceRequired = false, permitOnly?: PermittedColumns): ColumnInput {
     return Object.entries(input).reduce(
       (safeInput: ColumnInput, [alias, value]): ColumnInput => {
 
         // split alias by '.' to access join tables
         const joins = alias.split('.');
         if (joins.length > 1) {
-          if (!(joins[0] in this.joins)) throw Error(`Unknown join relation: ${joins[0]}`);
-          safeInput[alias] = this.joins[joins[0]].foreignModel.validateColumnInput({ [joins.slice(1).join('.')]: value }) && value;
+          if (!permitJoins) throw Error(`Join relation not permitted: ${joins[0]}`);
+          if (!(joins[0] in this.joins)) throw Error(`Unknown join relations: ${joins[0]}`);
+          safeInput[alias] = this.joins[joins[0]].foreignModel.validate({ [joins.slice(1).join('.')]: value }, permitJoins, enforceRequired, permitOnly) && value;
 
         } else {
-          if (!(alias in this.columns)) { throw Error(`Unknown column: ${alias}`); }
+          if (alias !== '*' && !(alias in this.columns)) throw Error(`Unknown column: ${alias}`);
+          if (permitOnly && (!permitOnly.has(this) || !permitOnly.get(this)!.includes(alias))) throw Error(`Restricted column: ${alias}`);
+          if (alias === '*' && enforceRequired) throw Error('Wildcard is not permitted');
 
-          const validator: Validator = typeof this.columns[alias].type === 'string' ?
-            (val: any) => typeof val === this.columns[alias].type :
-            this.columns[alias].type as Validator;
+          if (alias !== '*') {
+            const validator: Validator = typeof this.columns[alias].type === 'string' ?
+              (val: any) => typeof val === this.columns[alias].type :
+              this.columns[alias].type as Validator;
 
-          if (!validator(value instanceof Array ? value[0] : value)) { throw Error(`Incorrect value for ${alias}.`); }
+            if (!validator(value instanceof Array ? value[0] : value)) throw Error(`Incorrect value for ${alias}.`);
+          }
 
           safeInput[alias] = value;
         }
@@ -108,20 +126,29 @@ class Model {
       {});
   }
 
-  public select(...columns: ColumnAliases): SQLQuery {
-    // confirm that columns exist - NEED TO CHECK JOINS
-    // this.validate(columns);
-    // columns.forEach((column) => {
-    //   if (!(column in this.columns)) { throw Error(`Unknown column: ${column}`); }
-    // });
+  public get requiredColumns(): ColumnAliases {
+    return Object.entries(this.columns).reduce(
+      (requiredColumns: ColumnAliases, [alias, { required }]: [string, ColumnInterface]) => {
+        return required ? requiredColumns.concat(alias) : requiredColumns;
+      },
+      []);
+  }
 
-    // return new SQLQuery('SELECT', this.validate(columns), this);
-    return SQLQuery.select(this, columns);
+  public select(...columns: ColumnAliases): SQLQuery {
+    return SQLQuery.select(this, columns.length ? columns : undefined);
+  }
+
+  public insert(input: ColumnInput): SQLQuery {
+    return SQLQuery.insert(this, input, new WeakMap([[this, this.requiredColumns]]));
+  }
+
+  public update(input: ColumnInput): SQLQuery {
+    return SQLQuery.update(this, input, new WeakMap([[this, this.requiredColumns]]));
   }
 
 }
 
-type SQLQueryType = 'CREATE' | 'SELECT' | 'UPDATE' | 'DELETE';
+type SQLQueryType = 'INSERT' | 'SELECT' | 'UPDATE' | 'DELETE';
 
 interface SQLCondition {
   relation: 'AND' | 'OR';
@@ -133,10 +160,10 @@ class SQLQuery {
   public type: SQLQueryType;
   public columns: string = '';
   public model: Model;
-  public whereCondition: [string, any[]] = ['', []];
+  public insertValues: string = '';
   public joins: Set<string> = new Set();
+  public whereCondition: string = '';
   public params: any[] = [];
-  private paramCount = 1;
 
   constructor(type: SQLQueryType, model: Model) {
     this.type = type;
@@ -144,37 +171,96 @@ class SQLQuery {
   }
 
   where(conditions: SQLCondition) {
-    const [queryCondition, queryParams, paramCount, joins] = SQLQuery.parseCondition(this.model, conditions, this.paramCount);
-    this.whereCondition = [queryCondition, queryParams];
+    if (this.type === 'INSERT') throw Error('Cannot use WHERE on INSERT');
+    const [queryCondition, queryParams, paramNext, joins] = SQLQuery.parseCondition(this.model, conditions, this.params.length + 1, this.type === 'SELECT' ? true : false);
+    this.whereCondition = queryCondition;
     this.params.push(queryParams);
-    this.paramCount = paramCount;
     joins.forEach(join => this.joins.add(join));
+    return this;
   }
 
-  do(): string {
-    // return sql
-    // remove duplicates joins
-    return 'string';
+  do(): [string, any[]] {
+
+    switch (this.type) {
+      case 'SELECT':
+
+        if (!this.columns) throw Error('No columns selected');
+
+        return [`SELECT ${this.columns} FROM ${this.model.table}${this.joins.size ? ` ${Array.from(this.joins).join(' ')}` : ''}${this.whereCondition ? ` WHERE ${this.whereCondition}` : ''}`, this.params];
+
+      case 'INSERT':
+
+        if (!this.columns) throw Error('No columns to insert into');
+        if (!this.insertValues) throw Error('No values to be inserted');
+
+        return [`INSERT INTO ${this.model.table} (${this.columns}) VALUES (${this.insertValues}) RETURNING *`, this.params];
+
+      case 'UPDATE':
+
+        if (!this.columns) throw Error('No columns to update');
+        if (!this.insertValues) throw Error('No values to update');
+        if (!this.whereCondition) throw Error('A WHERE condition is required for updates');
+
+        return [`UPDATE ${this.model.table} SET (${this.columns}) = (${this.insertValues}) WHERE ${this.whereCondition} RETURNING *`, this.params];
+
+      case 'DELETE':
+      default:
+        return ['Unknown', []];
+    }
+  }
+
+  run(query: (queryString: string, params: string[]) => Promise<string[]>): Promise<string[]> {
+    return query(...this.do());
   }
 
   static select(model: Model, aliases: ColumnAliases = ['*']): SQLQuery {
-    const query = new SQLQuery('SELECT', model);
-    const [columns, joins] = this.parseColumns(model, aliases);
+    const [columns, joins] = this.parseSelectColumns(model, aliases);
+
+    const query = new this('SELECT', model);
     query.columns = columns;
     joins.forEach(join => query.joins.add(join));
     return query;
   }
 
-  static parseColumns(model: Model, aliases: ColumnAliases): [string, string[]] {
-    const [names, joins] = aliases.reduce(
-      ([names, joins]: [string[], string[]], alias: string): [string[], string[]] => {
-        const [addName, addJoins] = SQLQuery.parseColumn(model, alias);
-        return [names.concat(addName), joins.concat(addJoins)];
+  static insert(model: Model, input: ColumnInput, permitOnly?: PermittedColumns) {
+    const [columns, values, params] = this.parseInsertUpdateColumns(model, input, true, permitOnly);
 
+    const query = new this('INSERT', model);
+    query.columns = columns;
+    query.insertValues = values;
+    query.params.push(...params);
+    return query;
+  }
+
+  static update(model: Model, input: ColumnInput, permitOnly?: PermittedColumns) {
+    const [columns, values, params] = this.parseInsertUpdateColumns(model, input, false, permitOnly);
+
+    const query = new this('UPDATE', model);
+    query.columns = columns;
+    query.insertValues = values;
+    query.params.push(...params);
+    return query;
+  }
+
+  static parseSelectColumns(model: Model, aliases: ColumnAliases): [string, string[]] {
+    const [names, joins] = model.validate(aliases).reduce(
+      ([names, joins]: [string[], string[]], alias: string): [string[], string[]] => {
+        const [addName, addJoins] = this.parseColumn(model, alias);
+        return [names.concat(addName), joins.concat(addJoins)];
       },
       [[], []]);
 
     return [names.join(', '), joins];
+  }
+
+  static parseInsertUpdateColumns(model: Model, input: ColumnInput, enforceRequired = false, permitOnly?: PermittedColumns): [string, string, any[]] {
+    const [names, values, params] = Object.entries(model.validate(input, false, enforceRequired, permitOnly)).reduce(
+      ([names, values, params]: [string[], string[], any[]], [alias, value]: [string, any], i: number): [string[], string[], any[]] => {
+        return [names.concat(model.columns[alias].name), values.concat(`$${i + 1}`), params.concat(value)];
+      },
+      [[], [], []]);
+
+    return [names.join(', '), values.join(', '), params];
   }
 
   // get column details
@@ -182,75 +268,51 @@ class SQLQuery {
   // validate at bottomest level only, if value + operator supplied
   // returns tableName.columnName + condition (as applicable), necessary joins [], param, paramStart
 
-  static parseColumn(model: Model, alias: string, value?: any, operator?: string, paramCount = 1, joins: string[] = []): [string, string[], any, number] {
+  static parseColumn(model: Model, alias: string, value?: any, operator?: string, paramNext = 1, joins: string[] = []): [string, string[], any, number] {
 
     // split alias by '.' to access join tables
     const aliases = alias.split('.');
     if (aliases.length > 1) {
-      if (!(aliases[0] in model.joins)) throw Error(`Unknown join relation: ${aliases[0]}`);
-
       const join = model.joins[aliases[0]];
-      return SQLQuery.parseColumn(join.foreignModel, aliases.slice(1).join('.'), value, operator, paramCount, joins.concat(`JOIN ${join.foreignModel.table} ON ${model.table}.${model.columns[join.joinColumn].name} = ${join.foreignModel.table}.${join.foreignModel.columns[join.foreignJoinColumn].name}`));
-
-    } else {
-      if (alias === '*') return [`${model.table}.*`, joins, value, paramCount];
-
-      value !== undefined && model.validate({ [alias]: value }) || model.validate([alias]);
-      const table = `${model.table}.${model.columns[alias].name}`;
-
-      if (value !== undefined) {
-        return [`${table} ${operator !== undefined ? operator : '='} $${paramCount}`, joins, value, paramCount + 1];
-      }
-
-      return [table, joins, value, paramCount];
+      return this.parseColumn(join.foreignModel, aliases.slice(1).join('.'), value, operator, paramNext, joins.concat(`JOIN ${join.foreignModel.table} ON ${model.table}.${model.columns[join.joinColumn].name} = ${join.foreignModel.table}.${join.foreignModel.columns[join.foreignJoinColumn].name}`));
 
     }
+    if (alias === '*') return [`${model.table}.*`, joins, value, paramNext];
+
+    const table = `${model.table}.${model.columns[alias].name}`;
+
+    return value !== undefined ?
+      [`${table} ${operator !== undefined ? operator : '='} $${paramNext}`, joins, value, paramNext + 1] : [table, joins, value, paramNext];
 
   }
 
-  static parseCondition(model: Model, condition: ColumnInput | SQLCondition, paramCount: number = 1, joins: string[] = []): [string, any[], number, string[]] {
+  static parseCondition(model: Model, condition: ColumnInput | SQLCondition, paramNext: number = 1, permitJoins = true, joins: string[] = []): [string, any[], number, string[]] {
 
     // condition is of type SQLCondition - recursive case
     if ('relation' in condition && 'conditions' in condition) {
       return (condition as SQLCondition).conditions.reduce(
-        ([query, params, count, joins]: [string, any[], number, string[]], cond, i): [string, any[], number, string[]] => {
-          const [subcolumns, subparams, newCount, newJoins] = SQLQuery.parseCondition(model, cond, count, joins);
+        ([queryCondition, params, next, joins]: [string, any[], number, string[]], subCondition, i): [string, any[], number, string[]] => {
+          const [subQueryCondition, subParams, newNext, newJoins] = this.parseCondition(model, subCondition, next, permitJoins, joins);
 
           return [
-            `${query + (i > 0 ? ` ${condition.relation} ` : '')}(${subcolumns})`,
-            params.concat(subparams),
-            newCount,
+            `${queryCondition + (i > 0 ? ` ${condition.relation} ` : '')}(${subQueryCondition})`,
+            params.concat(subParams),
+            newNext,
             newJoins];
         },
-        ['', [], paramCount, joins]);
+        ['', [], paramNext, joins]);
 
     }
 
     // condition is of type ColumnInput - base case
-    // return Object.entries(model.validate(condition as ColumnInput)).reduce(
-    //   ([query, params, count, joins]: [string, any[], number, string[]], [column, value], i): [string, any[], number, string[]] => {
+    return Object.entries(model.validate(condition, permitJoins)).reduce(
+      ([queryCondition, params, next, joins]: [string, any[], number, string[]], [column, value], i): [string, any[], number, string[]] => {
 
-    //     const allModels = column.split('.');
-    //     const columnAlias = allModels[allModels.length - 1];
-    //     let columnModel = model;
-    //     for (let j = 0; j < allModels.length - 1; j = j + 1) {
-    //       const join = SQLQuery.getJoin(columnModel, allModels[j]);
-    //       if (!joins.includes(join)) { joins.push(join); }
-    //       columnModel = model.joins[allModels[j]].foreignModel;
-    //     }
+        const [addQueryCondition, addJoins, addParam, newNext] = this.parseColumn(model, column, value instanceof Array ? value[0] : value, value instanceof Array ? value[1] : undefined, next);
 
-    //     return [`${query + (i > 0 ? ' AND ' : '') + columnModel.table}.${columnModel.columns[columnAlias].name} ${value instanceof Array && value[1] || '='} $${count}`, params.concat(value instanceof Array ? value[0] : value), count + 1, joins];
-    //   },
-    //   ['', [], paramCount, joins]);
-
-    return Object.entries(model.validate(condition as ColumnInput)).reduce(
-      ([query, params, count, joins]: [string, any[], number, string[]], [column, value], i): [string, any[], number, string[]] => {
-
-        const [addQuery, addJoins, addParam, newCount] = SQLQuery.parseColumn(model, column, value instanceof Array ? value[0] : value, value instanceof Array ? value[1] : undefined, count);
-
-        return [query + (i > 0 ? ' AND ' : '') + addQuery, params.concat(addParam), newCount, joins.concat(addJoins)];
+        return [queryCondition + (i > 0 ? ' AND ' : '') + addQueryCondition, params.concat(addParam), newNext, joins.concat(addJoins)];
       },
-      ['', [], paramCount, joins]);
+      ['', [], paramNext, joins]);
 
   }
 
@@ -278,7 +340,7 @@ class SQLQuery {
 }
 
 const and = function (...conditions: (ColumnInput | SQLCondition)[]): SQLCondition {
-  return SQLQuery.createCondition('OR', ...conditions);
+  return SQLQuery.createCondition('AND', ...conditions);
 };
 
 const or = function (...conditions: (ColumnInput | SQLCondition)[]): SQLCondition {
@@ -293,7 +355,7 @@ const userSchema: ModelInterface = {
     id: {
       name: 'id',
       type: 'number',
-      required: true,
+      primaryKey: true,
     },
     name: {
       name: 'name',
@@ -337,7 +399,7 @@ const bidSchema: ModelInterface = {
     id: {
       name: 'id',
       type: 'number',
-      required: true,
+      primaryKey: true,
     },
     price: {
       name: 'price',
@@ -398,7 +460,7 @@ bidModel.addJoin('requests', {
   foreignModel: requestModel,
 });
 
-const query = userModel.select(['name']);
+const query = userModel.select('name');
 
 query.where({
   relation: 'OR',
@@ -419,8 +481,11 @@ query.where({
 
 console.log(query);
 
-const query2 = userModel.select(['name', 'bids.price']);
+const query2 = userModel.select('name', 'bids.price');
 
 query2.where(or(and({ id: 2, ['requests.id']: 4 }), { name: 'John Doe' }));
 
 console.log(query2);
+console.log(query2.do());
+
+console.log(userModel.select().do());
