@@ -44,6 +44,7 @@ const Login = () => {
                 name="email"
                 type="email"
                 value={email}
+                clearInput
                 onIonChange={e => setEmail(e.target.value)}
               />
             </IonItem>

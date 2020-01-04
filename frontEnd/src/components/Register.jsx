@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   IonHeader,
   IonToolbar,
@@ -9,11 +10,9 @@ import {
   IonList,
   IonButton
 } from "@ionic/react";
-import { logIn } from "ionicons/icons";
+import { Plugins } from "@capacitor/core";
 
-const login = (email, password) => {
-  return true;
-};
+const { Keyboard } = Plugins;
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -28,7 +27,12 @@ const Register = () => {
       setFormErrors({ message: "Passwords Do Not Match" });
     } else {
       try {
-        console.log(e);
+        Keyboard.show();
+        await axios
+          .post("http://localhost:8080/users", {
+            user: { name: name, email: email, password: password }
+          })
+          .then(res => console.log(res.data));
       } catch (e) {
         setFormErrors(e);
       }
@@ -55,6 +59,7 @@ const Register = () => {
                 name="name"
                 type="name"
                 value={name}
+                clearInput
                 onIonChange={e => setName(e.target.value)}
               />
             </IonItem>
@@ -64,6 +69,7 @@ const Register = () => {
                 name="email"
                 type="email"
                 value={email}
+                clearInput
                 onIonChange={e => setEmail(e.target.value)}
               />
             </IonItem>
