@@ -10,6 +10,7 @@ import {
   IonButton
 } from "@ionic/react";
 import { Plugins } from "@capacitor/core";
+const { FacebookLogin } = "@rdlabo/capacitor-facebook-login";
 
 const Login = props => {
   const [email, setEmail] = useState("");
@@ -17,7 +18,7 @@ const Login = props => {
   const [formErrors, setFormErrors] = useState({});
 
   const getCurrentState = async e => {
-    const result = await Plugins.FacebookLogin.getCurrentAccessToken();
+    const result = await FacebookLogin.getCurrentAccessToken();
     try {
       return result && result.accessToken;
     } catch (e) {
@@ -27,11 +28,17 @@ const Login = props => {
 
   const signIn = async e => {
     const { history } = props;
-    const FACEBOOK_PERMISSIONS = ["public_profile", "email"];
-    const result = await Plugins.FacebookLogin.login({
+    const FACEBOOK_PERMISSIONS = [
+      "email",
+      "user_birthday",
+      "user_photos",
+      "user_gender"
+    ];
+    const result = await FacebookLogin.login({
       permissions: FACEBOOK_PERMISSIONS
     });
     if (result && result.accessToken) {
+      console.log(`Facebook access token is ${result.accessToken.token}`);
       history.push({
         pathname: "/home",
         state: {

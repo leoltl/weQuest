@@ -28,7 +28,7 @@
   },
   "scripts": {
     "start": "concurrently \"PORT=3003 react-scripts start\" \"gulp build\" \"gulp watch\"",
-    "build": "react-scripts build && gulp build",
+    "build": "react-scripts build && gulp build && npx cap copy",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

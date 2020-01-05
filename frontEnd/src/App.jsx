@@ -36,7 +36,7 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 
-const App: React.FC = () => (
+const App = () => (
   <IonApp>
     <IonReactRouter>
       <IonTabs>
@@ -46,7 +46,7 @@ const App: React.FC = () => (
           <Route path="/tab2/details" component={Details} />
           <Route path="/requestFeed" component={RequestFeed} />
           <Route path="/login" component={LoginScreen} />
-          <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
+          <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton tab="tab1" href="/home">
