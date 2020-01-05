@@ -18,7 +18,7 @@ import {
   IonButton
 } from "@ionic/react";
 import { book, build, colorFill, grid } from "ionicons/icons";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Plugins } from "@capacitor/core";
 import "./Tab1.scss";
 
@@ -30,6 +30,20 @@ const Tab1 = props => {
     await Plugins.FacebookLogin.logout();
     history.goBack();
   };
+
+  const getUserInfo = async e => {
+    const response = await fetch(
+      `https://graph.facebook.com/${props.location.state.userId}?fields=id,name,gender,link,picture&type=large&access_token=${props.location.state.token}`
+    );
+    const myJson = await response.json();
+    setState({
+      user: myJson
+    });
+  };
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
   return (
     <IonPage>
