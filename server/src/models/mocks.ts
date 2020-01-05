@@ -2,9 +2,12 @@
 import Model from '../lib/model';
 // tslint:disable-next-line: import-name
 import Bid from './bid';
+// tslint:disable-next-line: import-name
+import Item from './item';
 
 export class User extends Model {
-  init() {
+  protected init() {
+    this.alias = 'users';
     this.table = 'users';
 
     this.columns = {
@@ -20,12 +23,14 @@ export class User extends Model {
     this.joins = {
       requests: { joinColumn: 'id', foreignJoinColumn: 'userId', foreignModel: Request },
       bids: { joinColumn: 'id', foreignJoinColumn: 'userId', foreignModel: Bid },
+      items: { joinColumn: 'id', foreignJoinColumn: 'userId', foreignModel: Item },
     };
   }
 }
 
 export class Request extends Model {
-  init() {
+  protected init() {
+    this.alias = 'requests';
     this.table = 'requests';
 
     this.columns = {

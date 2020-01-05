@@ -14,22 +14,22 @@ export type SQLOrder = (string | [string, 'ASC' | 'DESC'])[];
 
 export default class SQLQuery {
 
-  public type: SQLQueryType;
-  public columns: string = '';
-  public model: Model;
-  public insertValues: string = '';
-  public joins: Set<string> = new Set();
-  public whereCondition: string = '';
-  public orderCondition: string = '';
-  public limitCondition: string = '';
-  public params: any[] = [];
+  private type: SQLQueryType;
+  private columns: string = '';
+  private model: Model;
+  private insertValues: string = '';
+  private joins: Set<string> = new Set();
+  private whereCondition: string = '';
+  private orderCondition: string = '';
+  private limitCondition: string = '';
+  private params: any[] = [];
 
-  constructor(type: SQLQueryType, model: Model) {
+  private constructor(type: SQLQueryType, model: Model) {
     this.type = type;
     this.model = model;
   }
 
-  where(conditions: ColumnInput | SQLCondition): this {
+  public where(conditions: ColumnInput | SQLCondition): this {
     if (this.type === 'INSERT') throw Error('Cannot use WHERE with INSERT');
 
     const [queryCondition, queryParams, joins] = SQLQuery.parseCondition(this.model, conditions, this.params.length + 1, this.type === 'SELECT' ? true : false);
@@ -39,7 +39,7 @@ export default class SQLQuery {
     return this;
   }
 
-  order(input: SQLOrder): this {
+  public order(input: SQLOrder): this {
     if (this.type !== 'SELECT') throw Error('Cannot only ORDER BY with SELECT');
 
     const [columns, joins] = input.reduce(
@@ -56,7 +56,7 @@ export default class SQLQuery {
     return this;
   }
 
-  limit(num: number, offset?: number): this {
+  public limit(num: number, offset?: number): this {
     this.limitCondition = `LIMIT ${num}${offset ? ` OFFSET ${offset}` : ''}`;
     return this;
   }
@@ -65,7 +65,7 @@ export default class SQLQuery {
    * Stringifies query
    * @returns [query, params]
    */
-  do(): [string, any[]] {
+  public do(): [string, any[]] {
 
     switch (this.type) {
       case 'SELECT':
@@ -110,7 +110,7 @@ export default class SQLQuery {
     }
   }
 
-  run(runner: SQLRunner): ReturnType<SQLRunner> {
+  public run(runner: SQLRunner): ReturnType<SQLRunner> {
     return runner(...this.do());
   }
 

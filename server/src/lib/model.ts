@@ -27,6 +27,7 @@ export type PermittedColumns = WeakMap<Model, ColumnAliases>;
 
 export default class Model {
 
+  public alias: string = '';
   public table: string = '';
   public columns: {
     [alias: string]: Column;
@@ -42,14 +43,15 @@ export default class Model {
 
     if (this.table === '') throw Error('Table property is missing from the model. Model is meant to be an abstract class.');
 
+    const newBlockJoins = blockJoins.concat(this.alias);
     Object.entries(this.joins).forEach(([alias, join]: [string, Join]): void => {
-      this.joins[alias] = this.setJoinInstance(alias, join, blockJoins);
+      this.joins[alias] = this.setJoinInstance(alias, join, newBlockJoins);
     });
     this.setKeyColumns();
   }
 
   // to be implented in subclasses to initialize properties
-  public init(): void {}
+  protected init(): void {}
 
   public validate(
     input: ColumnAliases | ColumnInput, permitJoins = true, enforceRequired = false, permitOnly?: PermittedColumns,
