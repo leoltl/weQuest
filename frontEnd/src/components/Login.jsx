@@ -11,20 +11,36 @@ import {
 } from "@ionic/react";
 import { Plugins } from "@capacitor/core";
 
-const Login = () => {
+const Login = props => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [formErrors, setFormErrors] = useState({});
 
-  const getCurrentState = async => {
+  const getCurrentState = async e => {
     const result = await Plugins.FacebookLogin.getCurrentAccessToken();
     try {
       return result && result.accessToken;
     } catch (e) {
       return false;
     }
-  }
+  };
+
+  const signIn = async e => {
+    const { history } = props;
+    const FACEBOOK_PERMISSIONS = ["public_profile", "email"];
+    const result = await Plugins.FacebookLogin.login({
+      permissions: FACEBOOK_PERMISSIONS
+    });
+    if (result && result.accessToken) {
+      history.push({
+        pathname: "/home",
+        state: {
+          token: result.accessToken.token,
+          userId: result.accessToken.userId
+        }
+      });
+    }
+  };
 
   const submit = async e => {
     try {
@@ -70,6 +86,15 @@ const Login = () => {
           </IonList>
           <IonButton expand="block" fill="outline" type="submit">
             Log in
+          </IonButton>
+          <IonButton
+            className="login-button"
+            onClick={() => signIn()}
+            expand="full"
+            fill="solid"
+            color="primary"
+          >
+            Login with Facebook
           </IonButton>
           <IonButton expand="block" fill="clear" type="submit">
             Forgot your password?

@@ -13,13 +13,24 @@ import {
   IonListHeader,
   IonPage,
   IonTitle,
-  IonToolbar
+  IonToolbar,
+  IonThumbnail,
+  IonButton
 } from "@ionic/react";
 import { book, build, colorFill, grid } from "ionicons/icons";
-import React from "react";
+import React, { useState } from "react";
+import { Plugins } from "@capacitor/core";
 import "./Tab1.scss";
 
-const Tab1: React.FC = () => {
+const Tab1 = props => {
+  const [state, setState] = useState({ user: {} });
+
+  const signOut = async e => {
+    const { history } = props;
+    await Plugins.FacebookLogin.logout();
+    history.goBack();
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -71,6 +82,27 @@ const Tab1: React.FC = () => {
             <IonIcon slot="start" color="medium" icon={colorFill} />
             <IonLabel>Theme Your App</IonLabel>
           </IonItem>
+
+          {state.user.name && (
+            <IonItem>
+              <IonThumbnail slot="start">
+                <img src={state.user.picture.data.url} />
+              </IonThumbnail>
+              <IonLabel>
+                <h3>{state.user.name}</h3>
+              </IonLabel>
+            </IonItem>
+          )}
+
+          <IonButton
+            className="login-button"
+            onClick={() => signOut()}
+            expand="full"
+            fill="solid"
+            color="danger"
+          >
+            Logout from Facebook
+          </IonButton>
         </IonList>
       </IonContent>
     </IonPage>
