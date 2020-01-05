@@ -1,3 +1,7 @@
+/*
+ * Data Model Abstract Class
+ */
+
 // tslint:disable-next-line: import-name
 import SQLQuery from './sql';
 

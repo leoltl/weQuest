@@ -1,3 +1,7 @@
+/*
+ * SQL Query Generator
+ */
+
 // tslint:disable-next-line: import-name
 import Model, { ColumnAliases, ColumnInput, PermittedColumns } from './model';
 
