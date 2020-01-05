@@ -1,8 +1,8 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "wequest-front-end",
+  "appId": "com.example.app",
+  "appName": "weQuest",
   "bundledWebRuntime": false,
   "npmClient": "npm",
-  "webDir": "build",
+  "webDir": "public",
   "cordova": {}
 }

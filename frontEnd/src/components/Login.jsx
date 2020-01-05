@@ -9,12 +9,22 @@ import {
   IonList,
   IonButton
 } from "@ionic/react";
+import { Plugins } from "@capacitor/core";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [formErrors, setFormErrors] = useState({});
+
+  const getCurrentState = async => {
+    const result = await Plugins.FacebookLogin.getCurrentAccessToken();
+    try {
+      return result && result.accessToken;
+    } catch (e) {
+      return false;
+    }
+  }
 
   const submit = async e => {
     try {
