@@ -3,7 +3,6 @@
 import App from './app';
 import UserController from './routes/users';
 import RequestController from './routes/request-router';
-import RequestControllerProtected from './routes/request-router-protected';
 import ItemController from './routes/items';
 import morgan from 'morgan';
 import cookieSession from 'cookie-session';
@@ -27,7 +26,6 @@ const app = new App({
   port: parseInt(process.env.PORT || '8080', 10),
   controllers: [
     new RequestController(db),
-    new RequestControllerProtected(),
     new ItemController(db, storage),
     new UserController(db),
   ],
