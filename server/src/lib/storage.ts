@@ -16,6 +16,7 @@ export default class Storage {
 
   private s3: S3 | null = null;
   private static instances: Storage[] = [];
+  private static instanceEqualityChecks: (keyof StorageParams)[] = ['accessKeyId', 'secretAccessKey', 'bucket'];
 
   constructor(private params: StorageParams) {
     const existingInstance = Storage.findInstance(params);
@@ -26,14 +27,14 @@ export default class Storage {
     Storage.registerInstance(this);
   }
 
-  static findInstance(params: StorageParams): Storage | undefined {
+  private static findInstance(params: StorageParams): Storage | undefined {
     return this.instances.find(
-      ({ params: { accessKeyId, secretAccessKey, bucket } }: Storage): boolean => {
-        return accessKeyId === params.accessKeyId && secretAccessKey === params.secretAccessKey && bucket === params.bucket;
+      (instance: Storage): boolean => {
+        return this.instanceEqualityChecks.every((param): boolean => instance.params[param] === params[param]);
       });
   }
 
-  static registerInstance(instance: Storage): void {
+  private static registerInstance(instance: Storage): void {
     this.instances.push(instance);
   }
 

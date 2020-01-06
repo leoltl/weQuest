@@ -18,7 +18,7 @@ export interface Join {
   joinColumn: string;
   foreignModel: typeof Model;
   foreignJoinColumn: string;
-  foreignInstance?: Model;
+  foreignInstance?: () => Model;
 }
 
 export type ColumnInput = {
@@ -47,7 +47,7 @@ export default class Model {
 
     if (this.table === '') throw Error('Table property is missing from the model. Model is meant to be an abstract class.');
 
-    const newBlockJoins = blockJoins.concat(this.alias);
+    const newBlockJoins = !blockJoins.length && [this.alias] || blockJoins;
     Object.entries(this.joins).forEach(([alias, join]: [string, Join]): void => {
       this.joins[alias] = this.setJoinInstance(alias, join, newBlockJoins);
     });
@@ -85,7 +85,7 @@ export default class Model {
           if (!permitJoins) throw Error(`Join relations not permitted: ${joins[0]}`);
           if (!(joins[0] in this.joins)) throw Error(`Unknown join relation: ${joins[0]}`);
 
-          this.joins[joins[0]].foreignInstance!.validate(
+          this.joins[joins[0]].foreignInstance!().validate(
             [joins.slice(1).join('.')], permitJoins, enforceRequired, permitOnly,
           ) && safeInput.push(alias);
 
@@ -112,7 +112,7 @@ export default class Model {
           if (!permitJoins) throw Error(`Join relation not permitted: ${joins[0]}`);
           if (!(joins[0] in this.joins)) throw Error(`Unknown join relations: ${joins[0]}`);
 
-          safeInput[alias] = this.joins[joins[0]].foreignInstance!.validate(
+          safeInput[alias] = this.joins[joins[0]].foreignInstance!().validate(
             { [joins.slice(1).join('.')]: value }, permitJoins, enforceRequired, permitOnly,
           ) && value;
 
@@ -139,15 +139,13 @@ export default class Model {
 
   private setJoinInstance(alias: string, join: Join, blockJoins: string[] = []): Join {
     let foreignInstance: Model;
-    // Had to put the rest parameter at the end or TS executed the getter at creation.
-    // Replicated the issue with basic object in TS playground
     return {
-      get foreignInstance(): Model {
+      ...join,
+      foreignInstance(): Model {
         if (foreignInstance) return foreignInstance;
         if (blockJoins.includes(alias)) throw Error(`Too many joins. Accessing join ${alias} would create an infinite loop.`);
         return (foreignInstance = new join.foreignModel(blockJoins.concat(alias)));
       },
-      ...join,
     };
 
   }

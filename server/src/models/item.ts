@@ -15,7 +15,7 @@ export default class Item extends Model {
       id: { name: 'id', type: Number.isInteger, primaryKey: true },
       name: { name: 'name', type: 'string', required: true },
       description: { name: 'description', type: 'string', required: true },
-      pictureUrl: { name: 'picture_url', type: /^https?:\/\//.test, required: true },
+      pictureUrl: { name: 'picture_url', type: RegExp.prototype.test.bind(/^https?:\/\//), required: true },
       userId: { name: 'user_id', type: Number.isInteger, required: true },
     };
 

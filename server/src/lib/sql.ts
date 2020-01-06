@@ -5,7 +5,7 @@
 // tslint:disable-next-line: import-name
 import Model, { ColumnAliases, ColumnInput, PermittedColumns } from './model';
 
-export type SQLRunner = (query: string, params?: string[]) => Promise<string[]>;
+export type SQLRunner = (query: string, params?: any[]) => Promise<any[]>;
 
 export type SQLQueryType = 'INSERT' | 'SELECT' | 'UPDATE' | 'DELETE';
 
@@ -185,13 +185,13 @@ export default class SQLQuery {
       const join = model.joins[aliases[0]];
 
       return this.parseColumn(
-        join.foreignInstance!,
+        join.foreignInstance!(),
         aliases.slice(1).join('.'),
         value,
         operator,
         paramNext,
         parameterized,
-        joins.concat(`JOIN ${join.foreignInstance!.table} ON ${model.table}.${model.columns[join.joinColumn].name} = ${join.foreignInstance!.table}.${join.foreignInstance!.columns[join.foreignJoinColumn].name}`),
+        joins.concat(`JOIN ${join.foreignInstance!().table} ON ${model.table}.${model.columns[join.joinColumn].name} = ${join.foreignInstance!().table}.${join.foreignInstance!().columns[join.foreignJoinColumn].name}`),
       );
 
     }
