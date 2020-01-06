@@ -27,7 +27,7 @@ const RequestListItem = props => {
               padding: 0
             }}
           >
-            $30.00
+            ${props.currentBid / 100}
           </IonCardContent>
         </div>
         <IonCardContent className="request-card--user">

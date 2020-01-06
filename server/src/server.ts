@@ -29,7 +29,7 @@ const storage = new Storage(storageParams);
 const app = new App({
   port: parseInt(process.env.PORT || '8080', 10),
   controllers: [
-    new RequestController(),
+    new RequestController(db),
     new RequestControllerProtected(),
     new ItemRouter(db, storage),
     new UserController(db),
