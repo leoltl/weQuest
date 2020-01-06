@@ -15,7 +15,7 @@ const RequestForm = () => {
   const [endDate, setEndDate] = useState(
     moment()
       .add(1, 'days')
-      .format()
+      .format(),
   );
 
   const submit = () => {
@@ -23,22 +23,20 @@ const RequestForm = () => {
       item,
       budget,
       startDate,
-      endDate
+      endDate,
     };
 
     if (isValid(data)) {
-      axios
-        .post('http://localhost:8080/requests', { payload: data })
-        .then(res => {
-          console.log(res);
-        });
+      axios.post('/requests', { payload: data }).then(res => {
+        console.log(res);
+      });
       setItem('');
       setBudget(null);
       setStartDate(moment().format());
       setEndDate(
         moment()
           .add(1, 'days')
-          .format()
+          .format(),
       );
     } else {
       window.alert('invalid form');
