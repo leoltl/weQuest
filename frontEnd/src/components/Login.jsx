@@ -9,8 +9,8 @@ import {
   IonList,
   IonButton
 } from "@ionic/react";
-import { Plugins } from "@capacitor/core";
-const { FacebookLogin } = "@rdlabo/capacitor-facebook-login";
+import FacebookLogin from "react-facebook-login";
+import GoogleLogin from "react-google-login";
 
 const Login = props => {
   const [email, setEmail] = useState("");
@@ -37,16 +37,24 @@ const Login = props => {
     const result = await FacebookLogin.login({
       permissions: FACEBOOK_PERMISSIONS
     });
-    if (result && result.accessToken) {
-      console.log(`Facebook access token is ${result.accessToken.token}`);
-      history.push({
-        pathname: "/home",
-        state: {
-          token: result.accessToken.token,
-          userId: result.accessToken.userId
-        }
-      });
-    }
+    // if (result && result.accessToken) {
+    //   console.log(`Facebook access token is ${result.accessToken.token}`);
+    //   history.push({
+    //     pathname: "/home",
+    //     state: {
+    //       token: result.accessToken.token,
+    //       userId: result.accessToken.userId
+    //     }
+    //   });
+    // }
+  };
+
+  const responseFacebook = response => {
+    console.log("Facebook", response);
+  };
+
+  const responseGoogle = response => {
+    console.log("Google", response);
   };
 
   const submit = async e => {
@@ -94,15 +102,17 @@ const Login = props => {
           <IonButton expand="block" fill="outline" type="submit">
             Log in
           </IonButton>
-          <IonButton
-            className="login-button"
-            onClick={() => signIn()}
-            expand="full"
-            fill="solid"
-            color="primary"
-          >
-            Login with Facebook
-          </IonButton>
+          <FacebookLogin
+            appId="625636154855382"
+            fields="name,email,picture"
+            callback={responseFacebook}
+          />
+          <GoogleLogin
+            clientId="90834222802-0s3k5otim13fak7fbdhaambgh1vjb3vt.apps.googleusercontent.com"
+            buttonText="LOGIN WITH GOOGLE"
+            onSuccess={responseGoogle}
+            onFailure={responseGoogle}
+          />
           <IonButton expand="block" fill="clear" type="submit">
             Forgot your password?
           </IonButton>

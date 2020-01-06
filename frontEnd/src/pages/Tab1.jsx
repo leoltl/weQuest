@@ -32,13 +32,13 @@ const Tab1 = props => {
   };
 
   const getUserInfo = async e => {
-    const response = await fetch(
-      `https://graph.facebook.com/${props.location.state.userId}?fields=id,name,gender,link,picture&type=large&access_token=${props.location.state.token}`
-    );
-    const myJson = await response.json();
-    setState({
-      user: myJson
-    });
+    // const response = await fetch(
+    //   `https://graph.facebook.com/${props.location.state.userId}?fields=id,name,gender,link,picture&type=large&access_token=${props.location.state.token}`
+    // );
+    // const myJson = await response.json();
+    // setState({
+    //   user: myJson
+    // });
   };
 
   useEffect(() => {
