@@ -161,7 +161,7 @@ export default class SQLQuery {
     return query;
   }
 
-  static manual(model: Model, queryString: string, params: any[]): SQLQuery {
+  static manual(model: Model, queryString: string, params: any[] = []): SQLQuery {
     const query = new this('MANUAL', model);
     query.queryString = queryString;
     query.params = params;
