@@ -15,19 +15,21 @@ import {
   IonTitle,
   IonToolbar,
   IonThumbnail,
-  IonButton
-} from "@ionic/react";
-import { book, build, colorFill, grid } from "ionicons/icons";
-import React, { useState, useEffect } from "react";
-import { Plugins } from "@capacitor/core";
-import "./Tab1.scss";
+  IonButton,
+} from '@ionic/react';
+import { book, build, colorFill, grid } from 'ionicons/icons';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../contexts/authContext';
+
+import './Tab1.scss';
 
 const Tab1 = props => {
   const [state, setState] = useState({ user: {} });
+  const { user, setUser } = useContext(AuthContext);
 
   const signOut = async e => {
     const { history } = props;
-    await Plugins.FacebookLogin.logout();
+    setUser(null);
     history.goBack();
   };
 
@@ -62,9 +64,8 @@ const Tab1 = props => {
           </IonCardHeader>
           <IonCardContent>
             <p>
-              Now that your app has been created, you'll want to start building
-              out features and components. Check out some of the resources below
-              for next steps.
+              Now that your app has been created, you'll want to start building out features and components. Check out some of the resources
+              below for next steps.
             </p>
           </IonCardContent>
         </IonCard>
@@ -76,24 +77,15 @@ const Tab1 = props => {
             <IonIcon slot="start" color="medium" icon={book} />
             <IonLabel>Ionic Documentation</IonLabel>
           </IonItem>
-          <IonItem
-            href="https://ionicframework.com/docs/building/scaffolding"
-            target="_blank"
-          >
+          <IonItem href="https://ionicframework.com/docs/building/scaffolding" target="_blank">
             <IonIcon slot="start" color="medium" icon={build} />
             <IonLabel>Scaffold Out Your App</IonLabel>
           </IonItem>
-          <IonItem
-            href="https://ionicframework.com/docs/layout/structure"
-            target="_blank"
-          >
+          <IonItem href="https://ionicframework.com/docs/layout/structure" target="_blank">
             <IonIcon slot="start" color="medium" icon={grid} />
             <IonLabel>Change Your App Layout</IonLabel>
           </IonItem>
-          <IonItem
-            href="https://ionicframework.com/docs/theming/basics"
-            target="_blank"
-          >
+          <IonItem href="https://ionicframework.com/docs/theming/basics" target="_blank">
             <IonIcon slot="start" color="medium" icon={colorFill} />
             <IonLabel>Theme Your App</IonLabel>
           </IonItem>
@@ -109,16 +101,12 @@ const Tab1 = props => {
             </IonItem>
           )}
 
-          <IonButton
-            className="login-button"
-            onClick={() => signOut()}
-            expand="full"
-            fill="solid"
-            color="danger"
-          >
+          <IonButton className="login-button" onClick={() => signOut()} expand="full" fill="solid" color="danger">
             Logout from Facebook
           </IonButton>
         </IonList>
+        {/* <BidFormModal {...{ showModal: showBidForm, setShowModal: setShowBidForm, request: { id: 3, currentPrice: 5000 } }} />
+        <IonButton onClick={(e) => setShowBidForm(true)}>Show Bid Screen</IonButton> */}
       </IonContent>
     </IonPage>
   );
