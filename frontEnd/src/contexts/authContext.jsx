@@ -36,18 +36,16 @@ export const AuthContext = createContext();
 // }
 
 const AuthContextProvider = props => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const hardChangeAuth = () => {
-    setIsLoggedIn(prevState => !prevState);
     setUser(prevState => (prevState ? null : 'Leo'));
   };
   return (
     <AuthContext.Provider
       value={{
         user,
-        isLoggedIn,
-        hardChangeAuth
+        setUser,
+        hardChangeAuth,
       }}
     >
       {props.children}

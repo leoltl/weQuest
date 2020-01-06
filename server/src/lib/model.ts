@@ -241,6 +241,10 @@ export default class Model {
     );
   }
 
+  public manual(queryString: string, params?: any[]): SQLQuery {
+    return SQLQuery.manual(this, queryString, params);
+  }
+
   public find(primary?: any): SQLQuery {
     return primary !== undefined
       ? this.select()

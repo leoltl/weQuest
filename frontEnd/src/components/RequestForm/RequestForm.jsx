@@ -15,7 +15,7 @@ const RequestForm = () => {
   const [endDate, setEndDate] = useState(
     moment()
       .add(1, 'days')
-      .format()
+      .format(),
   );
 
   const submit = () => {
@@ -23,22 +23,20 @@ const RequestForm = () => {
       item,
       budget,
       startDate,
-      endDate
+      endDate,
     };
 
     if (isValid(data)) {
-      axios
-        .post('http://localhost:8080/requests', { payload: data })
-        .then(res => {
-          console.log(res);
-        });
+      axios.post('/requests', { payload: data }).then(res => {
+        console.log(res);
+      });
       setItem('');
       setBudget(null);
       setStartDate(moment().format());
       setEndDate(
         moment()
           .add(1, 'days')
-          .format()
+          .format(),
       );
     } else {
       window.alert('invalid form');
@@ -46,16 +44,10 @@ const RequestForm = () => {
   };
 
   const isValid = data => {
-    return (
-      data.item &&
-      data.budget &&
-      data.startDate &&
-      data.endDate &&
-      data.startDate <= data.endDate
-    );
+    return data.item && data.budget && data.startDate && data.endDate && data.startDate <= data.endDate;
   };
 
-  const { isLoggedIn, user, hardChangeAuth } = useContext(AuthContext);
+  const { user, hardChangeAuth } = useContext(AuthContext);
 
   return (
     <IonContent>
@@ -69,12 +61,7 @@ const RequestForm = () => {
           formSetters={{ setBudget, setItem, setStartDate, setEndDate }}
           formValues={{ budget, item, startDate, endDate }}
         />
-        <IonButton
-          className="ion-margin"
-          disabled={isLoggedIn ? false : true}
-          expand="block"
-          type="submit"
-        >
+        <IonButton className="ion-margin" disabled={user ? false : true} expand="block" type="submit">
           Request It
         </IonButton>
         <IonButton expand="block" fill="clear" type="button">
@@ -86,9 +73,7 @@ const RequestForm = () => {
         <br />
         development temperpory configs:
         <br />
-        <IonText className="ion-margin">
-          Logged In as: {user || 'Not Logged In'}
-        </IonText>
+        <IonText className="ion-margin">Logged In as: {user || 'Not Logged In'}</IonText>
         <IonButton onClick={hardChangeAuth} expand="block" fill="clear">
           Hard Log in
         </IonButton>
