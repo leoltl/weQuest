@@ -7,7 +7,7 @@ import {
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
-  IonTabs
+  IonTabs,
 } from '@ionic/react';
 import { apps, flash, list, addCircleOutline, add } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
@@ -37,7 +37,7 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
-const App: React.FC = () => (
+const App = () => (
   <IonApp>
     <AuthContextProvider>
       <IonReactRouter>
