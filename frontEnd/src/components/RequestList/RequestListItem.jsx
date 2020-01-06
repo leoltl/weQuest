@@ -42,7 +42,7 @@ const RequestListItem = props => {
             className="ion-margin"
             disabled={isLoggedIn ? false : true}
             expand="block"
-            type="submit"
+            onClick={props.onBidClick}
           >
             Bid Now
           </IonButton>
