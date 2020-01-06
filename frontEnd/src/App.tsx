@@ -8,8 +8,8 @@ import {
   IonTabBar,
   IonTabButton,
   IonTabs
-import { apps, flash, list, add } from "ionicons/icons";
 } from '@ionic/react';
+import { apps, flash, list, addCircleOutline, add } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
 import Tab1 from './pages/Tab1';
 import NewRequest from './pages/NewRequest';
@@ -41,8 +41,8 @@ const App: React.FC = () => (
   <IonApp>
     <AuthContextProvider>
       <IonReactRouter>
-          <IonRouterOutlet>
         <IonTabs>
+          <IonRouterOutlet>
             <Route path="/tab1" component={Tab1} exact={true} />
             <Route path="/tab2" component={NewRequest} exact={true} />
             <Route path="/tab2/details" component={Details} />
@@ -55,24 +55,25 @@ const App: React.FC = () => (
             />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
-              <IonIcon icon={flash} />
             <IonTabButton tab="tab1" href="/tab1">
+              <IonIcon icon={flash} />
               <IonLabel>Tab One</IonLabel>
-            </IonTabButton>
-              <IonIcon icon={apps} />
-            <IonTabButton tab="tab2" href="/tab2">
-              <IonLabel>Tab Two</IonLabel>
-            </IonTabButton>
+            </IonTabButton>{' '}
+            */}
             <IonTabButton tab="requestFeed" href="/requestFeed">
               <IonIcon icon={list} />
               <IonLabel>Request Feed</IonLabel>
-            <IonTabButton tab="tab4" href="/login">
             </IonTabButton>
+            <IonTabButton tab="tab2" href="/tab2">
+              <IonIcon icon={add} />
+              <IonLabel>Tab Two</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="tab4" href="/login">
               <IonIcon icon={apps} />
               <IonLabel>Login</IonLabel>
             </IonTabButton>
-        </IonTabs>
           </IonTabBar>
+        </IonTabs>
       </IonReactRouter>
     </AuthContextProvider>
   </IonApp>

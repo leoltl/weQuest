@@ -11,6 +11,7 @@ import {
   IonLoading
 } from '@ionic/react';
 import { arrowBack } from 'ionicons/icons';
+import Spinner from './Spinner';
 
 export default function Modal({ showModal, setShowModal, showSpinner = false, title, children }) {
   return (
@@ -28,7 +29,7 @@ export default function Modal({ showModal, setShowModal, showSpinner = false, ti
       <IonContent>
         {
           showSpinner !== false ?
-            <IonLoading isOpen={showModal} message={showSpinner === true ? 'Loading...' : showSpinner} /> :
+            <Spinner message={showModal && showSpinner} /> :
             children
         }
       </IonContent>

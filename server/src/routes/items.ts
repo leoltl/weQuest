@@ -30,7 +30,7 @@ export default class ItemRouter {
           const output = items.map(
             ({ id, name, description, pictureUrl }): Partial<ItemInterface> => {
               return { id, name, description, pictureUrl };
-            }
+            },
           );
 
           res.json(output);
@@ -45,7 +45,7 @@ export default class ItemRouter {
               ...req.body,
               pictureUrl:
                 'https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80',
-              userId: req.session!.userId
+              userId: req.session!.userId,
             };
             const item: ItemInterface = (
               await this.model.create(input).run(query)
@@ -57,7 +57,7 @@ export default class ItemRouter {
             // upload image to storage
             const { url } = await storage.upload64(
               req.body.pictureUrl,
-              `item-${item.id}`
+              `item-${item.id}`,
             );
 
             // update item with saved picture url

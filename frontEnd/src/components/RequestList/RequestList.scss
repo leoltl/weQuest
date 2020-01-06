@@ -1,0 +1,18 @@
+.request-card--header,
+.request-card--user {
+  margin: 0;
+  padding: 0;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  img {
+    margin-right: 1.2rem;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+  }
+}
+
+.request-card--header {
+  justify-content: space-between;
+}
