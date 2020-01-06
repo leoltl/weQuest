@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useReducer, useCallback } from 'react';
 import { IonList, IonItem, IonLabel, IonButton, IonInput, IonTextarea } from '@ionic/react';
+import axios from 'axios';
 
 import Modal from '../components/Modal';
 import ErrorAlert from '../components/ErrorAlert';
@@ -171,9 +172,10 @@ export default function BidFormModal({ showModal, setShowModal, request }) {
     setShowSpinner(true);
     
     // TODO: replace resolve with axios call
-    new Promise((resolve) => {
-      setTimeout(() => resolve({ data: dummyProducts }), 3000);
-    })
+    // new Promise((resolve) => {
+    //   setTimeout(() => resolve({ data: dummyProducts }), 3000);
+    // })
+    axios.get('/api/items')
     .then(({ data: products }) => {
       bidDispatch({ type: bidActions.PRODUCT_DATA, payload: { products } });
     })

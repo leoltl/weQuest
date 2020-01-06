@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { IonInput, IonButton, IonList, IonItem, IonAvatar, IonImg, IonLabel, IonTextarea } from '@ionic/react';
+import axios from 'axios';
 
 import Modal from '../components/Modal';
 import ErrorAlert from '../components/ErrorAlert';
@@ -65,15 +66,16 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess})
     setShowSpinner('Saving...');
 
     const product = {
-      id: 6,
+      // id: 6,
       name,
       description,
       pictureUrl
     };
     // TODO: replace resolve with axios call
-    new Promise((resolve) => {
-      setTimeout(() => resolve({ data: product }), 3000);
-    })
+    // new Promise((resolve) => {
+    //   setTimeout(() => resolve({ data: product }), 3000);
+    // })
+    axios.post('/api/items', product)
     .then(({ data: product }) => {
       setShowModal(false);
       resetProduct();

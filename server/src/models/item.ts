@@ -6,6 +6,14 @@ import { User } from './mocks';
 // tslint:disable-next-line: import-name
 import Bid from './bid';
 
+export interface ItemInterface {
+  id: number;
+  name: string;
+  description: string;
+  pictureUrl: string;
+  userId: number;
+}
+
 export default class Item extends Model {
   protected init() {
     this.alias = 'items';

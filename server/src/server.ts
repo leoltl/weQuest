@@ -2,6 +2,7 @@
 import path from 'path';
 import express, { Router } from 'express';
 import morgan from 'morgan';
+import cookieSession from 'cookie-session';
 import bodyParser from 'body-parser';
 
 // load .env data into process.env
@@ -27,18 +28,26 @@ const app = express();
 
 // register middlewares
 app.use(morgan('dev'));
+app.use(cookieSession({
+  name: 'session',
+  keys: ['Coolstuffgoesonhere'],
+  maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
+}));
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 // import bids for test
-import Bid from './models/bid';
+import ItemRouter from './routes/items';
+const itemrouter = new ItemRouter(db);
+app.use(itemrouter.path, itemrouter.router);
+// import Bid from './models/bid';
 // const bids = new Bid();
 
-app.get('/api/bids', async (req, res) => {
-  const bids = new Bid();
-  const results = await bids.findByRequest(1).run(db.query);
-  res.json({ message: results });
-});
+// app.get('/api/bids', async (req, res) => {
+//   const bids = new Bid();
+//   const results = await bids.findByRequest(1).run(db.query);
+//   res.json({ message: results });
+// });
 
 // app.get('/api/upload', (req, res) => res.json({ message: 'hello' }));
 

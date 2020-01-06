@@ -69,8 +69,8 @@ export default class Model {
     }
 
     return input instanceof Array ?
-      this.validateColumnAliases(input, permitJoins, enforceRequired) :
-      this.validateColumnInput(input, permitJoins, enforceRequired);
+      this.validateColumnAliases(input, permitJoins, enforceRequired, permitOnly) :
+      this.validateColumnInput(input, permitJoins, enforceRequired, permitOnly);
   }
 
   private validateColumnAliases(
