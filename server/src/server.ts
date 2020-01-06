@@ -4,10 +4,7 @@ import App from './app';
 import UserController from './routes/users';
 import RequestController from './routes/request-router';
 import RequestControllerProtected from './routes/request-router-protected';
-import ItemRouter from './routes/items';
-
-// import path from 'path';
-// import express, { Router } from 'express';
+import ItemController from './routes/items';
 import morgan from 'morgan';
 import cookieSession from 'cookie-session';
 import bodyParser from 'body-parser';
@@ -31,7 +28,7 @@ const app = new App({
   controllers: [
     new RequestController(),
     new RequestControllerProtected(),
-    new ItemRouter(db, storage),
+    new ItemController(db, storage),
     new UserController(db),
   ],
   middlewares: [
