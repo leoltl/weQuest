@@ -13,7 +13,7 @@ import { config } from 'dotenv';
 config();
 
 // server config
-const PORT = process.env.PORT || 5003;
+const PORT = process.env.PORT || 8080;
 const ENV = process.env.ENV || 'development';
 
 // instantiate db and storage
@@ -27,7 +27,7 @@ const app = express();
 app.use(morgan('dev'));
 app.use(session({
   secret: 'Coolstuffgoesonhere',
-  resave: true, saveUninitialized: true,
+  resave: false, saveUninitialized: true,
   cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 /* 1 year */ },
 }));
 // larger upload size to allow for image uploads
@@ -41,7 +41,7 @@ app.use(itemrouter.path, itemrouter.router);
 
 // dummy login for dev
 app.get('/api/login/:id', async (req, res) => {
-  req.session!.userId = req.params.id;
+  req.session!.userId = parseInt(req.params.id, 10);
   res.send(`Logged in as user: ${req.session!.userId}`);
 });
 
