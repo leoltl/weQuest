@@ -2,24 +2,21 @@
 import { Router } from 'express';
 import DB from '../lib/db';
 import Storage from '../lib/storage';
-import { storageParams } from '../lib/config-vars';
-import Item, { ItemInterface } from '../models/item';
 import { accessControl } from '../lib/utils';
-
-// need to add middleware for user authentication
+import Item, { ItemInterface } from '../models/item';
 
 export default class ItemRouter {
   public path: string = '/api/items';
   public router: Router = Router();
   public model = new Item();
 
-  constructor(db: DB) {
-    this.init(db, new Storage(storageParams));
+  constructor(db: DB, storage: Storage) {
+    this.init(db, storage);
   }
 
   private init(db: DB, storage: Storage) {
 
-    // register middlewares
+    // confirm that user is authenticated
     this.router.use(accessControl);
 
     // declare routes

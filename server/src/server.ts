@@ -2,7 +2,7 @@
 import path from 'path';
 import express, { Router } from 'express';
 import morgan from 'morgan';
-import cookieSession from 'cookie-session';
+import session from 'express-session';
 import bodyParser from 'body-parser';
 
 // load .env data into process.env
@@ -17,7 +17,7 @@ const db = new DB(dbParams);
 
 // instantiate storage - move to router after tests
 import Storage from './lib/storage';
-// const storage = new Storage(storageParams);
+const storage = new Storage(storageParams);
 
 // server config
 const PORT = process.env.PORT || 5003;
@@ -28,17 +28,13 @@ const app = express();
 
 // register middlewares
 app.use(morgan('dev'));
-app.use(cookieSession({
-  name: 'session',
-  keys: ['Coolstuffgoesonhere'],
-  maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
-}));
+app.use(session({ secret: 'Coolstuffgoesonhere', cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 /* 1 year */ } }));
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 // import bids for test
 import ItemRouter from './routes/items';
-const itemrouter = new ItemRouter(db);
+const itemrouter = new ItemRouter(db, storage);
 app.use(itemrouter.path, itemrouter.router);
 // import Bid from './models/bid';
 // const bids = new Bid();
