@@ -177,7 +177,11 @@ export default class Model {
     return SQLQuery.update(this, input, new WeakMap([[this, this.requiredColumns]]));
   }
 
-  public find(primary: any): SQLQuery {
+  public manual(queryString: string, params: any[]): SQLQuery {
+    return SQLQuery.manual(this, queryString, params);
+  }
+
+  public find(primary?: any): SQLQuery {
     return primary !== undefined ?
       this.select().where({ [this.primaryKey]: primary }).limit(1) :
       this.select().order([this.primaryKey]);

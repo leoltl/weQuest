@@ -7,7 +7,7 @@ import Model, { ColumnAliases, ColumnInput, PermittedColumns } from './model';
 
 export type SQLRunner = (query: string, params?: any[]) => Promise<any[]>;
 
-export type SQLQueryType = 'INSERT' | 'SELECT' | 'UPDATE' | 'DELETE';
+export type SQLQueryType = 'INSERT' | 'SELECT' | 'UPDATE' | 'DELETE' | 'MANUAL';
 
 export type SQLConditionRelation = 'AND' | 'OR';
 
@@ -29,6 +29,7 @@ export default class SQLQuery {
   private orderCondition: string = '';
   private limitCondition: string = '';
   private locked: boolean = false;
+  private queryString: string = '';
   private params: any[] = [];
 
   private constructor(type: SQLQueryType, model: Model) {
@@ -118,6 +119,9 @@ export default class SQLQuery {
           RETURNING *`,
           this.params];
 
+      case 'MANUAL':
+        return [this.queryString, this.params];
+
       case 'DELETE':
       default:
         return ['Unknown', []];
@@ -154,6 +158,13 @@ export default class SQLQuery {
     query.columns = columns;
     query.insertValues = values;
     query.params.push(...params);
+    return query;
+  }
+
+  static manual(model: Model, queryString: string, params: any[]): SQLQuery {
+    const query = new this('MANUAL', model);
+    query.queryString = queryString;
+    query.params = params;
     return query;
   }
 
