@@ -2,7 +2,7 @@
 import path from 'path';
 import express, { Router } from 'express';
 import morgan from 'morgan';
-import session from 'express-session';
+import cookieSession from 'cookie-session';
 import bodyParser from 'body-parser';
 import { dbParams, storageParams } from './lib/config-vars';
 import DB from './lib/db';
@@ -25,11 +25,13 @@ const app = express();
 
 // register middlewares
 app.use(morgan('dev'));
-app.use(session({
-  secret: 'Coolstuffgoesonhere',
-  resave: false, saveUninitialized: true,
-  cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 /* 1 year */ },
-}));
+app.use(
+  cookieSession({
+    name: 'session',
+    keys: ['Coolstuffgoesonhere'],
+    maxAge: 24 * 60 * 60 * 1000,
+  }),
+);
 // larger upload size to allow for image uploads
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
@@ -38,6 +40,10 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 import ItemRouter from './routes/items';
 const itemrouter = new ItemRouter(db, storage);
 app.use(itemrouter.path, itemrouter.router);
+
+import UserRouter from './routes/users';
+const userrouter = new UserRouter(db);
+app.use(userrouter.path, userrouter.router);
 
 // dummy login for dev
 app.get('/api/login/:id', async (req, res) => {
