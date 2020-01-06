@@ -15,6 +15,6 @@ declare global {
  */
 export function accessControl(req: Request, res: Response , next: NextFunction): Response | void {
   if (!req.session || !req.session.userId) return res.status(403).json({ error: 'Unauthorized acess' });
-  req.userId = req.session!.userId;
+  req.userId = parseInt(req.session!.userId, 10);
   next();
 }
