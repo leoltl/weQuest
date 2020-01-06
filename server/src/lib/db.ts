@@ -4,6 +4,7 @@
 
 // tslint:disable-next-line: import-name
 import { Pool } from 'pg';
+import camelcaseKeys from 'camelcase-keys';
 
 export type DBParams = {
   host: string,
@@ -48,7 +49,7 @@ export default class DB {
    * @return Promise resolving to an array of the entries matching the SQL query.
    */
   public query(text: string, params: any[] = []): Promise<any[]> {
-    return this.pool!.query(text, params).then(data => data.rows);
+    return this.pool!.query(text, params).then(data => data.rows.map(row => camelcaseKeys(row)));
   }
 
   /**
@@ -66,7 +67,8 @@ export default class DB {
         await client.query('BEGIN');
 
         // query function to be passed to the callback
-        const query = (text: string, params: any[] = []): Promise<any[]> => client.query(text, params).then(data => data.rows);
+        const query = (text: string, params: any[] = []): Promise<any[]> => client.query(text, params)
+        .then(data => data.rows.map(row => camelcaseKeys(row)));
         const output = await callback(query);
 
         // commit if no errors

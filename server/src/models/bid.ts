@@ -13,7 +13,7 @@ export default class Bid extends Model {
 
     this.columns = {
       id: { name: 'id', type: Number.isInteger, primaryKey: true },
-      price: { name: 'price_cents', type: Number.isInteger, required: true },
+      priceCent: { name: 'price_cent', type: Number.isInteger, required: true },
       // notes: { name: 'notes', type: 'string', required: true }, //missing in schema
       createdAt: { name: 'created_at', type: Number.isInteger, required: true },
       userId: { name: 'user_id', type: Number.isInteger, required: true },

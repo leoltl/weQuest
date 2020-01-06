@@ -9,8 +9,10 @@ export type SQLRunner = (query: string, params?: any[]) => Promise<any[]>;
 
 export type SQLQueryType = 'INSERT' | 'SELECT' | 'UPDATE' | 'DELETE';
 
+export type SQLConditionRelation = 'AND' | 'OR';
+
 export interface SQLCondition {
-  relation: 'AND' | 'OR';
+  relation: SQLConditionRelation;
   conditions: (ColumnInput | SQLCondition)[];
 }
 
@@ -26,6 +28,7 @@ export default class SQLQuery {
   private whereCondition: string = '';
   private orderCondition: string = '';
   private limitCondition: string = '';
+  private locked: boolean = false;
   private params: any[] = [];
 
   private constructor(type: SQLQueryType, model: Model) {
@@ -65,6 +68,12 @@ export default class SQLQuery {
     return this;
   }
 
+  public lock(): this {
+    if (this.type !== 'SELECT') throw Error('Cannot only lock with SELECT');
+    this.locked = true;
+    return this;
+  }
+
   /**
    * Stringifies query
    * @returns [query, params]
@@ -81,7 +90,8 @@ export default class SQLQuery {
           FROM ${this.model.table}${this.joins.size ? ` ${Array.from(this.joins).join(' ')}` : ''}
           ${this.whereCondition ? `WHERE ${this.whereCondition}` : ''}
           ${this.orderCondition ? ` ORDER BY ${this.orderCondition}` : ''}
-          ${this.limitCondition ? ` ${this.limitCondition}` : ''}`,
+          ${this.limitCondition ? ` ${this.limitCondition}` : ''}
+          ${this.locked ? ' FOR UPDATE' : ''}`,
           this.params];
 
       case 'INSERT':
@@ -245,7 +255,7 @@ export default class SQLQuery {
 
   }
 
-  static createCondition(relation: 'AND' | 'OR', ...conditions: (ColumnInput | SQLCondition)[]): SQLCondition {
+  static createCondition(relation: SQLConditionRelation, ...conditions: (ColumnInput | SQLCondition)[]): SQLCondition {
     return {
       relation,
       conditions: conditions.reduce(
