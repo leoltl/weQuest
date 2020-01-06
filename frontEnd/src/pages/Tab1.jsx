@@ -52,6 +52,7 @@ const Tab1 = props => {
           <IonTitle>Tab One</IonTitle>
         </IonToolbar>
       </IonHeader>
+      z
       <IonContent>
         <IonCard className="welcome-card">
           <img src="/assets/shapes.svg" alt="" />
