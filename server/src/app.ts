@@ -1,32 +1,27 @@
-import express from 'express';
-import { Application } from 'express';
-import path = require('path');
+import express, { Application } from 'express';
+import path from 'path';
 
-class App {
+export default class App {
   public app: Application;
-  public port: string;
+  public port: number;
 
-  constructor(appInit: { port: string; middleWares: any; controllers: any }) {
+  constructor(appInit: { port: number; middlewares: any[]; controllers: any[] }) {
     this.app = express();
     this.port = appInit.port;
 
-    this.middlewares(appInit.middleWares);
+    this.middlewares(appInit.middlewares);
     this.routes(appInit.controllers);
     this.assets();
   }
 
-  private middlewares(middleWares: {
-    forEach: (arg0: (middleWare: any) => void) => void;
-  }) {
-    middleWares.forEach(middleWare => {
-      this.app.use(middleWare);
+  private middlewares(middlewares: any[]) {
+    middlewares.forEach((middleware): void => {
+      this.app.use(middleware);
     });
   }
 
-  private routes(controllers: {
-    forEach: (arg0: (controller: any) => void) => void;
-  }) {
-    controllers.forEach(controller => {
+  private routes(controllers: any[]) {
+    controllers.forEach((controller):void => {
       this.app.use(controller.path, controller.router);
     });
   }
@@ -37,11 +32,7 @@ class App {
 
   public listen() {
     this.app.listen(this.port, () => {
-      console.log(
-        `weQuest  App listening on the http://localhost:${this.port}`,
-      );
+      console.log(`weQuest App listening on the http://localhost:${this.port}`);
     });
   }
 }
-
-export default App;

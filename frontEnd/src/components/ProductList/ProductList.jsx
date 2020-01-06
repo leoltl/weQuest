@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { IonSegment } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import ProductFormModal from '../pages/ProductFormModal';
+import ProductFormModal from '../../pages/ProductFormModal';
 import ProductListItem from './ProductListItem';
 
 export default function ProductList({ products, product, setProduct, addProduct }) {

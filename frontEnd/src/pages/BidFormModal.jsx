@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import Modal from '../components/Modal';
 import ErrorAlert from '../components/ErrorAlert';
-import ProductList from "../components/ProductList";
+import ProductList from "../components/ProductList/ProductList";
 
 // dummy data
 const dummyProducts = [
