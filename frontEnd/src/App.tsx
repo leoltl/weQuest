@@ -9,8 +9,8 @@ import {
   IonTabButton,
   IonTabs
 } from '@ionic/react';
+import { apps, flash, list, addCircleOutline, add } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
-import { apps, addCircleOutline, flash, list } from 'ionicons/icons';
 import Tab1 from './pages/Tab1';
 import NewRequest from './pages/NewRequest';
 import LoginScreen from './pages/LoginScreen';
@@ -55,16 +55,18 @@ const App: React.FC = () => (
             />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
-            {/* <IonTabButton tab="tab1" href="/tab1">
+            <IonTabButton tab="tab1" href="/tab1">
               <IonIcon icon={flash} />
               <IonLabel>Tab One</IonLabel>
-            </IonTabButton> */}
+            </IonTabButton>{' '}
+            */}
             <IonTabButton tab="requestFeed" href="/requestFeed">
               <IonIcon icon={list} />
               <IonLabel>Request Feed</IonLabel>
             </IonTabButton>
             <IonTabButton tab="tab2" href="/tab2">
-              <IonIcon icon={addCircleOutline} />
+              <IonIcon icon={add} />
+              <IonLabel>Tab Two</IonLabel>
             </IonTabButton>
             <IonTabButton tab="tab4" href="/login">
               <IonIcon icon={apps} />

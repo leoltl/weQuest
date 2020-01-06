@@ -4,20 +4,16 @@
     "strict": true,
     "baseUrl": "./",
     "outDir": "build",
-    "removeComments": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "target": "es6",
     "emitDecoratorMetadata": true,
+    "noImplicitAny": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "types": [
-      "node"
-    ],
-    "typeRoots": [
-      "node_modules/@types"
-    ]
+    "sourceMap": true,
+    "removeComments": true
   },
-  "include": [
-    "./src/**/*.ts"
-  ]
+  "include": ["./src/**/*.ts"]
 }
