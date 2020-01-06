@@ -41,7 +41,7 @@ const RequestFeed = () => {
       <IonContent>
         <RequestList
           request={requests}
-          value={selected}
+          selectedId={selected}
           onClick={setSelected}
         ></RequestList>
       </IonContent>

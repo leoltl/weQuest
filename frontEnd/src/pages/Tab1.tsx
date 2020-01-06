@@ -17,13 +17,13 @@ import {
   IonButton
 } from "@ionic/react";
 import { book, build, colorFill, grid } from "ionicons/icons";
-import BidFormModal from "./BidFormModal";
+// import BidFormModal from "./BidFormModal";
 import React, {useState} from "react";
 import "./Tab1.scss";
 
 const Tab1: React.FC = () => {
 
-  const [showBidForm, setShowBidForm] = useState(false);
+  // const [showBidForm, setShowBidForm] = useState(false);
   
   return (
     <IonPage>
@@ -77,8 +77,8 @@ const Tab1: React.FC = () => {
             <IonLabel>Theme Your App</IonLabel>
           </IonItem>
         </IonList>
-        <BidFormModal {...{ showModal: showBidForm, setShowModal: setShowBidForm, request: { id: 3, currentPrice: 5000 } }} />
-        <IonButton onClick={(e) => setShowBidForm(true)}>Show Bid Screen</IonButton>
+        {/* <BidFormModal {...{ showModal: showBidForm, setShowModal: setShowBidForm, request: { id: 3, currentPrice: 5000 } }} />
+        <IonButton onClick={(e) => setShowBidForm(true)}>Show Bid Screen</IonButton> */}
       </IonContent>
     </IonPage>
   );
