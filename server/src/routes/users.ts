@@ -14,29 +14,46 @@ export default class UserController {
   }
 
   private initRoutes(db: DB) {
-    this.router.post('/', async (req, res) => {
-      try {
-        console.log('userData', req.body.user);
-        const hashPassword = await bcrypt.hash(req.body.user.password, 10);
+    this.router.get('/', async (req, res) => {
+      if (req.session!.userId) {
         const user = (
-          await this.model
-            .createUser({
-              ...req.body.user,
-              password: hashPassword,
-            })
-            .run(db.query)
+          await this.model.findById(req.session!.userId).run(db.query)
         )[0];
-        const userData = await this.login(
-          db,
-          req,
-          req.body.user.email,
-          req.body.user.password,
-        );
-        this.updateSession(req, userData);
-        res.json(userData.id);
-      } catch (err) {
-        res.status(400).send(err.message);
-        console.log(err);
+        res.json(user);
+      }
+    });
+
+    this.router.post('/', async (req, res) => {
+      const user = (
+        await this.model.findByEmail(req.body.user.email).run(db.query)
+      )[0];
+      if (user) {
+        this.updateSession(req, user);
+        res.json(user.id);
+      } else {
+        try {
+          console.log('userData', req.body.user);
+          const hashPassword = await bcrypt.hash(req.body.user.password, 10);
+          const user = (
+            await this.model
+              .createUser({
+                ...req.body.user,
+                password: hashPassword,
+              })
+              .run(db.query)
+          )[0];
+          const userData = await this.login(
+            db,
+            req,
+            req.body.user.email,
+            req.body.user.password,
+          );
+          this.updateSession(req, userData);
+          res.json(userData.id);
+        } catch (err) {
+          res.status(400).send(err.message);
+          console.log(err);
+        }
       }
     });
 
@@ -61,7 +78,7 @@ export default class UserController {
     // logout
     this.router.get('/logout', (req, res) => {
       this.logout(req);
-      res.json({ isLoggedIn: false });
+      res.end();
     });
   }
 
@@ -81,7 +98,6 @@ export default class UserController {
             .where({ email })
             .run(db.query)
         )[0];
-        console.log('error user', user);
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
           throw Error(

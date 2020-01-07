@@ -38,10 +38,14 @@ export default class User extends Model {
     this.joins = {};
   }
 
-  public findByName(name: string): SQL {
+  public findByEmail(email: string): SQL {
+    return this.select().where({ email });
+  }
+
+  public findById(id: number): SQL {
     return this.select()
-      .where({ name })
-      .order([['id', 'DESC']]);
+      .where({ id })
+      .limit(1);
   }
 
   public createUser(user: User): SQL {
