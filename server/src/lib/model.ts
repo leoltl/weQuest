@@ -61,12 +61,16 @@ export default class Model {
   // to be implented in subclasses to initialize properties
   protected init(): void {}
 
+  validate(
+    input: ColumnAliases, permitJoins?: boolean, enforceRequired?: boolean, permitOnly?: PermittedColumns,
+  ): ColumnAliases;
+  validate(
+    input: ColumnInput, permitJoins?: boolean, enforceRequired?: boolean, permitOnly?: PermittedColumns,
+  ): ColumnInput;
   public validate(
-    input: ColumnAliases | ColumnInput,
-    permitJoins = true,
-    enforceRequired = false,
-    permitOnly?: PermittedColumns,
-  ): ColumnAliases | ColumnInput {
+    input: ColumnAliases | ColumnInput, permitJoins = true, enforceRequired = false, permitOnly?: PermittedColumns,
+  ) {
+
     if (enforceRequired) {
       const inputColumns: ColumnAliases =
         input instanceof Array ? input : Object.keys(input);
@@ -225,10 +229,14 @@ export default class Model {
     return SQLQuery.select(this, columns.length ? columns : undefined);
   }
 
+<<<<<<< HEAD
   public insert(
     input: ColumnInput,
     permitOnly: PermittedColumns = new WeakMap([[this, this.requiredColumns]]),
   ): SQLQuery {
+=======
+  public insert(input: ColumnInput, permitOnly: PermittedColumns = new WeakMap([[this, this.requiredColumns]])): SQLQuery {
+>>>>>>> master
     return SQLQuery.insert(this, input, permitOnly);
   }
 
@@ -240,6 +248,10 @@ export default class Model {
     );
   }
 
+<<<<<<< HEAD
+=======
+  // start manual sql queries using the SQLQuery interface
+>>>>>>> master
   public sql(queryString: string, params?: any[]): SQLQuery {
     return SQLQuery.manual(this, queryString, params);
   }

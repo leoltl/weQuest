@@ -2,7 +2,8 @@
  * SQL Query Generator
  */
 
-// tslint:disable-next-line: import-name
+// tslint:disable: import-name
+import camelcaseKeys from 'camelcase-keys';
 import Model, { ColumnAliases, ColumnInput, PermittedColumns } from './model';
 
 export type SQLRunner = (query: string, params?: any[]) => Promise<any[]>;
@@ -28,6 +29,7 @@ export default class SQLQuery {
   private whereCondition: string = '';
   private orderCondition: string = '';
   private limitCondition: string = '';
+  private limitOne: boolean = false;
   private locked: boolean = false;
   private queryString: string = '';
   private params: any[] = [];
@@ -64,8 +66,9 @@ export default class SQLQuery {
     return this;
   }
 
-  public limit(num: number, offset?: number): this {
-    this.limitCondition = `LIMIT ${num}${offset ? ` OFFSET ${offset}` : ''}`;
+  public limit(max: number, offset?: number): this {
+    max === 1 && (this.limitOne = true);
+    this.limitCondition = `LIMIT ${max}${offset ? ` OFFSET ${offset}` : ''}`;
     return this;
   }
 
@@ -128,8 +131,11 @@ export default class SQLQuery {
     }
   }
 
-  public run(runner: SQLRunner): ReturnType<SQLRunner> {
-    return runner(...this.do());
+  public run(runner: SQLRunner): ReturnType<SQLRunner> | any {
+    return runner(...this.do()).then((rows) => {
+      const output = rows.map(row => camelcaseKeys(row));
+      return this.limitOne ? output[0] : output;
+    });
   }
 
   static select(model: Model, aliases: ColumnAliases = ['*']): SQLQuery {
@@ -147,6 +153,7 @@ export default class SQLQuery {
     const query = new this('INSERT', model);
     query.columns = columns;
     query.insertValues = values;
+    query.limitOne = true;
     query.params.push(...params);
     return query;
   }

@@ -1,9 +1,7 @@
-// tslint:disable-next-line: import-name
+// tslint:disable: import-name
 import Model from '../lib/model';
-// tslint:disable-next-line: import-name
 import SQL, { and, or } from '../lib/sql';
-import { User } from './mocks';
-// tslint:disable-next-line: import-name
+import User from './user';
 import Bid from './bid';
 
 export interface ItemInterface {
@@ -35,6 +33,10 @@ export default class Item extends Model {
 
   public findByUser(userId: number): SQL {
     return this.select().where({ userId }).order([['id', 'DESC']]);
+  }
+
+  public findByUserSafe(userId: number): SQL {
+    return this.select('id', 'name', 'description', 'pictureUrl').where({ userId }).order([['id', 'DESC']]);
   }
 
   public findByBid(bidId: number): SQL {

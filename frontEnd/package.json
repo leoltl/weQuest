@@ -30,7 +30,7 @@
   },
   "scripts": {
     "start": "concurrently \"HTTPS=true PORT=3003 react-scripts start\" \"gulp build\" \"gulp watch\"",
-    "build": "react-scripts build && gulp build && npx cap copy",
+    "build": "react-scripts build && gulp build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -1,8 +1,8 @@
 // tslint:disable-next-line: import-name
 import Model from '../lib/model';
 
-import SQL, { and, or } from '../lib/sql';
 // tslint:disable-next-line: import-name
+import SQL, { and, or } from '../lib/sql';
 
 export interface UserInterface {
   id: number;
@@ -29,7 +29,7 @@ export default class User extends Model {
         ),
         required: true,
       },
-      password: { name: 'password_digest', type: 'string', required: true },
+      password: { name: 'password', type: 'string', required: true },
       postalCode: { name: 'postal_code', type: 'string', required: false },
       latitude: { name: 'latitude', type: 'number', required: false },
       longitude: { name: 'longitude', type: 'number', required: false },

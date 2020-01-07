@@ -3,6 +3,8 @@ import { IonHeader, IonToolbar, IonContent, IonItem, IonLabel, IonInput, IonList
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import { AuthContext } from '../contexts/authContext';
+import axios from 'axios';
+import { repeat } from 'ionicons/icons';
 
 const Login = props => {
   // const [user, setUser] = useState(null);
@@ -19,28 +21,12 @@ const Login = props => {
     }
   };
 
-  const signIn = async e => {
-    const { history } = props;
-    const FACEBOOK_PERMISSIONS = ['email', 'user_birthday', 'user_photos', 'user_gender'];
-    const result = await FacebookLogin.login({
-      permissions: FACEBOOK_PERMISSIONS,
-    });
-    // if (result && result.accessToken) {
-    //   console.log(`Facebook access token is ${result.accessToken.token}`);
-    //   history.push({
-    //     pathname: "/home",
-    //     state: {
-    //       token: result.accessToken.token,
-    //       userId: result.accessToken.userId
-    //     }
-    //   });
-    // }
-  };
-
   const { user, setUser } = useContext(AuthContext);
 
-  const responseFacebook = response => {
-    console.log('Facebook', response);
+  const responseFacebook = async response => {
+    // console.log('Facebook', response.name);
+    const userData = { user: { name: response.name, email: response.email, password: 'dummy' } };
+    await axios.post('/api/users/', userData, response => console.log('id:', response));
     setUser(response);
   };
 
@@ -95,6 +81,15 @@ const Login = props => {
             onSuccess={responseGoogle}
             onFailure={responseGoogle}
           />
+          <a
+            href="#"
+            onClick={e => {
+              e.preventDefault();
+              window.FB.logout();
+            }}
+          >
+            logout
+          </a>
           <IonButton expand="block" fill="clear" type="submit">
             Forgot your password?
           </IonButton>

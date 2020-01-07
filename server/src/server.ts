@@ -5,8 +5,10 @@ import { config } from 'dotenv';
 config();
 
 import App from './app';
+// import ReactController from './routes/react';
 import UserController from './routes/users';
 import RequestController from './routes/request-router';
+import BidController from './routes/bids';
 import ItemController from './routes/items';
 import morgan from 'morgan';
 import cookieSession from 'cookie-session';
@@ -14,6 +16,7 @@ import bodyParser from 'body-parser';
 import { dbParams, storageParams } from './lib/config-vars';
 import DB from './lib/db';
 import Storage from './lib/storage';
+const path = require('path');
 
 // server config
 const ENV = process.env.ENV || 'development';
@@ -25,9 +28,10 @@ const storage = new Storage(storageParams);
 const app = new App({
   port: parseInt(process.env.PORT || '8080', 10),
   controllers: [
-    new RequestController(db),
-    new ItemController(db, storage),
     new UserController(db),
+    new RequestController(db),
+    new BidController(db),
+    new ItemController(db, storage),
   ],
   middlewares: [
     morgan('dev'),
@@ -39,6 +43,10 @@ const app = new App({
       maxAge: 365 * 24 * 60 * 60 * 1000 /* 1 year */,
     }),
   ],
+});
+
+app.app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
 // dummy login for dev

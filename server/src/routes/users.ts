@@ -1,8 +1,8 @@
 // tslint:disable: import-name
-import { Router, Request, Response } from 'express';
+import { Router, Request } from 'express';
 import DB from '../lib/db';
 import User, { UserInterface } from '../models/user';
-import bcrypt from 'bcrypt';
+import bcrypt, { hash } from 'bcrypt';
 
 export default class UserController {
   public path = '/api/users';
@@ -16,11 +16,27 @@ export default class UserController {
   private initRoutes(db: DB) {
     this.router.post('/', async (req, res) => {
       try {
-        const userId = await this.model.createUser(req.body);
-        const userData = await this.login(db, req, '', '');
-        res.json(userData);
+        console.log('userData', req.body.user);
+        const hashPassword = await bcrypt.hash(req.body.user.password, 10);
+        const user = (
+          await this.model
+            .createUser({
+              ...req.body.user,
+              password: hashPassword,
+            })
+            .run(db.query)
+        )[0];
+        const userData = await this.login(
+          db,
+          req,
+          req.body.user.email,
+          req.body.user.password,
+        );
+        this.updateSession(req, userData);
+        res.json(userData.id);
       } catch (err) {
         res.status(400).send(err.message);
+        console.log(err);
       }
     });
 
@@ -50,7 +66,7 @@ export default class UserController {
   }
 
   private login = async (
-    db: any,
+    db: DB,
     req: Request,
     email: string,
     password: string,
@@ -65,7 +81,9 @@ export default class UserController {
             .where({ email })
             .run(db.query)
         )[0];
-        if (!bcrypt.compareSync(password, user.password)) {
+        console.log('error user', user);
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
           throw Error(
             'Incorrect Password | email does not exist in our system',
           );
@@ -87,5 +105,9 @@ export default class UserController {
 
   private logout = (req: Request) => {
     req.session!.userId && delete req.session!.userId;
+  };
+
+  private updateSession = (req: Request, user: UserInterface) => {
+    req.session!.userId = user.id;
   };
 }
