@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">wequest-front-end</string>
-    <string name="title_activity_main">wequest-front-end</string>
-    <string name="package_name">io.ionic.starter</string>
-    <string name="custom_url_scheme">io.ionic.starter</string>
-    <string name="facebook_app_id">[625636154855382]</string>
-    <string name="fb_login_protocol_scheme">fb[625636154855382]</string>
-</resources>

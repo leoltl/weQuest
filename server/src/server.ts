@@ -1,6 +1,7 @@
 // tslint:disable: import-name
 
 import App from './app';
+// import ReactController from './routes/react';
 import UserController from './routes/users';
 import RequestController from './routes/request-router';
 import RequestControllerProtected from './routes/request-router-protected';
@@ -12,6 +13,7 @@ import bodyParser from 'body-parser';
 import { dbParams, storageParams } from './lib/config-vars';
 import DB from './lib/db';
 import Storage from './lib/storage';
+const path = require('path');
 
 // load .env data into process.env
 import { config } from 'dotenv';
@@ -43,6 +45,10 @@ const app = new App({
       maxAge: 365 * 24 * 60 * 60 * 1000 /* 1 year */,
     }),
   ],
+});
+
+app.app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
 // dummy login for dev

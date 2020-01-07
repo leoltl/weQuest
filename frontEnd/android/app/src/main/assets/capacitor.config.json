@@ -1,8 +1,0 @@
-{
-  "appId": "com.example.app",
-  "appName": "weQuest",
-  "bundledWebRuntime": false,
-  "npmClient": "npm",
-  "webDir": "public",
-  "cordova": {}
-}
