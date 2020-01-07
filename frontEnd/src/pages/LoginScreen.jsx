@@ -24,11 +24,11 @@ const LoginScreen = props => {
   const getCurrentState = async e => {
     axios.get('/api/users').then(user => {
       console.log(user.data);
-      // setUser(user.data);
-      // if (user.data) {
-      //redirect is not working
-      // history.push('/profile');
-      // }
+      setUser(user.data);
+      if (user) {
+        //redirect is not working
+        history.push('/profile');
+      }
     });
   };
 
