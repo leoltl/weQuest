@@ -1,6 +1,7 @@
 // tslint:disable: import-name
 
 import App from './app';
+// import ReactController from './routes/react';
 import UserController from './routes/users';
 import RequestController from './routes/request-router';
 import RequestControllerProtected from './routes/request-router-protected';
@@ -27,6 +28,7 @@ const storage = new Storage(storageParams);
 const app = new App({
   port: parseInt(process.env.PORT || '8080', 10),
   controllers: [
+    // new ReactController(),
     new RequestController(),
     new RequestControllerProtected(),
     new ItemController(db, storage),
