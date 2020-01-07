@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import {
   IonHeader,
   IonToolbar,
@@ -7,7 +8,7 @@ import {
   IonLabel,
   IonInput,
   IonList,
-  IonButton
+  IonButton,
 } from '@ionic/react';
 import { logIn } from 'ionicons/icons';
 
@@ -19,14 +20,19 @@ const Register = () => {
 
   const [formErrors, setFormErrors] = useState({});
 
-  const submit = async () => {
-    try {
-      await logIn({
-        email,
-        password
-      });
-    } catch (e) {
-      setFormErrors(e);
+  const submit = async e => {
+    if (password !== passwordConfirmation) {
+      setFormErrors({ message: 'Passwords Do Not Match' });
+    } else {
+      try {
+        await axios
+          .post('http://localhost:8080/users', {
+            user: { name: name, email: email, password: password },
+          })
+          .then(res => console.log(res.data));
+      } catch (e) {
+        setFormErrors(e);
+      }
     }
   };
 
@@ -39,7 +45,7 @@ const Register = () => {
         <form
           onSubmit={e => {
             e.preventDefault();
-            submit();
+            submit(e);
           }}
         >
           <div>{formErrors ? formErrors.message : null}</div>
@@ -50,6 +56,8 @@ const Register = () => {
                 name="name"
                 type="name"
                 value={name}
+                clearInput
+                inputMode="text"
                 onIonChange={e => setName(e.target.value)}
               />
             </IonItem>
@@ -59,6 +67,7 @@ const Register = () => {
                 name="email"
                 type="email"
                 value={email}
+                clearInput
                 onIonChange={e => setEmail(e.target.value)}
               />
             </IonItem>
