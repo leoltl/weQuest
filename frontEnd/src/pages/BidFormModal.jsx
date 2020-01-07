@@ -143,17 +143,20 @@ export default function BidFormModal({ showModal, setShowModal, request }) {
     setShowSpinner('Saving...');
 
     const bid = {
-      request: request.id,
-      product: bidState.product,
-      price: bidState.price,
+      requestId: request.id,
+      itemId: bidState.product,
+      priceCent: bidState.price,
       notes: bidState.notes
     };
     // TODO: replace resolve with axios call
-    new Promise((resolve) => {
-      setTimeout(() => resolve({ data: bid }), 3000);
-    })
+    // new Promise((resolve) => {
+    //   setTimeout(() => resolve({ data: bid }), 3000);
+    // })
+    axios.post('/api/bids', bid)
     .then(({ data: bid }) => {
       setShowModal(false);
+      console.log(bid);
+      
     })
     .catch((err) => setErrorMessage(err.message))
     .finally(() => setShowSpinner(false));

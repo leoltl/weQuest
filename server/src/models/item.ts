@@ -1,9 +1,7 @@
-// tslint:disable-next-line: import-name
+// tslint:disable: import-name
 import Model from '../lib/model';
-// tslint:disable-next-line: import-name
 import SQL, { and, or } from '../lib/sql';
-import { User } from './mocks';
-// tslint:disable-next-line: import-name
+import User from './user';
 import Bid from './bid';
 
 export interface ItemInterface {
