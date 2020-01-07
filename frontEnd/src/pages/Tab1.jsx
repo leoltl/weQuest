@@ -85,10 +85,6 @@ const Tab1 = props => {
               </IonLabel>
             </IonItem>
           )}
-
-          <IonButton className="login-button" onClick={() => signOut()} expand="full" fill="solid" color="danger">
-            Logout from Facebook
-          </IonButton>
         </IonList>
         {/* <BidFormModal {...{ showModal: showBidForm, setShowModal: setShowBidForm, request: { id: 3, currentPrice: 5000 } }} />
         <IonButton onClick={(e) => setShowBidForm(true)}>Show Bid Screen</IonButton> */}

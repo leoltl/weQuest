@@ -1,32 +1,21 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { IonHeader, IonToolbar, IonContent, IonItem, IonLabel, IonInput, IonList, IonButton } from '@ionic/react';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import { AuthContext } from '../contexts/authContext';
 import axios from 'axios';
-import { repeat } from 'ionicons/icons';
 
 const Login = props => {
   // const [user, setUser] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formErrors, setFormErrors] = useState({});
-
-  const getCurrentState = async e => {
-    const result = await FacebookLogin.getCurrentAccessToken();
-    try {
-      return result && result.accessToken;
-    } catch (e) {
-      return false;
-    }
-  };
-
   const { user, setUser } = useContext(AuthContext);
 
   const responseFacebook = async response => {
-    // console.log('Facebook', response.name);
+    console.log('Facebook', response.name);
     const userData = { user: { name: response.name, email: response.email, password: 'dummy' } };
-    await axios.post('/api/users/', userData, response => console.log('id:', response));
+    await axios.post('/api/users', userData, response => console.log('id:', response));
     setUser(response);
   };
 
@@ -34,25 +23,18 @@ const Login = props => {
     console.log('Google', response);
   };
 
-  const userInfo = user => (
-    <>
-      <h1>{user.name}</h1>
-      <p>{user.email}</p>
-      <img src={user.picture.data.url} height={user.picture.height} width={user.picture.width} alt="avatar" />
-    </>
-  );
-
   const submit = async e => {
     try {
-      console.log('email:', email, 'password:', password);
+      await axios.post('/api/users/login', { email, password }).then(response => setUser(response));
     } catch (e) {
+      console.log(e);
       setFormErrors(e);
     }
   };
 
   return (
     <>
-      <IonHeader>{user ? userInfo(user) : ''}</IonHeader>
+      <IonHeader></IonHeader>
       <IonContent>
         <form
           onSubmit={e => {
@@ -81,15 +63,6 @@ const Login = props => {
             onSuccess={responseGoogle}
             onFailure={responseGoogle}
           />
-          <a
-            href="#"
-            onClick={e => {
-              e.preventDefault();
-              window.FB.logout();
-            }}
-          >
-            logout
-          </a>
           <IonButton expand="block" fill="clear" type="submit">
             Forgot your password?
           </IonButton>
