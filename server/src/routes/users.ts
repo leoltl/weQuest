@@ -16,11 +16,15 @@ export default class UserController {
   private initRoutes(db: DB) {
     this.router.post('/', async (req, res) => {
       try {
-        const userId = await this.model.createUser(req.body);
-        const userData = await this.login(db, req, '', '');
+        console.log('reqbody', req.body);
+        const userId = (await this.model.createUser(req.body).run(db.query))[0]
+          .id;
+        console.log('userId: ', userId);
+        const userData = await this.login(db, req, req.body.email, '');
         res.json(userData);
       } catch (err) {
         res.status(400).send(err.message);
+        console.log(err);
       }
     });
 
@@ -50,7 +54,7 @@ export default class UserController {
   }
 
   private login = async (
-    db: any,
+    db: DB,
     req: Request,
     email: string,
     password: string,
