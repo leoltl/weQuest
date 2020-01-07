@@ -23,7 +23,8 @@ export default class ItemController {
       .route('/')
       .get(async (req, res) => {
         try {
-          const output = await this.getAllByUser(req.session!.userId);
+          // const output = await this.getAllByUser(req.session!.userId);
+          const output = await this.model.findByUserSafe(req.session!.userId).run(this.db.query);
           res.json(output);
         } catch (err) {
           res.status(404).json({ error: 'Failed to retrieve items for user' });
@@ -39,14 +40,14 @@ export default class ItemController {
       });
   }
 
-  public async getAllByUser(id: number): Promise<Partial<ItemInterface>[]> {
-    const items: ItemInterface[] = await this.model.findByUser(id).run(this.db.query);
-    return items.map(
-      ({ id, name, description, pictureUrl }): Partial<ItemInterface> => {
-        return { id, name, description, pictureUrl };
-      },
-    );
-  }
+  // public async getAllByUser(id: number): Promise<Partial<ItemInterface>[]> {
+  //   const items: ItemInterface[] = await this.model.findByUserSafe(id).run(this.db.query);
+  //   return items.map(
+  //     ({ id, name, description, pictureUrl }): Partial<ItemInterface> => {
+  //       return { id, name, description, pictureUrl };
+  //     },
+  //   );
+  // }
 
   public async create(input: Partial<ItemInterface>) {
     return this.db.transaction(async (query): Promise<Partial<ItemInterface>> => {
@@ -56,24 +57,22 @@ export default class ItemController {
 
       const item: ItemInterface = (
         await this.model.create({ ...input, pictureUrl: 'https://example.com' }).run(query)
-      )[0];
+      );
 
       // check that item has been created
       if (!item) throw Error('No record created');
 
       // upload image to storage
-      const { url } = await this.storage.upload64(
-        input.pictureUrl,
-        `item-${item.id}`,
-      );
+      const { url } = await this.storage.upload64(input.pictureUrl, `item-${item.id}`);
 
       // update item with saved picture url
       const { id, name, description, pictureUrl } = (
         await this.model
           .update({ pictureUrl: url })
           .where({ id: item.id })
+          .limit(1)
           .run(query)
-      )[0];
+      );
 
       return { id, name, description, pictureUrl };
     });
