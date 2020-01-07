@@ -36,7 +36,7 @@ export default class RequestController {
     this.router.get('/:id', async (req: Request, res: Response) => {
       const id: number = parseInt(req.params.id, 10);
       try {
-        const request = await this.findRequestById(id);
+        const request = await this.findRequestById(id, db);
         res.status(200).send(request);
       } catch (err) {
         res.status(400).send(err.message);
@@ -92,7 +92,7 @@ export default class RequestController {
       .run(db.query);
   }
 
-  private async findRequestById(id: number) {
-    return this.model.find(id);
+  private async findRequestById(id: number, db: DB) {
+    return this.model.find(id).run(db.query);
   }
 }

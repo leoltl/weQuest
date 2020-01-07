@@ -1,5 +1,9 @@
 // tslint:disable: import-name
 
+// load .env data into process.env
+import { config } from 'dotenv';
+config();
+
 import App from './app';
 import UserController from './routes/users';
 import RequestController from './routes/request-router';
@@ -10,10 +14,6 @@ import bodyParser from 'body-parser';
 import { dbParams, storageParams } from './lib/config-vars';
 import DB from './lib/db';
 import Storage from './lib/storage';
-
-// load .env data into process.env
-import { config } from 'dotenv';
-config();
 
 // server config
 const ENV = process.env.ENV || 'development';
