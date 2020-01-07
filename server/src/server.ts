@@ -45,13 +45,16 @@ const app = new App({
   ],
 });
 
-app.app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/index.html'));
-});
+
 
 // dummy login for dev
 app.app.get('/api/login/:id', async (req, res) => {
   req.session!.userId = parseInt(req.params.id, 10);
   res.send(`Logged in as user: ${req.session!.userId}`);
 });
+
+app.app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/index.html'));
+});
+
 app.listen();
