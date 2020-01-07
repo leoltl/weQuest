@@ -3,6 +3,8 @@ import { IonHeader, IonToolbar, IonContent, IonItem, IonLabel, IonInput, IonList
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import { AuthContext } from '../contexts/authContext';
+import axios from 'axios';
+import { repeat } from 'ionicons/icons';
 
 const Login = props => {
   // const [user, setUser] = useState(null);
@@ -40,8 +42,13 @@ const Login = props => {
   const { user, setUser } = useContext(AuthContext);
 
   const responseFacebook = response => {
-    console.log('Facebook', response);
+    // console.log('Facebook', response.name);
     setUser(response);
+    const userData = { name: response.name, email: response.email, password: 'dummy' };
+    console.log(userData);
+    axios.post('http://localhost:8080/api/users/', userData, response => {
+      console.log(response);
+    });
   };
 
   const responseGoogle = response => {
@@ -95,6 +102,15 @@ const Login = props => {
             onSuccess={responseGoogle}
             onFailure={responseGoogle}
           />
+          <a
+            href="#"
+            onClick={e => {
+              e.preventDefault();
+              window.FB.logout();
+            }}
+          >
+            logout
+          </a>
           <IonButton expand="block" fill="clear" type="submit">
             Forgot your password?
           </IonButton>
