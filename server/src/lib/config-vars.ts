@@ -5,7 +5,9 @@ function getDBParams(): DBParams {
   // retrieve db params from connection string if exists
   if (process.env.DATABASE_URL) {
     // user:password@host:port/database
-    const matches = process.env.DATABASE_URL.match(/^\w+:\/\/([^:]+):([^@]+)@([^:]+):([\d]+)\/(.+)$/);
+    const matches = process.env.DATABASE_URL.match(
+      /^\w+:\/\/([^:]+):([^@]+)@([^:]+):([\d]+)\/(.+)$/,
+    );
     if (matches && matches.length === 6) {
       return {
         host: matches[3],
@@ -16,7 +18,6 @@ function getDBParams(): DBParams {
       };
     }
   }
-
   return {
     host: process.env.DB_HOST || '',
     port: parseInt(process.env.DB_PORT || '', 10),

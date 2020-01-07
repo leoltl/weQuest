@@ -4,12 +4,19 @@ import {
   IonLabel,
   IonInput,
   IonList,
-  IonDatetime
+  IonDatetime,
+  IonTextarea
 } from '@ionic/react';
 
 const RequestFieldGroup = ({ formSetters, formValues }) => {
-  const { setItem, setBudget, setStartDate, setEndDate } = formSetters;
-  const { item, budget, startDate, endDate } = formValues;
+  const {
+    setItem,
+    setBudget,
+    setStartDate,
+    setEndDate,
+    setNotes
+  } = formSetters;
+  const { item, budget, startDate, endDate, notes } = formValues;
   return (
     <IonList className="my-list">
       <IonItem className="my-list--input">
@@ -54,6 +61,17 @@ const RequestFieldGroup = ({ formSetters, formValues }) => {
           displayFormat="DDD. MMM DD, YYYY"
           onIonChange={e => setEndDate(e.target.value)}
         ></IonDatetime>
+      </IonItem>
+      <IonItem>
+        <IonLabel position="floating">Notes</IonLabel>
+        <IonTextarea
+          name="notes"
+          value={notes}
+          rows={4}
+          spellcheck
+          onIonChange={e => setNotes(e.currentTarget.value)}
+          debounce={100}
+        ></IonTextarea>
       </IonItem>
     </IonList>
   );

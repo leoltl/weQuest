@@ -1,10 +1,13 @@
 // tslint:disable: import-name
 
+// load .env data into process.env
+import { config } from 'dotenv';
+config();
+
 import App from './app';
 // import ReactController from './routes/react';
 import UserController from './routes/users';
 import RequestController from './routes/request-router';
-import RequestControllerProtected from './routes/request-router-protected';
 import BidController from './routes/bids';
 import ItemController from './routes/items';
 import morgan from 'morgan';
@@ -14,10 +17,6 @@ import { dbParams, storageParams } from './lib/config-vars';
 import DB from './lib/db';
 import Storage from './lib/storage';
 const path = require('path');
-
-// load .env data into process.env
-import { config } from 'dotenv';
-config();
 
 // server config
 const ENV = process.env.ENV || 'development';
@@ -30,8 +29,7 @@ const app = new App({
   port: parseInt(process.env.PORT || '8080', 10),
   controllers: [
     new UserController(db),
-    new RequestController(),
-    new RequestControllerProtected(),
+    new RequestController(db),
     new BidController(db),
     new ItemController(db, storage),
   ],
