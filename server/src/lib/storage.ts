@@ -44,18 +44,18 @@ export default class Storage {
     if (!type) throw Error('Cannot get the file type/extension');
 
     return this.s3!.upload({ Bucket: this.params.bucket, Key: `${key}.${type.ext}`, ContentType: type.mime, Body: body }).promise()
-    .then(({ Key: key, Location: url }) => ({ key, url }))
-    .catch((err) => {
-      throw Error('Failed to upload file');
-    });
+      .then(({ Key: key, Location: url }) => ({ key, url }))
+      .catch((err) => {
+        throw Error('Failed to upload file');
+      });
   }
 
   public delete(key: string): Promise<{ key: string }> {
     return this.s3!.deleteObject({ Bucket: this.params.bucket, Key: key }).promise()
-    .then(() => ({ key }))
-    .catch((err) => {
-      throw Error('Failed to delete file');
-    });
+      .then(() => ({ key }))
+      .catch((err) => {
+        throw Error('Failed to delete file');
+      });
   }
 
 }

@@ -35,16 +35,19 @@ export class Request extends Model {
 
     this.columns = {
       id: { name: 'id', type: Number.isInteger, required: true },
-      description: { name: 'description', type: 'string', required: true },
+      title: { name: 'title', type: 'string', required: true },
+      description: { name: 'description', type: 'string', required: false },
       auctionStart: { name: 'auction_start', type: Number.isInteger, required: true },
       auctionEnd: { name: 'auction_end', type: Number.isInteger, required: true },
       borrowStart: { name: 'borrow_start', type: Number.isInteger, required: true },
       borrowEnd: { name: 'borrow_end', type: Number.isInteger, required: true },
       isActive: { name: 'is_active', type: 'boolean', required: true },
       userId: { name: 'user_id', type: Number.isInteger, required: true },
-      winningBid: { name: 'winning_bid_id', type: Number.isInteger, required: false },
-      currentBid: { name: 'current_bid_id', type: Number.isInteger, required: false },
+      winningBidId: { name: 'winning_bid_id', type: Number.isInteger, required: false },
+      currentBidId: { name: 'current_bid_id', type: Number.isInteger, required: false },
     };
+
+    this.safeColumns = ['description', 'winningBidId', 'currentBidId'];
 
     this.joins = {
       users: { joinColumn: 'userId', foreignJoinColumn: 'id', foreignModel: User },
