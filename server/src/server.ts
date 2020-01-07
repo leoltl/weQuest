@@ -5,6 +5,7 @@ import App from './app';
 import UserController from './routes/users';
 import RequestController from './routes/request-router';
 import RequestControllerProtected from './routes/request-router-protected';
+import BidController from './routes/bids';
 import ItemController from './routes/items';
 import morgan from 'morgan';
 import cookieSession from 'cookie-session';
@@ -28,11 +29,11 @@ const storage = new Storage(storageParams);
 const app = new App({
   port: parseInt(process.env.PORT || '8080', 10),
   controllers: [
-    // new ReactController(),
+    new UserController(db),
     new RequestController(),
     new RequestControllerProtected(),
+    new BidController(db),
     new ItemController(db, storage),
-    new UserController(db),
   ],
   middlewares: [
     morgan('dev'),
