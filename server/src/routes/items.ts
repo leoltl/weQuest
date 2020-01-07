@@ -61,12 +61,6 @@ export default class ItemController {
         if (typeof input.pictureUrl !== 'string' || !input.pictureUrl)
           throw Error('No picture supplied');
 
-        const item: ItemInterface = (
-          await this.model
-            .create({ ...input, pictureUrl: 'https://example.com' })
-            .run(query)
-        )[0];
-
         const item: ItemInterface = await this.model
           .create({ ...input, pictureUrl: 'https://example.com' })
           .run(query);
@@ -76,13 +70,6 @@ export default class ItemController {
           input.pictureUrl,
           `item-${item.id}`,
         );
-
-        // upload image to storage
-        const { url } = await this.storage.upload64(
-          input.pictureUrl,
-          `item-${item.id}`,
-        );
-
         // update item with saved picture url
         const { id, name, description, pictureUrl } = await this.model
           .update({ pictureUrl: url })
