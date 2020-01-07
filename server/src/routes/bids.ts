@@ -31,7 +31,7 @@ export default class BidController {
       })
       .post(async (req, res) => {
         try {
-          const output = await this.create({ ...req.body, userId: req.session!.userId });
+          const output = await this.create(req.body);
           res.json(output);
         } catch (err) {
           res.status(404).json({ error: 'Failed to save item' });

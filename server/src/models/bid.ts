@@ -23,15 +23,13 @@ export default class Bid extends Model {
     this.columns = {
       id: { name: 'id', type: Number.isInteger, primaryKey: true },
       priceCent: { name: 'price_cent', type: Number.isInteger, required: true },
-      // notes: { name: 'notes', type: 'string', required: true }, //missing in schema
-      createdAt: { name: 'created_at', type: Number.isInteger, required: true },
-      userId: { name: 'user_id', type: Number.isInteger, required: true },
+      notes: { name: 'notes', type: 'string', required: true },
       requestId: { name: 'request_id', type: Number.isInteger, required: true },
       itemId: { name: 'item_id', type: Number.isInteger, required: true },
+      createdAt: { name: 'created_at', type: Number.isInteger, required: false },
     };
 
     this.joins = {
-      users: { joinColumn: 'userId', foreignJoinColumn: 'id', foreignModel: User },
       requests: { joinColumn: 'requestId', foreignJoinColumn: 'id', foreignModel: Request },
       items: { joinColumn: 'itemId', foreignJoinColumn: 'id', foreignModel: Item },
     };
@@ -45,7 +43,7 @@ export default class Bid extends Model {
 
   public findByUser(userId: number, includeItem = true): SQL {
     return includeItem ?
-      this.select('items.*', '*').where({ userId }).order([['id', 'DESC']]) :
+      this.select('items.*', '*').where({ 'items.userId': userId }).order([['id', 'DESC']]) :
       this.select().where({ userId }).order([['id', 'DESC']]);
   }
 

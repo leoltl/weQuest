@@ -5,5 +5,6 @@ CREATE TABLE bids (
   item_id INTEGER REFERENCES items(id) NOT NULL,
   request_id INTEGER REFERENCES requests(id) NOT NULL,
   price_cent INTEGER NOT NULL,
+  notes TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
