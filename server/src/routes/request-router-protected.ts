@@ -4,11 +4,10 @@
  * these routes are mounted onto /users
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
-import * as express from 'express';
-import { Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import * as RequestService from '../models/RequestService';
 import { Request as UserRequest, Requests } from '../interfaces/requests';
-import { isAuthenticated } from '../services/users';
+import { accessControl } from '../lib/utils';
 
 export default class RequestControllerProtected {
   public path = '/requests';
@@ -20,7 +19,7 @@ export default class RequestControllerProtected {
 
   private initRoutes() {
     /* using authentication method provided in user service.*/
-    this.router.use(isAuthenticated);
+    this.router.use(accessControl);
 
     /* POST requests/ */
     this.router.post('/', async (req: Request, res: Response) => {
