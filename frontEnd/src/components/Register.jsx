@@ -31,7 +31,7 @@ const Register = props => {
       await axios.post('/api/users', {
         user: { name: name, email: email, password: password },
       });
-      props.history.push('/requestFeed');
+      // props.history.push('/requestFeed');
     } catch (e) {
       setFormErrors(e);
     }

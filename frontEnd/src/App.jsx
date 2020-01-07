@@ -1,14 +1,6 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import {
-  IonApp,
-  IonIcon,
-  IonLabel,
-  IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
-} from '@ionic/react';
+import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
 import { apps, flash, list, addCircleOutline, add } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
 import Tab1 from './pages/Tab1';
@@ -16,6 +8,7 @@ import NewRequest from './pages/NewRequest';
 import LoginScreen from './pages/LoginScreen';
 import Details from './pages/Details';
 import RequestFeed from './pages/RequestFeed';
+import Profile from './pages/Profile';
 import AuthContextProvider from './contexts/authContext';
 
 /* Core CSS required for Ionic components to work properly */
@@ -48,11 +41,8 @@ const App = () => (
             <Route path="/tab2/details" component={Details} />
             <Route path="/requestFeed" component={RequestFeed} />
             <Route path="/login" component={LoginScreen} />
-            <Route
-              path="/"
-              render={() => <Redirect to="/tab1" />}
-              exact={true}
-            />
+            <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
+            <Route path="/profile" component={Profile} />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
             <IonTabButton tab="tab1" href="/tab1">
@@ -70,7 +60,7 @@ const App = () => (
             </IonTabButton>
             <IonTabButton tab="tab4" href="/login">
               <IonIcon icon={apps} />
-              <IonLabel>Login</IonLabel>
+              <IonLabel>Profile</IonLabel>
             </IonTabButton>
           </IonTabBar>
         </IonTabs>
