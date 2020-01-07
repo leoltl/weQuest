@@ -41,10 +41,24 @@ export default class Bid extends Model {
       this.select().where({ id }).limit(1);
   }
 
+  public findSafe(id: number, includeItem = true): SQL {
+    return includeItem ?
+      this.select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes').where({ id }).limit(1) :
+      this.select('id', 'priceCent', 'notes').where({ id }).limit(1);
+  }
+
   public findByUser(userId: number, includeItem = true): SQL {
     return includeItem ?
       this.select('items.*', '*').where({ 'items.userId': userId }).order([['id', 'DESC']]) :
       this.select().where({ userId }).order([['id', 'DESC']]);
+  }
+
+  public findByUserSafe(userId: number, includeItem = true): SQL {
+    return includeItem ?
+      this.select(
+        'items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes',
+      ).where({ 'items.userId': userId }).order([['id', 'DESC']]) :
+      this.select('id', 'priceCent', 'notes').where({ userId }).order([['id', 'DESC']]);
   }
 
   public findByRequest(requestId: number, includeItem = true): SQL {

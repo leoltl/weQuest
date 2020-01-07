@@ -35,6 +35,10 @@ export default class Item extends Model {
     return this.select().where({ userId }).order([['id', 'DESC']]);
   }
 
+  public findByUserSafe(userId: number): SQL {
+    return this.select('id', 'name', 'description', 'pictureUrl').where({ userId }).order([['id', 'DESC']]);
+  }
+
   public findByBid(bidId: number): SQL {
     return this.select().where({ 'bids.id': bidId }).order([['id', 'DESC']]);
   }
