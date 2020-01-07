@@ -41,6 +41,7 @@ export default class Model {
   } = {};
   public requiredColumns: string[] = [];
   public primaryKey: string = '';
+  public safeColumns:  string[] = [];
 
   constructor(blockJoins: string[] = []) {
     this.init();
@@ -168,6 +169,7 @@ export default class Model {
       [[], '']);
 
     this.requiredColumns = requiredColumns;
+    this.safeColumns = Array.from(new Set(requiredColumns.concat(this.safeColumns)));
     this.primaryKey = primaryKey;
   }
 
@@ -175,12 +177,12 @@ export default class Model {
     return SQLQuery.select(this, columns.length ? columns : undefined);
   }
 
-  public insert(input: ColumnInput, permitOnly: PermittedColumns = new WeakMap([[this, this.requiredColumns]])): SQLQuery {
+  public insert(input: ColumnInput, permitOnly: PermittedColumns = new WeakMap([[this, this.safeColumns]])): SQLQuery {
     return SQLQuery.insert(this, input, permitOnly);
   }
 
-  public update(input: ColumnInput): SQLQuery {
-    return SQLQuery.update(this, input, new WeakMap([[this, this.requiredColumns]]));
+  public update(input: ColumnInput, permitOnly: PermittedColumns = new WeakMap([[this, this.safeColumns]])): SQLQuery {
+    return SQLQuery.update(this, input, permitOnly);
   }
 
   // start manual sql queries using the SQLQuery interface

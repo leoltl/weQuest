@@ -67,7 +67,7 @@ export default class DB {
 
         // query function to be passed to the callback
         const query = (text: string, params: any[] = []): Promise<any[]> => client.query(text, params)
-        .then(data => data.rows);
+          .then(data => data.rows);
         const output = await callback(query);
 
         // commit if no errors
