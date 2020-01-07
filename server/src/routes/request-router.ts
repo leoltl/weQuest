@@ -43,14 +43,35 @@ export default class RequestController {
       }
     });
 
-    this.router.use(accessControl);
+    // this.router.use(accessControl);
 
     /* POST requests/ */
     this.router.post('/', async (req: Request, res: Response) => {
       console.log(req.body);
       try {
-        const request: UserRequest = req.body.data;
-        await this.model.create(request);
+        // need to get user ID to create a request.. To be confirmed the implementation.
+        const user: number = req.session!.user;
+        const request = req.body.payload;
+        const borrowStart: String = new Date(request.borrowStart).toISOString();
+        const borrowEnd: String = new Date(request.borrowEnd).toISOString();
+        console.log(borrowEnd, borrowStart);
+        const Requestdata = {
+          ...request,
+          userId: req.session!.userId,
+          borrowStart,
+          borrowEnd,
+          auctionStart: new Date().toISOString(),
+          auctionEnd: new Date(
+            Date.now() + 2 * 24 * 60 * 60 * 1000,
+          ).toISOString(),
+          isActive: true,
+        };
+        await this.model
+          .create({
+            ...Requestdata,
+            userId: req.session!.userId || 1,
+          })
+          .run(db.query);
         res.sendStatus(201);
       } catch (err) {
         res.status(500).send(err.message);
@@ -82,11 +103,11 @@ export default class RequestController {
 
   private async findForRequestFeed(db: DB) {
     return await this.model
-      .manual(
-        `SELECT requests.id, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, bids.price_cent, bids.item_id 
+      .sql(
+        `SELECT requests.id, requests.title, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, bids.price_cent, bids.item_id 
     FROM requests LEFT JOIN users ON requests.user_id = users.id 
     LEFT JOIN bids on requests.current_bid_id = bids.id 
-    ORDER BY requests.id 
+    ORDER BY requests.id DESC
     LIMIT 20`,
       )
       .run(db.query);

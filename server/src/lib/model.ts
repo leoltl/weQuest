@@ -225,12 +225,11 @@ export default class Model {
     return SQLQuery.select(this, columns.length ? columns : undefined);
   }
 
-  public insert(input: ColumnInput): SQLQuery {
-    return SQLQuery.insert(
-      this,
-      input,
-      new WeakMap([[this, this.requiredColumns]]),
-    );
+  public insert(
+    input: ColumnInput,
+    permitOnly: PermittedColumns = new WeakMap([[this, this.requiredColumns]]),
+  ): SQLQuery {
+    return SQLQuery.insert(this, input, permitOnly);
   }
 
   public update(input: ColumnInput): SQLQuery {
@@ -241,7 +240,7 @@ export default class Model {
     );
   }
 
-  public manual(queryString: string, params?: any[]): SQLQuery {
+  public sql(queryString: string, params?: any[]): SQLQuery {
     return SQLQuery.manual(this, queryString, params);
   }
 

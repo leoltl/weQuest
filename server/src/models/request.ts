@@ -1,7 +1,10 @@
 // tslint:disable-next-line: import-name
-import Model from '../lib/model';
+import Model, { ColumnInput } from '../lib/model';
+import { isDate } from '../lib/utils';
 // tslint:disable-next-line: import-name
-import SQL, { and, or } from '../lib/sql';
+
+import SQLQuery from '../lib/sql';
+
 import User from './user';
 import Bid from './bid';
 // tslint:disable-next-line: import-name
@@ -13,34 +16,39 @@ export class Request extends Model {
 
     this.columns = {
       id: { name: 'id', type: Number.isInteger, primaryKey: true },
-      description: { name: 'description', type: 'string', required: true },
+      description: { name: 'description', type: 'string', required: false },
       auctionStart: {
         name: 'auction_start',
-        type: Number.isInteger,
+        type: 'string',
         required: true,
       },
       auctionEnd: {
         name: 'auction_end',
-        type: Number.isInteger,
+        type: 'string',
         required: true,
       },
       borrowStart: {
         name: 'borrow_start',
-        type: Number.isInteger,
+        type: 'string',
         required: true,
       },
-      borrowEnd: { name: 'borrow_end', type: Number.isInteger, required: true },
-      isActive: { name: 'is_active', type: 'boolean', required: false },
+      borrowEnd: { name: 'borrow_end', type: 'string', required: true },
+      isActive: { name: 'is_active', type: 'boolean', required: true },
       userId: { name: 'user_id', type: Number.isInteger, required: true },
-      winningBid: {
+      winningBidId: {
         name: 'winning_bid_id',
         type: Number.isInteger,
         required: false,
       },
-      currentBid: {
+      currentBidId: {
         name: 'current_bid_id',
         type: Number.isInteger,
         required: false,
+      },
+      title: {
+        name: 'title',
+        type: 'string',
+        required: true,
       },
     };
 
@@ -58,6 +66,12 @@ export class Request extends Model {
     };
   }
 
+  public create(input: ColumnInput): SQLQuery {
+    return this.insert(
+      input,
+      new WeakMap([[this, this.requiredColumns.concat('description')]]),
+    );
+  }
   // public async findForRequestFeed() {
   //   this.manual(
   //     `SELECT requests.id, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, bids.price_cent, bids.item_id

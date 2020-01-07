@@ -19,7 +19,7 @@ const RequestListItem = props => {
               padding: 0
             }}
           >
-            Request Title
+            {props.requestDetails.title}
           </IonCardSubtitle>
           <IonCardContent
             style={{

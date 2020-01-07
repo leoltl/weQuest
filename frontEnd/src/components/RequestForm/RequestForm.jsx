@@ -19,43 +19,55 @@ const RequestForm = () => {
       .format()
   );
 
+  const resetFields = () => {
+    setItem('');
+    setBudget(null);
+    setStartDate(moment().format());
+    setEndDate(
+      moment()
+        .add(1, 'days')
+        .format()
+    );
+    setNotes('');
+  };
+
   const submit = () => {
     const data = {
-      item,
-      budget,
-      startDate,
-      endDate
+      title: item,
+      // budget,
+      borrowStart: startDate,
+      borrowEnd: endDate,
+      description: notes
     };
 
     if (isValid(data)) {
       axios.post('/api/requests', { payload: data }).then(res => {
-        console.log(res);
+        if (res.status === 201) {
+          resetFields();
+        } else {
+          window.alert('server error');
+        }
       });
-      setItem('');
-      setBudget(null);
-      setStartDate(moment().format());
-      setEndDate(
-        moment()
-          .add(1, 'days')
-          .format()
-      );
     } else {
       window.alert('invalid form');
     }
   };
 
   const isValid = data => {
+    console.log(data);
     return (
-      data.item &&
-      data.budget &&
-      data.startDate &&
-      data.endDate &&
-      data.startDate <= data.endDate
+      data.title &&
+      // data.budget &&
+      data.borrowStart &&
+      data.borrowEnd &&
+      data.description &&
+      data.borrowStart <= data.borrowEnd
     );
   };
 
   const { user, hardChangeAuth } = useContext(AuthContext);
-
+  // temperoary hard set user to true;
+  const tmpuser = true;
   return (
     <IonContent>
       <form
@@ -76,7 +88,7 @@ const RequestForm = () => {
         />
         <IonButton
           className="ion-margin"
-          disabled={user ? false : true}
+          disabled={tmpuser ? false : true} //temp using tmp user, change it back to user.....
           expand="block"
           type="submit"
         >
@@ -84,18 +96,6 @@ const RequestForm = () => {
         </IonButton>
         <IonButton expand="block" fill="clear" type="button">
           Cancel
-        </IonButton>
-        <br />
-        <br />
-        <br />
-        <br />
-        development temperpory configs:
-        <br />
-        <IonText className="ion-margin">
-          Logged In as: {user || 'Not Logged In'}
-        </IonText>
-        <IonButton onClick={hardChangeAuth} expand="block" fill="clear">
-          Hard Log in
         </IonButton>
       </form>
     </IonContent>
