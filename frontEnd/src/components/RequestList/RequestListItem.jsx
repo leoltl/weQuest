@@ -13,6 +13,7 @@ const RequestListItem = props => {
     <IonCard onClick={props.selectCard}>
       <IonCardHeader>
         <div className="request-card--header">
+          {props.requestDetails.id}
           <IonCardSubtitle
             style={{
               fontSize: '1.15rem',

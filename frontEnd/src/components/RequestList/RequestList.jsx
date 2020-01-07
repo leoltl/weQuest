@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { IonContent, IonList } from '@ionic/react';
+import { IonContent, IonList, IonButton } from '@ionic/react';
 import RequestListItem from './RequestListItem';
 import BidFormModal from '../../pages/BidFormModal';
 import axios from 'axios';
 
 import './RequestList.scss';
+
+
+
 
 const RequestList = props => {
   const isLoggedIn = true;
@@ -14,6 +17,17 @@ const RequestList = props => {
   useEffect(() => {
     axios.get('/api/requests').then(res => setRequests(res.data));
   }, []);
+
+  const updateRequestById = (id, payload) => {
+    setRequests(prev => prev.map(request => {
+      console.log(prev)
+      if (request.id === id) {
+        return {...request, ...payload}
+      } else {
+        return request
+      }
+    }));
+  };
 
   const renderedRequestItem = requests.map(listItem => {
     return (
@@ -35,6 +49,10 @@ const RequestList = props => {
     );
   });
 
+  const test = () => {
+    updateRequestById(101,{priceCent: 2000 })
+  }
+
   return (
     <IonContent id="request-list-item">
       {isLoggedIn && (
@@ -42,11 +60,13 @@ const RequestList = props => {
           {...{
             showModal: showBidForm,
             setShowModal: setShowBidForm,
-            request: { id: props.selectedId, currentPrice: 5000 }
+            request: { id: props.selectedId, currentPrice: 5000 },
+            updateRequestById: updateRequestById
           }}
         />
       )}
       <IonList>{renderedRequestItem}</IonList>
+      <IonButton onClick={test}></IonButton>
     </IonContent>
   );
 };
