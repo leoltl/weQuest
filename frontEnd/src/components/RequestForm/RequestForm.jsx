@@ -10,12 +10,13 @@ import RequestFieldGroup from './RequestFieldGroup';
 
 const RequestForm = () => {
   const [item, setItem] = useState('');
+  const [notes, setNotes] = useState('');
   const [budget, setBudget] = useState(null);
   const [startDate, setStartDate] = useState(moment().format());
   const [endDate, setEndDate] = useState(
     moment()
       .add(1, 'days')
-      .format(),
+      .format()
   );
 
   const submit = () => {
@@ -23,11 +24,11 @@ const RequestForm = () => {
       item,
       budget,
       startDate,
-      endDate,
+      endDate
     };
 
     if (isValid(data)) {
-      axios.post('/requests', { payload: data }).then(res => {
+      axios.post('/api/requests', { payload: data }).then(res => {
         console.log(res);
       });
       setItem('');
@@ -36,7 +37,7 @@ const RequestForm = () => {
       setEndDate(
         moment()
           .add(1, 'days')
-          .format(),
+          .format()
       );
     } else {
       window.alert('invalid form');
@@ -44,7 +45,13 @@ const RequestForm = () => {
   };
 
   const isValid = data => {
-    return data.item && data.budget && data.startDate && data.endDate && data.startDate <= data.endDate;
+    return (
+      data.item &&
+      data.budget &&
+      data.startDate &&
+      data.endDate &&
+      data.startDate <= data.endDate
+    );
   };
 
   const { user, hardChangeAuth } = useContext(AuthContext);
@@ -58,10 +65,21 @@ const RequestForm = () => {
         }}
       >
         <RequestFieldGroup
-          formSetters={{ setBudget, setItem, setStartDate, setEndDate }}
-          formValues={{ budget, item, startDate, endDate }}
+          formSetters={{
+            setBudget,
+            setItem,
+            setStartDate,
+            setEndDate,
+            setNotes
+          }}
+          formValues={{ budget, item, startDate, endDate, notes }}
         />
-        <IonButton className="ion-margin" disabled={user ? false : true} expand="block" type="submit">
+        <IonButton
+          className="ion-margin"
+          disabled={user ? false : true}
+          expand="block"
+          type="submit"
+        >
           Request It
         </IonButton>
         <IonButton expand="block" fill="clear" type="button">
@@ -73,7 +91,9 @@ const RequestForm = () => {
         <br />
         development temperpory configs:
         <br />
-        <IonText className="ion-margin">Logged In as: {user || 'Not Logged In'}</IonText>
+        <IonText className="ion-margin">
+          Logged In as: {user || 'Not Logged In'}
+        </IonText>
         <IonButton onClick={hardChangeAuth} expand="block" fill="clear">
           Hard Log in
         </IonButton>
