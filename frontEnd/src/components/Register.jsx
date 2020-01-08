@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { IonHeader, IonToolbar, IonContent, IonItem, IonLabel, IonInput, IonList, IonButton } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
 
 const Register = props => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
+  const history = useHistory();
 
   const [formErrors, setFormErrors] = useState({});
 
@@ -31,7 +33,7 @@ const Register = props => {
       await axios.post('/api/users', {
         user: { name: name, email: email, password: password },
       });
-      // props.history.push('/requestFeed');
+      history.push('/requestFeed');
     } catch (e) {
       setFormErrors(e);
     }
@@ -67,7 +69,7 @@ const Register = props => {
               <IonLabel position="floating">Password Confirmation</IonLabel>
               <IonInput
                 name="passwordConfirmation"
-                type="passwordConfirmation"
+                type="password"
                 value={passwordConfirmation}
                 onIonChange={e => setPasswordConfirmation(e.target.value)}
               />

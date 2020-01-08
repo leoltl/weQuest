@@ -12,6 +12,7 @@ import {
   IonToolbar,
   IonButtons,
   IonBackButton,
+  useIonViewDidEnter,
 } from '@ionic/react';
 import { AuthContext } from '../contexts/authContext';
 import axios from 'axios';
@@ -23,18 +24,16 @@ const LoginScreen = props => {
 
   const getCurrentState = async e => {
     axios.get('/api/users').then(user => {
-      console.log(user.data);
       setUser(user.data);
       if (user) {
-        //redirect is not working
         history.push('/profile');
       }
     });
   };
 
-  useEffect(() => {
+  useIonViewDidEnter(() => {
     getCurrentState();
-  }, []);
+  });
 
   return (
     <IonPage id="login-page">
