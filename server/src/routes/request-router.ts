@@ -43,14 +43,13 @@ export default class RequestController {
       }
     });
 
-    // this.router.use(accessControl);
+    this.router.use(accessControl);
 
     /* POST requests/ */
     this.router.post('/', async (req: Request, res: Response) => {
-      console.log(req.body);
       try {
         // need to get user ID to create a request.. To be confirmed the implementation.
-        const user: number = req.session!.user;
+        const userId: number = req.session!.userId;
         const request = req.body.payload;
         const borrowStart: String = new Date(request.borrowStart).toISOString();
         const borrowEnd: String = new Date(request.borrowEnd).toISOString();
@@ -69,7 +68,7 @@ export default class RequestController {
         await this.model
           .create({
             ...Requestdata,
-            userId: req.session!.userId || 1,
+            userId
           })
           .run(db.query);
         res.sendStatus(201);

@@ -7,8 +7,6 @@ import axios from 'axios';
 import './RequestList.scss';
 
 
-
-
 const RequestList = props => {
   const isLoggedIn = true;
   const [requests, setRequests] = useState([]);
