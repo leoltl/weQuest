@@ -53,7 +53,6 @@ export class Request extends Model {
       request_status: {
         name: 'request_status',
         type: 'string',
-        required: true,
       },
     };
 
