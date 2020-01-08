@@ -21,11 +21,15 @@ import { book, build, colorFill, grid } from 'ionicons/icons';
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../contexts/authContext';
 
+import BidModal from './BidModal';
+
 import './Tab1.scss';
 
 const Tab1 = props => {
   const [state, setState] = useState({ user: {} });
   const { user, setUser } = useContext(AuthContext);
+
+  const [showBidForm, setShowBidForm] = useState(false);
 
   const signOut = async e => {
     setUser(null);
@@ -86,8 +90,8 @@ const Tab1 = props => {
             </IonItem>
           )}
         </IonList>
-        {/* <BidFormModal {...{ showModal: showBidForm, setShowModal: setShowBidForm, request: { id: 3, currentPrice: 5000 } }} />
-        <IonButton onClick={(e) => setShowBidForm(true)}>Show Bid Screen</IonButton> */}
+        <BidModal {...{ showModal: showBidForm, setShowModal: setShowBidForm, request: { id: 3, currentPrice: 5000 } }} />
+        <IonButton onClick={(e) => setShowBidForm(true)}>Show Bid Screen</IonButton>
       </IonContent>
     </IonPage>
   );

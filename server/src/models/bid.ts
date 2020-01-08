@@ -71,6 +71,7 @@ export default class Bid extends Model {
           'id',
           'priceCent',
           'notes',
+          'requestId',
         )
           .where({ id })
           .limit(1)
