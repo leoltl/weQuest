@@ -36,8 +36,6 @@ export default class BidController {
           const output = await this.create(req.body);
           res.json(output);
         } catch (err) {
-          console.log(err);
-          
           res.status(404).json({ error: 'Failed to save item' });
         }
       });

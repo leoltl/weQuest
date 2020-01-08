@@ -106,7 +106,7 @@ function bidReducer(state, { type, payload }) {
 
 }
 
-export default function BidFormModal({ showModal, setShowModal, request }) {
+export default function BidFormModal({ showModal, setShowModal, request, updateRequestById }) {
 
   console.log('rendering bid');
 
@@ -125,7 +125,7 @@ export default function BidFormModal({ showModal, setShowModal, request }) {
   }, []);
 
   const setPrice = useCallback((price) => {
-    bidDispatch({ type: bidActions.SET_PRICE, payload: { price: Math.min(parseInt(price), request.currentPrice * 100) } });
+    bidDispatch({ type: bidActions.SET_PRICE, payload: { price: Math.min(parseInt(price), request.priceCent * 100) } });
   }, [request]);
 
   const setNotes = useCallback((notes) => {
@@ -138,7 +138,7 @@ export default function BidFormModal({ showModal, setShowModal, request }) {
     console.log('submitting bid');
 
     if (!bidState.product) return setErrorMessage('You must select an item to bid with!');
-    if (bidState.price >= request.currentPrice) return setErrorMessage('Your price is too high relative to the latest bids!');
+    if (bidState.price >= request.priceCent) return setErrorMessage('Your price is too high relative to the latest bids!');
     
     setShowSpinner('Saving...');
 
@@ -153,20 +153,19 @@ export default function BidFormModal({ showModal, setShowModal, request }) {
     //   setTimeout(() => resolve({ data: bid }), 3000);
     // })
     axios.post('/api/bids', bid)
-    .then(({ data: bid }) => {
+    .then(({ data: { requestId, priceCent } }) => {
       setShowModal(false);
-      console.log(bid);
-      
+      updateRequestById(requestId, { priceCent });
     })
     .catch((err) => setErrorMessage(err.message))
     .finally(() => setShowSpinner(false));
 
   };
 
-  // reset form if request id or currentPrice change
+  // reset form if request id or priceCent change
   useEffect(() => {
-    bidDispatch({ type: bidActions.RESET, payload: { price: request.currentPrice } });
-  }, [request.id, request.currentPrice]);
+    bidDispatch({ type: bidActions.RESET, payload: { price: request.priceCent } });
+  }, [request.id, request.priceCent]);
 
   // load product data
   useEffect(() => {
@@ -203,7 +202,7 @@ export default function BidFormModal({ showModal, setShowModal, request }) {
           {/* <h3>Name Your Price</h3> */}
           <IonItem>
             <IonLabel position='floating'>Name Your Price</IonLabel>
-            <IonInput type='number' name='price' max={(request.currentPrice - 50) / 100} value={bidState.price / 100} step={0.5} inputmode='decimal' onIonChange={(e) => setPrice(e.currentTarget.value * 100)} debounce={100} required></IonInput>
+            <IonInput type='number' name='price' max={(request.priceCent - 50) / 100} value={bidState.price / 100} step={0.5} inputmode='decimal' onIonChange={(e) => setPrice(e.currentTarget.value * 100)} debounce={100} required></IonInput>
           </IonItem>
           {/* <h3>Notes</h3> */}
           <IonItem>
