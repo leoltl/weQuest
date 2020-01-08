@@ -1,0 +1,52 @@
+.bid-card {
+  &__img {
+    height: 200px;
+    object-fit: cover;
+    overflow: hidden;
+  }
+
+  &__header, &__user {
+    display: flex;
+    justify-content: flex-start;
+    align-content: stretch;
+    align-items: center;
+    margin: 0.5rem 0;
+    padding: 0.8rem;
+    &-img {
+      flex-grow: 0;
+      flex-shrink: 0;
+      height: 40px;
+      width: 40px;
+      object-fit: cover;
+    }
+    &-name {
+      flex-grow: 1;
+      flex-shrink: 1;
+      font-size: 1.4em;
+      margin: 0;
+      padding: 0 1.2rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    &-price, &-rating {
+      flex-grow: 0;
+      flex-shrink: 0;
+      justify-self: end;
+      font-size: 1.2em;
+    }
+  }
+
+  .bid-card &__heading {
+    margin: 0.4em 0;
+    font-weight: 700;
+  }
+
+  p {
+    margin-bottom: 1.4em
+  }
+
+  &__btn {
+    display: block;
+  }
+}

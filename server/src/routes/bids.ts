@@ -25,7 +25,7 @@ export default class BidController {
       .get(async (req, res) => {
         try {
           // const output = await this.getAllByUser(req.session!.userId);
-          const output = await this.model.findByUserSafe(req.session!.userId);
+          const output = await this.model.findByUserSafe(req.session!.userId).run(this.db.query);
           res.json(output);
         } catch (err) {
           res.status(404).json({ error: 'Failed to retrieve items for user' });
