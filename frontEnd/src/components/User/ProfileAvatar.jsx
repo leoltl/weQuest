@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { IonButton, IonList, IonItem } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-import { AuthContext } from '../contexts/authContext';
+import { AuthContext } from '../../contexts/authContext';
 import axios from 'axios';
 
 export default function ProfileAvatar(props) {

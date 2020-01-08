@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { IonHeader, IonToolbar, IonContent, IonItem, IonLabel, IonInput, IonList, IonButton } from '@ionic/react';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
-import { AuthContext } from '../contexts/authContext';
+import { AuthContext } from '../../contexts/authContext';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 

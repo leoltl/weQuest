@@ -11,7 +11,7 @@ import {
   IonBackButton,
 } from '@ionic/react';
 import { AuthContext } from '../contexts/authContext';
-import ProfileAvatar from '../components/ProfileAvatar';
+import ProfileAvatar from '../components/User/ProfileAvatar';
 
 export default function Profile(props) {
   return (
