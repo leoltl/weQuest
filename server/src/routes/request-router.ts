@@ -1,11 +1,11 @@
+// tslint:disable: import-name
 /*
  * All routes for Requests are defined here
  * Since this file is loaded in server.js into api/users,
  * these routes are mounted onto /users
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
-import express, { Router } from 'express';
-import { Request, Response } from 'express';
+import express, { Router, Request, Response } from 'express';
 // import RequestService from '../models/RequestService';
 // import { Request as UserRequest, Requests } from '../interfaces/requests';
 import { Request as UserRequest } from '../models/request';
@@ -103,12 +103,19 @@ export default class RequestController {
 
   private async findForRequestFeed(db: DB) {
     return await this.model
+      // .sql(
+      //   `SELECT requests.id, requests.title, requests.user_id, requests.description, requests.budget, requests.current_bid_id, users.name, users.email, bids.price_cent, bids.item_id
+      //   FROM requests LEFT JOIN users ON requests.user_id = users.id
+      //   LEFT JOIN bids on requests.current_bid_id = bids.id
+      //   ORDER BY requests.id DESC
+      //   LIMIT 20`,
+      // )
       .sql(
-        `SELECT requests.id, requests.title, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, bids.price_cent, bids.item_id 
-    FROM requests LEFT JOIN users ON requests.user_id = users.id 
-    LEFT JOIN bids on requests.current_bid_id = bids.id 
-    ORDER BY requests.id DESC
-    LIMIT 20`,
+        `SELECT requests.id, requests.title, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, COALESCE(bids.price_cent, requests.budget) as price_cent, bids.item_id
+        FROM requests LEFT JOIN users ON requests.user_id = users.id
+        LEFT JOIN bids on requests.current_bid_id = bids.id
+        ORDER BY requests.id DESC
+        LIMIT 20`,
       )
       .run(db.query);
   }

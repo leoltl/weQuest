@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { IonContent, IonList, IonButton } from '@ionic/react';
 import RequestListItem from './RequestListItem';
 import BidFormModal from '../../pages/BidFormModal';
@@ -13,21 +13,22 @@ const RequestList = props => {
   const isLoggedIn = true;
   const [requests, setRequests] = useState([]);
   const [showBidForm, setShowBidForm] = useState(false);
+  
 
   useEffect(() => {
     axios.get('/api/requests').then(res => setRequests(res.data));
   }, []);
 
-  const updateRequestById = (id, payload) => {
+  const updateRequestById = useCallback((id, payload) => {
+    
     setRequests(prev => prev.map(request => {
-      console.log(prev)
-      if (request.id === id) {
-        return {...request, ...payload}
-      } else {
-        return request
-      }
+      return (request.id === id) ? { ...request, ...payload } : request;
     }));
-  };
+  }, []);
+
+  const getRequestById = useCallback((id) => {
+    return requests.find((request) => request.id === id);
+  }, [requests]);
 
   const renderedRequestItem = requests.map(listItem => {
     return (
@@ -49,10 +50,6 @@ const RequestList = props => {
     );
   });
 
-  const test = () => {
-    updateRequestById(101,{priceCent: 2000 })
-  }
-
   return (
     <IonContent id="request-list-item">
       {isLoggedIn && (
@@ -60,13 +57,12 @@ const RequestList = props => {
           {...{
             showModal: showBidForm,
             setShowModal: setShowBidForm,
-            request: { id: props.selectedId, currentPrice: 5000 },
-            updateRequestById: updateRequestById
+            request: getRequestById(props.selectedId) || { id: 0, priceCent: 0 },
+            updateRequestById
           }}
         />
       )}
       <IonList>{renderedRequestItem}</IonList>
-      <IonButton onClick={test}></IonButton>
     </IonContent>
   );
 };
