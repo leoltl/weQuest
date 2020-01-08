@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonList, IonButton } from '@ionic/react';
 import RequestListItem from '../RequestList/RequestListItem';
+import BidFormModal from '../../pages/BidFormModal';
 import axios from 'axios';
 
 const RequestList = props => {
@@ -47,7 +48,23 @@ const RequestList = props => {
     updateRequestById(101, { priceCent: 2000 });
   };
 
-  return <IonContent id="request-list-item"></IonContent>;
+  return (
+    <IonContent id="-active-requests">
+      {isLoggedIn && (
+        // insert winning bid modal
+        <BidFormModal
+          {...{
+            showModal: showBidForm,
+            setShowModal: setShowBidForm,
+            request: { id: props.selectedId, currentPrice: 5000 },
+            updateRequestById: updateRequestById,
+          }}
+        />
+      )}
+      <IonList>{renderedRequestItem}</IonList>
+      <IonButton onClick={test}></IonButton>
+    </IonContent>
+  );
 };
 
-export default RequestList;
+export default Requests;

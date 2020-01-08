@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { IonContent, IonList, IonButton } from '@ionic/react';
+import { IonContent, IonList, IonListHeader } from '@ionic/react';
 import RequestListItem from '../RequestList/RequestListItem';
 import BidFormModal from '../../pages/BidFormModal';
 import axios from 'axios';
 
-const RequestList = props => {
+const Requests = props => {
   const isLoggedIn = true;
-  const [requests, setRequests] = useState([]);
+  const [activeRequests, setActiveRequests] = useState([]);
+  const [completedRequests, setCompletedRequests] = useState([]);
   const [showBidForm, setShowBidForm] = useState(false);
 
   useEffect(() => {
-    axios.get('/api/requests').then(res => setRequests(res.data));
+    axios.get('/api/requests').then(res => setActiveRequests(res.data));
   }, []);
 
   const updateRequestById = (id, payload) => {
-    setRequests(prev =>
+    setActiveRequests(prev =>
       prev.map(request => {
         console.log(prev);
         if (request.id === id) {
@@ -26,7 +27,7 @@ const RequestList = props => {
     );
   };
 
-  const renderedRequestItem = requests.map(listItem => {
+  const renderedActiveRequests = activeRequests.map(listItem => {
     return (
       <RequestListItem
         key={listItem.id}
@@ -44,13 +45,28 @@ const RequestList = props => {
     );
   });
 
-  const test = () => {
-    updateRequestById(101, { priceCent: 2000 });
-  };
+  const renderedCompletedRequests = completedRequests.map(listItem => {
+    return (
+      <RequestListItem
+        key={listItem.id}
+        currentBid={listItem.priceCent}
+        user={listItem.email}
+        requestDetails={listItem}
+        isSelected={listItem.id === props.selectedId}
+        selectCard={() => props.onClick(listItem.id === props.selectedId ? null : listItem.id)}
+        onBidClick={e => {
+          e.preventDefault();
+          e.stopPropagation();
+          setShowBidForm(true);
+        }}
+      ></RequestListItem>
+    );
+  });
 
   return (
-    <IonContent id="request-list-item">
+    <IonContent id="-active-requests">
       {isLoggedIn && (
+        // insert winning bid modal
         <BidFormModal
           {...{
             showModal: showBidForm,
@@ -60,10 +76,16 @@ const RequestList = props => {
           }}
         />
       )}
-      <IonList>{renderedRequestItem}</IonList>
-      <IonButton onClick={test}></IonButton>
+      <IonList>
+        <IonListHeader>Active Requests</IonListHeader>
+        {renderedActiveRequests}
+      </IonList>
+      <IonList>
+        <IonListHeader>Completed Requests</IonListHeader>
+        {renderedCompletedRequests}
+      </IonList>
     </IonContent>
   );
 };
 
-export default RequestList;
+export default Requests;

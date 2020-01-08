@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import ActiveRequest from '../components/ActivityFeed/ActiveRequest';
-import ActiveBids from '../components/ActivityFeed/ActiveBids';
+import Request from '../components/ActivityFeed/Request';
+import Bids from '../components/ActivityFeed/Bids';
 import {
   IonSegment,
   IonContent,
@@ -36,7 +36,7 @@ const LoginScreen = props => {
             </IonSegmentButton>
           </IonSegment>
         </IonToolbar>
-        {tab === 'requests' ? <ActiveRequest></ActiveRequest> : <ActiveBids></ActiveBids>}
+        {tab === 'requests' ? <Request></Request> : <Bids></Bids>}
       </IonContent>
     </IonPage>
   );
