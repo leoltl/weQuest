@@ -13,7 +13,7 @@ const RequestListItem = props => {
   return (
     <IonCard onClick={props.selectCard}>
       <IonCardHeader>
-        <div className="request-card--header">
+        <div className="request-card__header">
           <IonCardSubtitle
             style={{
               fontSize: '1.15rem',
@@ -31,12 +31,14 @@ const RequestListItem = props => {
             ${props.currentBid / 100}
           </IonCardContent>
         </div>
-        <IonCardContent className="request-card--user">
-          <div className="request-card--left">
-          <img alt="user avatar" src="https://i.pravatar.cc/50"></img>
-          <span className="request-card--user-rating">4/5</span></div>
-          <div className="request-card--right">
-          <span className="request-card--auction-end">Ends {moment(props.requestDetails.auctionEnd).fromNow()}</span></div>
+        <IonCardContent className="request-card__user">
+          <div className="request-card__left">
+            <img alt="user avatar" src="https://i.pravatar.cc/50"></img>
+            <span className="request-card__user-rating">4/5</span>
+          </div>
+          <div className="request-card__right">
+            <span className="request-card__auction-end">Ends {moment(props.requestDetails.auctionEnd).fromNow()}</span>
+          </div>
         </IonCardContent>
       </IonCardHeader>
       {props.isSelected ? (
