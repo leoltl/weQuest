@@ -1,16 +1,7 @@
-/*
- * All routes for Requests are defined here
- * Since this file is loaded in server.js into api/users,
- * these routes are mounted onto /users
- * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
- */
-import express, { Router } from 'express';
-import { Request, Response } from 'express';
-// import RequestService from '../models/RequestService';
-// import { Request as UserRequest, Requests } from '../interfaces/requests';
+// tslint:disable: import-name
+import express, { Router, Request, Response } from 'express';
 import { Request as UserRequest } from '../models/request';
 import { accessControl } from '../lib/utils';
-
 import DB from '../lib/db';
 
 export default class RequestController {
@@ -26,6 +17,24 @@ export default class RequestController {
     this.router.get('/', async (req: Request, res: Response) => {
       try {
         const requestData = await this.findForRequestFeed(db);
+        res.json(requestData);
+      } catch (err) {
+        res.status(400).send(err.message);
+      }
+    });
+
+    this.router.get('/active', async (req: Request, res: Response) => {
+      try {
+        const requestData = await this.findActiveRequests(db);
+        res.json(requestData);
+      } catch (err) {
+        res.status(400).send(err.message);
+      }
+    });
+
+    this.router.get('/completed', async (req: Request, res: Response) => {
+      try {
+        const requestData = await this.findCompletedRequests(db);
         res.json(requestData);
       } catch (err) {
         res.status(400).send(err.message);
@@ -77,28 +86,6 @@ export default class RequestController {
         res.status(500).send(err.message);
       }
     });
-
-    // /* PUT requests/ */
-    // this.router.put('/', async (req: Request, res: Response) => {
-    //   try {
-    //     const request: UserRequest = req.body.user;
-    //     await RequestService.update(request);
-    //     res.status(200);
-    //   } catch (err) {
-    //     res.status(500).send(err.message);
-    //   }
-    // });
-
-    // /* DELETE requests/:id */
-    // this.router.delete('/:id', async (req: Request, res: Response) => {
-    //   try {
-    //     const id: number = parseInt(req.params.id, 10);
-    //     await RequestService.remove(id);
-    //     res.status(200);
-    //   } catch (err) {
-    //     res.status(500).send(err.message);
-    //   }
-    // });
   }
 
   private async findForRequestFeed(db: DB) {
@@ -115,5 +102,21 @@ export default class RequestController {
 
   private async findRequestById(id: number, db: DB) {
     return this.model.find(id).run(db.query);
+  }
+
+  private async findActiveRequests(db: DB) {
+    return this.model
+      .select()
+      .where({ request_status: 'active' })
+      .limit(10)
+      .run(db.query);
+  }
+
+  private async findCompletedRequests(db: DB) {
+    return this.model
+      .select()
+      .where({ request_status: 'closed' })
+      .limit(10)
+      .run(db.query);
   }
 }

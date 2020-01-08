@@ -6,29 +6,23 @@ import axios from 'axios';
 
 import './RequestList.scss';
 
-
-
-
 const RequestList = props => {
   const isLoggedIn = true;
-  const [requests, setRequests] = useState([]);
+  const { requests, setRequests } = props;
   const [showBidForm, setShowBidForm] = useState(false);
 
-  useEffect(() => {
-    axios.get('/api/requests').then(res => setRequests(res.data));
-  }, []);
-
   const updateRequestById = (id, payload) => {
-    setRequests(prev => prev.map(request => {
-      console.log(prev)
-      if (request.id === id) {
-        return {...request, ...payload}
-      } else {
-        return request
-      }
-    }));
+    setRequests(prev =>
+      prev.map(request => {
+        console.log(prev);
+        if (request.id === id) {
+          return { ...request, ...payload };
+        } else {
+          return request;
+        }
+      }),
+    );
   };
-
   const renderedRequestItem = requests.map(listItem => {
     return (
       <RequestListItem
@@ -37,9 +31,7 @@ const RequestList = props => {
         user={listItem.email}
         requestDetails={listItem}
         isSelected={listItem.id === props.selectedId}
-        selectCard={() =>
-          props.onClick(listItem.id === props.selectedId ? null : listItem.id)
-        }
+        selectCard={() => props.onClick(listItem.id === props.selectedId ? null : listItem.id)}
         onBidClick={e => {
           e.preventDefault();
           e.stopPropagation();
@@ -50,8 +42,8 @@ const RequestList = props => {
   });
 
   const test = () => {
-    updateRequestById(101,{priceCent: 2000 })
-  }
+    updateRequestById(101, { priceCent: 2000 });
+  };
 
   return (
     <IonContent id="request-list-item">
@@ -61,7 +53,7 @@ const RequestList = props => {
             showModal: showBidForm,
             setShowModal: setShowBidForm,
             request: { id: props.selectedId, currentPrice: 5000 },
-            updateRequestById: updateRequestById
+            updateRequestById: updateRequestById,
           }}
         />
       )}

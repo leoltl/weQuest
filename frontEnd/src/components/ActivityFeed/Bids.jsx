@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonList, IonListHeader } from '@ionic/react';
+import BidListItem from '../RequestList/RequestListItem';
 import BidFormModal from '../../pages/BidFormModal';
 import axios from 'axios';
 
@@ -10,7 +11,8 @@ const Bids = props => {
   const [showBidForm, setShowBidForm] = useState(false);
 
   useEffect(() => {
-    axios.get('/api/bids').then(res => setActiveBids(res.data));
+    axios.get('/api/bids/').then(res => setActiveBids(res.data));
+    axios.get('/api/bids/?completed=true').then(res => setCompletedBids(res.data));
   }, []);
 
   const updateRequestById = (id, payload) => {

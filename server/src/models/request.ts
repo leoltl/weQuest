@@ -50,6 +50,11 @@ export class Request extends Model {
         type: 'string',
         required: true,
       },
+      request_status: {
+        name: 'request_status',
+        type: 'string',
+        required: true,
+      },
     };
 
     this.joins = {
@@ -72,13 +77,4 @@ export class Request extends Model {
       new WeakMap([[this, this.requiredColumns.concat('description')]]),
     );
   }
-  // public async findForRequestFeed() {
-  //   this.manual(
-  //     `SELECT requests.id, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, bids.price_cent, bids.item_id
-  //   FROM requests LEFT JOIN users ON requests.user_id = users.id
-  //   LEFT JOIN bids on requests.current_bid_id = bids.id
-  //   ORDER BY requests.id
-  //   LIMIT 20`,
-  //   ).run(db.query);
-  // }
 }

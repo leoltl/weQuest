@@ -1,10 +1,13 @@
 DROP TABLE IF EXISTS bids CASCADE;
 
+
+
 CREATE TABLE bids (
   id SERIAL PRIMARY KEY NOT NULL,
   item_id INTEGER REFERENCES items(id) NOT NULL,
   request_id INTEGER REFERENCES requests(id) NOT NULL,
   price_cent INTEGER NOT NULL,
   notes TEXT NOT NULL,
+  is_active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

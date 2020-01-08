@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { IonContent, IonList, IonListHeader } from '@ionic/react';
-import RequestListItem from '../RequestList/RequestListItem';
-import BidFormModal from '../../pages/BidFormModal';
+import { IonContent, IonList, IonListHeader, useIonViewWillEnter } from '@ionic/react';
+import RequestList from '../RequestList/RequestList';
 import axios from 'axios';
 
 const Requests = props => {
   const isLoggedIn = true;
   const [activeRequests, setActiveRequests] = useState([]);
   const [completedRequests, setCompletedRequests] = useState([]);
-  const [showBidForm, setShowBidForm] = useState(false);
+  const [selected, setSelected] = useState(null);
 
-  useEffect(() => {
-    axios.get('/api/requests').then(res => setActiveRequests(res.data));
-  }, []);
+  useIonViewWillEnter(() => {
+    axios.get('/api/requests/').then(res => setActiveRequests(res.data));
+    axios.get('/api/requests/completed').then(res => setCompletedRequests(res.data));
+  });
 
   const updateRequestById = (id, payload) => {
     setActiveRequests(prev =>
@@ -27,64 +27,34 @@ const Requests = props => {
     );
   };
 
-  const renderedActiveRequests = activeRequests.map(listItem => {
-    return (
-      <RequestListItem
-        key={listItem.id}
-        currentBid={listItem.priceCent}
-        user={listItem.email}
-        requestDetails={listItem}
-        isSelected={listItem.id === props.selectedId}
-        selectCard={() => props.onClick(listItem.id === props.selectedId ? null : listItem.id)}
-        onBidClick={e => {
-          e.preventDefault();
-          e.stopPropagation();
-          setShowBidForm(true);
-        }}
-      ></RequestListItem>
-    );
-  });
-
-  const renderedCompletedRequests = completedRequests.map(listItem => {
-    return (
-      <RequestListItem
-        key={listItem.id}
-        currentBid={listItem.priceCent}
-        user={listItem.email}
-        requestDetails={listItem}
-        isSelected={listItem.id === props.selectedId}
-        selectCard={() => props.onClick(listItem.id === props.selectedId ? null : listItem.id)}
-        onBidClick={e => {
-          e.preventDefault();
-          e.stopPropagation();
-          setShowBidForm(true);
-        }}
-      ></RequestListItem>
-    );
-  });
-
   return (
-    <IonContent id="-active-requests">
-      {isLoggedIn && (
+    <>
+      {
+        isLoggedIn
         // insert winning bid modal
-        <BidFormModal
-          {...{
-            showModal: showBidForm,
-            setShowModal: setShowBidForm,
-            request: { id: props.selectedId, currentPrice: 5000 },
-            updateRequestById: updateRequestById,
-          }}
-        />
-      )}
+        //   (<BidFormModal
+        //     {...{
+        //       showModal: showBidForm,
+        //       setShowModal: setShowBidForm,
+        //       request: { id: props.selectedId, currentPrice: 5000 },
+        //       updateRequestById: updateRequestById,
+        //     }}
+        //   />)
+      }
       <IonList>
         <IonListHeader>Active Requests</IonListHeader>
-        {renderedActiveRequests}
+        <RequestList requests={activeRequests} setRequests={setActiveRequests} selectedId={selected} onClick={setSelected}></RequestList>
       </IonList>
       <IonList>
         <IonListHeader>Completed Requests</IonListHeader>
-        {renderedCompletedRequests}
+        <RequestList
+          requests={completedRequests}
+          setRequests={setCompletedRequests}
+          selectedId={selected}
+          onClick={setSelected}
+        ></RequestList>
       </IonList>
-    </IonContent>
+    </>
   );
 };
 
