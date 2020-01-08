@@ -25,7 +25,9 @@ export default class BidController {
       .get(async (req, res) => {
         try {
           // const output = await this.getAllByUser(req.session!.userId);
-          const output = await this.model.findByUserSafe(req.session!.userId).run(this.db.query);
+          const output = await this.model
+            .findByUserSafe(req.session!.userId)
+            .run(this.db.query);
           res.json(output);
         } catch (err) {
           res.status(404).json({ error: 'Failed to retrieve items for user' });
@@ -36,6 +38,7 @@ export default class BidController {
           const output = await this.create(req.body);
           res.json(output);
         } catch (err) {
+          console.log(err);
           res.status(404).json({ error: 'Failed to save item' });
         }
       });
@@ -54,21 +57,24 @@ export default class BidController {
   // }
 
   public async create(input: Partial<ItemInterface & BidInterface>) {
-    const bid: BidInterface = await this.db.transaction(async (query): Promise<Partial<BidInterface>> => {
-      const bid: BidInterface = await this.model.create(input).run(query);
+    const bid: BidInterface = await this.db.transaction(
+      async (query): Promise<Partial<BidInterface>> => {
+        const bid: BidInterface = await this.model.create(input).run(query);
 
-      // check that bid has been created
-      if (!bid) throw Error('No record created');
+        // check that bid has been created
+        if (!bid) throw Error('No record created');
 
-      // update current bid in request
-      (new Request()).update({ currentBidId: bid.id }).where({ id: bid.requestId }).run(query);
-
-      return bid;
-    });
+        // update current bid in request
+        const request = await new Request()
+          .update({ currentBidId: bid.id })
+          .where({ id: bid.requestId })
+          .run(query);
+        return bid;
+      },
+    );
 
     // fetch bid including item
     return await this.model.findSafe(bid.id).run(this.db.query);
-
   }
 
   // parseBid(bid: Partial<ItemInterface & BidInterface>, includeItem: false): Partial<BidInterface>;

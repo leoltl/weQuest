@@ -117,7 +117,10 @@ export default class SQLQuery {
 
         return [
           `UPDATE ${this.model.table}
-          SET (${this.columns}) = (${this.insertValues})
+          ${this.columns.includes(',') ?
+          `SET (${this.columns}) = (${this.insertValues})` :
+          `SET ${this.columns} = ${this.insertValues}`
+          }
           WHERE ${this.whereCondition}
           RETURNING *`,
           this.params];
