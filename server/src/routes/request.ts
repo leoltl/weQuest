@@ -11,6 +11,7 @@ import express, { Router, Request, Response } from 'express';
 import { Request as UserRequest } from '../models/request';
 import { accessControl } from '../lib/utils';
 
+import Bid from '../models/bid';
 import DB from '../lib/db';
 
 export default class RequestController {
@@ -18,28 +19,41 @@ export default class RequestController {
   public router: Router = express.Router();
   public model = new UserRequest();
 
-  constructor(db: DB) {
-    this.init(db);
+  constructor(public db: DB) {
+    this.init();
   }
 
-  private init(db: DB) {
+  private init() {
+
+    /* GET /api/reqeusts */
     this.router.get('/', async (req: Request, res: Response) => {
       try {
-        const requestData = await this.findForRequestFeed(db);
+        const requestData = await this.model.findForRequestFeed().run(this.db.query);
         res.json(requestData);
       } catch (err) {
         res.status(400).send(err.message);
       }
     });
 
-    /* GET reqeusts/:id */
+    /* GET /api/reqeusts/:id */
     this.router.get('/:id', async (req: Request, res: Response) => {
       const id: number = parseInt(req.params.id, 10);
       try {
-        const request = await this.findRequestById(id, db);
-        res.status(200).send(request);
+        const request = await this.model.findRequestById(id).run(this.db.query);
+        res.json(request);
       } catch (err) {
         res.status(400).send(err.message);
+      }
+    });
+
+    /* GET /api/requests/:id/bids */
+    this.router.get('/:id/bids', async (req: Request, res: Response) => {
+      try {
+        const requestId = parseInt(req.params.id, 10);
+        const result = await new Bid().findByRequestSafe(requestId).run(this.db.query);
+        res.json(result);
+      } catch (err) {
+        res.status(500).send({ message:'sorry error' });
       }
     });
 
@@ -53,12 +67,11 @@ export default class RequestController {
         const request = req.body.payload;
         const borrowStart: String = new Date(request.borrowStart).toISOString();
         const borrowEnd: String = new Date(request.borrowEnd).toISOString();
-        console.log(borrowEnd, borrowStart);
-        const Requestdata = {
+        const requestData = {
           ...request,
-          userId: req.session!.userId,
           borrowStart,
           borrowEnd,
+          userId: req.session!.userId,
           auctionStart: new Date().toISOString(),
           auctionEnd: new Date(
             Date.now() + 2 * 24 * 60 * 60 * 1000,
@@ -67,26 +80,28 @@ export default class RequestController {
         };
         await this.model
           .create({
-            ...Requestdata,
-            userId
+            ...requestData,
+            userId,
           })
-          .run(db.query);
+          .run(this.db.query);
         res.sendStatus(201);
       } catch (err) {
         res.status(500).send(err.message);
       }
     });
 
-    // /* PUT requests/ */
-    // this.router.put('/', async (req: Request, res: Response) => {
-    //   try {
-    //     const request: UserRequest = req.body.user;
-    //     await RequestService.update(request);
-    //     res.status(200);
-    //   } catch (err) {
-    //     res.status(500).send(err.message);
-    //   }
-    // });
+    /* PUT requests/ */
+    this.router.put('/:id', async (req: Request, res: Response) => {
+      const requestId: number = parseInt(req.params.id, 10);
+      try {
+        const userId = req.session!.userId;
+        const request = await this.updateWinningBid(requestId, userId, req.body);
+        if (!request) throw Error('Cannot update request');
+        res.sendStatus(200);
+      } catch (err) {
+        res.status(500).send(err.message);
+      }
+    });
 
     // /* DELETE requests/:id */
     // this.router.delete('/:id', async (req: Request, res: Response) => {
@@ -100,19 +115,7 @@ export default class RequestController {
     // });
   }
 
-  private async findForRequestFeed(db: DB) {
-    return await this.model
-      .sql(
-        `SELECT requests.id, requests.title, requests.auction_end, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, COALESCE(bids.price_cent, requests.budget) as price_cent, bids.item_id
-        FROM requests LEFT JOIN users ON requests.user_id = users.id
-        LEFT JOIN bids on requests.current_bid_id = bids.id
-        ORDER BY requests.id DESC
-        LIMIT 20`,
-      )
-      .run(db.query);
-  }
-
-  private async findRequestById(id: number, db: DB) {
-    return this.model.find(id).run(db.query);
+  private updateWinningBid(requestId: number, userId: number, input: any) {
+    return this.model.update(input).where({ userId, id: requestId }).limit(1).run(this.db.query);
   }
 }
