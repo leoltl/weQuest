@@ -38,11 +38,7 @@ const LoginScreen = props => {
   return (
     <IonPage id="login-page">
       <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonBackButton />
-          </IonButtons>
-        </IonToolbar>
+        <IonToolbar></IonToolbar>
       </IonHeader>
       <IonContent>
         <IonToolbar>

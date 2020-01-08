@@ -9,6 +9,7 @@ import LoginScreen from './pages/LoginScreen';
 import Details from './pages/Details';
 import RequestFeed from './pages/RequestFeed';
 import Profile from './pages/Profile';
+import ActivityFeed from './pages/ActivityFeed';
 import AuthContextProvider from './contexts/authContext';
 
 /* Core CSS required for Ionic components to work properly */
@@ -41,6 +42,7 @@ const App = () => (
             <Route path="/tab2/details" component={Details} />
             <Route path="/requestFeed" component={RequestFeed} />
             <Route path="/login" component={LoginScreen} />
+            <Route path="/activity" component={ActivityFeed} />
             <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
             <Route path="/profile" component={Profile} />
           </IonRouterOutlet>
@@ -57,6 +59,10 @@ const App = () => (
             <IonTabButton tab="tab2" href="/tab2">
               <IonIcon icon={add} />
               <IonLabel>Tab Two</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="activityFeed" href="/activity">
+              <IonIcon icon={list} />
+              <IonLabel>Activity</IonLabel>
             </IonTabButton>
             <IonTabButton tab="tab4" href="/login">
               <IonIcon icon={apps} />
