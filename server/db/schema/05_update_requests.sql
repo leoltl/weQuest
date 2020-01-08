@@ -1,4 +1,7 @@
+DROP TYPE IF EXISTS status;
+
 CREATE TYPE status AS ENUM('deactivated', 'active', 'pending decision', 'winner selected', 'closed');
+
 ALTER TABLE requests
   ADD COLUMN winning_bid_id INTEGER REFERENCES bids(id) DEFAULT NULL,
   ADD COLUMN current_bid_id INTEGER REFERENCES bids(id) DEFAULT NULL,
