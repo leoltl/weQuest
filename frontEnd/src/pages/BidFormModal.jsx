@@ -108,7 +108,7 @@ function bidReducer(state, { type, payload }) {
 
 export default function BidFormModal({ showModal, setShowModal, request, updateRequestById }) {
 
-  console.log('rendering bid');
+  console.log('rendering bid form');
 
   const [showSpinner, setShowSpinner] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -170,7 +170,7 @@ export default function BidFormModal({ showModal, setShowModal, request, updateR
   // load product data
   useEffect(() => {
 
-    console.log('effect');
+    console.log('load initial bid form data');
     setShowSpinner(true);
     
     // TODO: replace resolve with axios call
