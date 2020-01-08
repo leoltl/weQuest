@@ -43,14 +43,13 @@ export default class RequestController {
       }
     });
 
-    // this.router.use(accessControl);
+    this.router.use(accessControl);
 
     /* POST requests/ */
     this.router.post('/', async (req: Request, res: Response) => {
-      console.log(req.body);
       try {
         // need to get user ID to create a request.. To be confirmed the implementation.
-        const user: number = req.session!.user;
+        const userId: number = req.session!.userId;
         const request = req.body.payload;
         const borrowStart: String = new Date(request.borrowStart).toISOString();
         const borrowEnd: String = new Date(request.borrowEnd).toISOString();
@@ -69,7 +68,7 @@ export default class RequestController {
         await this.model
           .create({
             ...Requestdata,
-            userId: req.session!.userId || 1,
+            userId
           })
           .run(db.query);
         res.sendStatus(201);
@@ -103,15 +102,8 @@ export default class RequestController {
 
   private async findForRequestFeed(db: DB) {
     return await this.model
-      // .sql(
-      //   `SELECT requests.id, requests.title, requests.user_id, requests.description, requests.budget, requests.current_bid_id, users.name, users.email, bids.price_cent, bids.item_id
-      //   FROM requests LEFT JOIN users ON requests.user_id = users.id
-      //   LEFT JOIN bids on requests.current_bid_id = bids.id
-      //   ORDER BY requests.id DESC
-      //   LIMIT 20`,
-      // )
       .sql(
-        `SELECT requests.id, requests.title, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, COALESCE(bids.price_cent, requests.budget) as price_cent, bids.item_id
+        `SELECT requests.id, requests.title, requests.auction_end, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, COALESCE(bids.price_cent, requests.budget) as price_cent, bids.item_id
         FROM requests LEFT JOIN users ON requests.user_id = users.id
         LEFT JOIN bids on requests.current_bid_id = bids.id
         ORDER BY requests.id DESC

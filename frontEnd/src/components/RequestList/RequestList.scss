@@ -5,6 +5,7 @@
   margin-top: 0.5rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   img {
     margin-right: 1.2rem;
     height: 50px;
@@ -13,6 +14,11 @@
   }
 }
 
-.request-card--header {
-  justify-content: space-between;
+.request-card--left {
+  display: flex;
+  align-items: center;
+}
+
+.request-card--auction-end {
+  font-size: 0.75em;
 }
