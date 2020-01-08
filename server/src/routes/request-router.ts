@@ -102,15 +102,8 @@ export default class RequestController {
 
   private async findForRequestFeed(db: DB) {
     return await this.model
-      // .sql(
-      //   `SELECT requests.id, requests.title, requests.user_id, requests.description, requests.budget, requests.current_bid_id, users.name, users.email, bids.price_cent, bids.item_id
-      //   FROM requests LEFT JOIN users ON requests.user_id = users.id
-      //   LEFT JOIN bids on requests.current_bid_id = bids.id
-      //   ORDER BY requests.id DESC
-      //   LIMIT 20`,
-      // )
       .sql(
-        `SELECT requests.id, requests.title, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, COALESCE(bids.price_cent, requests.budget) as price_cent, bids.item_id
+        `SELECT requests.id, requests.title, requests.auction_end, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, COALESCE(bids.price_cent, requests.budget) as price_cent, bids.item_id
         FROM requests LEFT JOIN users ON requests.user_id = users.id
         LEFT JOIN bids on requests.current_bid_id = bids.id
         ORDER BY requests.id DESC

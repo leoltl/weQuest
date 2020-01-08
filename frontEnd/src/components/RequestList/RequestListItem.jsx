@@ -6,6 +6,7 @@ import {
   IonCardContent,
   IonButton
 } from '@ionic/react';
+import moment from 'moment';
 
 const RequestListItem = props => {
   const isLoggedIn = true;
@@ -13,7 +14,6 @@ const RequestListItem = props => {
     <IonCard onClick={props.selectCard}>
       <IonCardHeader>
         <div className="request-card--header">
-          {props.requestDetails.id}
           <IonCardSubtitle
             style={{
               fontSize: '1.15rem',
@@ -32,8 +32,11 @@ const RequestListItem = props => {
           </IonCardContent>
         </div>
         <IonCardContent className="request-card--user">
+          <div className="request-card--left">
           <img alt="user avatar" src="https://i.pravatar.cc/50"></img>
-          <span className="request-card--user-rating">4/5</span>
+          <span className="request-card--user-rating">4/5</span></div>
+          <div className="request-card--right">
+          <span className="request-card--auction-end">Ends {moment(props.requestDetails.auctionEnd).fromNow()}</span></div>
         </IonCardContent>
       </IonCardHeader>
       {props.isSelected ? (
