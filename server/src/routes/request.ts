@@ -78,12 +78,7 @@ export default class RequestController {
           ).toISOString(),
           isActive: true,
         };
-        await this.model
-          .create({
-            ...requestData,
-            userId,
-          })
-          .run(this.db.query);
+        await this.model.create({ userId,...requestData  }).run(this.db.query);
         res.sendStatus(201);
       } catch (err) {
         res.status(500).send(err.message);
@@ -102,20 +97,11 @@ export default class RequestController {
         res.status(500).send(err.message);
       }
     });
-
-    // /* DELETE requests/:id */
-    // this.router.delete('/:id', async (req: Request, res: Response) => {
-    //   try {
-    //     const id: number = parseInt(req.params.id, 10);
-    //     await RequestService.remove(id);
-    //     res.status(200);
-    //   } catch (err) {
-    //     res.status(500).send(err.message);
-    //   }
-    // });
   }
 
   private updateWinningBid(requestId: number, userId: number, input: any) {
+    // check for valid user edit (request owner = current user) in the where clause.
+    // input should be a object with key of valid request model column  eg: {winningBidId: 50 } 
     return this.model.update(input).where({ userId, id: requestId }).limit(1).run(this.db.query);
   }
 }
