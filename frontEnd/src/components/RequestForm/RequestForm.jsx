@@ -31,10 +31,15 @@ const RequestForm = () => {
     setNotes('');
   };
 
+  const parseBudgetToCent = (budget) => {
+    const _budget = parseFloat(budget) * 100
+    return parseInt(_budget, 10);
+  }
+
   const submit = () => {
     const data = {
       title: item,
-      // budget,
+      budgetCent: parseBudgetToCent(budget),
       borrowStart: startDate,
       borrowEnd: endDate,
       description: notes
@@ -57,10 +62,9 @@ const RequestForm = () => {
     console.log(data);
     return (
       data.title &&
-      // data.budget &&
+      data.budgetCent &&
       data.borrowStart &&
       data.borrowEnd &&
-      data.description &&
       data.borrowStart <= data.borrowEnd
     );
   };
