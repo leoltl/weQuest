@@ -61,7 +61,7 @@ export default class BidController {
       if (!bid) throw Error('No record created');
 
       // update current bid in request
-      (new Request()).update({ currentBidId: bid.id }).where({ id: bid.requestId }).run(query);
+      await new Request().update({ currentBidId: bid.id }).where({ id: bid.requestId }).run(query);
 
       return bid;
     });

@@ -46,17 +46,6 @@ export default class RequestController {
       }
     });
 
-    /* GET /api/requests/:id/bids */
-    this.router.get('/:id/bids', async (req: Request, res: Response) => {
-      try {
-        const requestId = parseInt(req.params.id, 10);
-        const result = await new Bid().findByRequestSafe(requestId).run(this.db.query);
-        res.json(result);
-      } catch (err) {
-        res.status(500).send({ message:'sorry error' });
-      }
-    });
-
     this.router.use(accessControl);
 
     /* POST requests/ */
@@ -96,10 +85,22 @@ export default class RequestController {
       try {
         const userId = req.session!.userId;
         const request = await this.updateWinningBid(requestId, userId, req.body);
-        if (!request) throw Error('Cannot update request');
+        if (!request) throw Error('Cannot find/update request');
         res.sendStatus(200);
+
       } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send({ error: 'Failed to update request.' });
+      }
+    });
+
+    /* GET /api/requests/:id/bids */
+    this.router.get('/:id/bids', async (req: Request, res: Response) => {
+      try {
+        const requestId = parseInt(req.params.id, 10);
+        const result = await new Bid().findByRequestSafe(requestId, req.session!.userId).run(this.db.query);
+        res.json(result);
+      } catch (err) {
+        res.status(500).send({ error: 'Failed to retrieve bids for request' });
       }
     });
 

@@ -90,7 +90,7 @@ const Tab1 = props => {
             </IonItem>
           )}
         </IonList>
-        <BidModal {...{ showModal: showBidForm, setShowModal: setShowBidForm, request: { id: 3, currentPrice: 5000 } }} />
+        <BidModal {...{ showModal: showBidForm, setShowModal: setShowBidForm, requestId: 99 }} />
         <IonButton onClick={(e) => setShowBidForm(true)}>Show Bid Screen</IonButton>
       </IonContent>
     </IonPage>
