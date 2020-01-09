@@ -49,7 +49,7 @@ const RequestForm = (props) => {
     };
 
     if (!user) {
-      props.history.push('/login')
+      props.history.push({ pathname: '/login', state: { redirectOnSuccess: '/request/new' } })
       return
     }
 

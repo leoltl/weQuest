@@ -28,12 +28,18 @@ const Login = props => {
   const submit = async e => {
     try {
       await axios.post('/api/users/login', { email, password }).then(response => setUser(response));
-      history.push('/requestFeed');
+      //redirectOnSuccess comes from Request Form
+      if (history.location.state.redirectOnSuccess) {
+        history.push(history.location.state.redirectOnSuccess)
+      } else {
+        history.push('/requestFeed');
+      }
     } catch (e) {
       console.log(e);
       setFormErrors(e);
     }
   };
+
 
   return (
     <>
