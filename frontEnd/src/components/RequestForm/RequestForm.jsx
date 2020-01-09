@@ -75,8 +75,7 @@ const RequestForm = (props) => {
   };
 
   const { user } = useContext(AuthContext);
-  // TODO: fix tmpuser
-  const tmpuser = true;
+
   return (
     <IonContent>
       <form
@@ -97,11 +96,12 @@ const RequestForm = (props) => {
         />
         <IonButton
           className="ion-margin"
-          disabled={tmpuser ? false : true} //temp using tmp user, change it back to user.....
+          disabled={!user} // disable if no user is logged in
           expand="block"
           type="submit"
+
         >
-          Request It
+          { user ? 'Request It' : 'Login to request' }
         </IonButton>
         <IonButton expand="block" fill="clear" type="button">
           Cancel
