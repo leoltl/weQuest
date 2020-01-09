@@ -53,10 +53,12 @@ const RequestForm = (props) => {
           resetFields();
           props.history.push('/requestFeed')
         } else {
+          // TODO: make error looks better
           window.alert('server error');
         }
       });
     } else {
+      // TODO: make error looks better
       window.alert('invalid form');
     }
   };
@@ -72,8 +74,8 @@ const RequestForm = (props) => {
     );
   };
 
-  const { user, hardChangeAuth } = useContext(AuthContext);
-  // temperoary hard set user to true;
+  const { user } = useContext(AuthContext);
+  // TODO: fix tmpuser
   const tmpuser = true;
   return (
     <IonContent>
