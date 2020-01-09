@@ -1,26 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { IonInput, IonButton, IonList, IonItem, IonAvatar, IonImg, IonLabel, IonTextarea } from '@ionic/react';
 import axios from 'axios';
+import { readFile } from '../lib/utils'
 
 import Modal from '../components/Modal';
 import ErrorAlert from '../components/ErrorAlert';
-
-function readClientFile(file) {
-  return new Promise((resolve, reject) => {
-
-    const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target.result);
-    reader.onerror = (e) => {
-      reader.abort();
-    }
-    reader.onabort = (e) => {
-      reject('Error while loading the file!');
-    }
-    reader.readAsDataURL(file);
-
-  });
-}
-
 
 export default function ProductFormScreen({ showModal, setShowModal, onSuccess}) {
 
@@ -46,7 +30,7 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess})
     const file = e.currentTarget.querySelector('input').files[0];
     if (!file) return setShowSpinner(false);
 
-    readClientFile(file)
+    readFile(file)
     .then((img) => setPictureUrl(img))
     .catch((err) => setErrorMessage(err.message))
     .finally(() => setShowSpinner(false));
