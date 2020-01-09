@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import Login from '../components/Login';
-import Register from '../components/Register';
+import Login from '../components/User/Login';
+import Register from '../components/User/Register';
 import {
   IonSegment,
   IonContent,
@@ -12,6 +12,7 @@ import {
   IonToolbar,
   IonButtons,
   IonBackButton,
+  useIonViewWillEnter,
 } from '@ionic/react';
 import { AuthContext } from '../contexts/authContext';
 import axios from 'axios';
@@ -21,29 +22,23 @@ const LoginScreen = props => {
   const { user, setUser } = useContext(AuthContext);
   const history = useHistory();
 
-  const getCurrentState = async e => {
-    axios.get('/api/users').then(user => {
-      console.log(user.data);
-      // setUser(user.data);
-      // if (user.data) {
-      //redirect is not working
-      // history.push('/profile');
-      // }
-    });
-  };
+  // const getCurrentState = async e => {
+  //   axios.get('/api/users').then(user => {
+  //     setUser(user.data);
+  //     if (user) {
+  //       history.push('/profile');
+  //     }
+  //   });
+  // };
 
-  useEffect(() => {
-    getCurrentState();
-  }, []);
+  // useIonViewWillEnter(() => {
+  //   getCurrentState();
+  // });
 
   return (
     <IonPage id="login-page">
       <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonBackButton />
-          </IonButtons>
-        </IonToolbar>
+        <IonToolbar></IonToolbar>
       </IonHeader>
       <IonContent>
         <IonToolbar>

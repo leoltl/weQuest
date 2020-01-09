@@ -24,18 +24,41 @@ export default class RequestController {
   }
 
   private init() {
-
     /* GET /api/reqeusts */
     this.router.get('/', async (req: Request, res: Response) => {
       try {
-        const requestData = await this.model.findForRequestFeed().run(this.db.query);
+        const requestData = await this.model
+          .findAllRequest()
+          .run(this.db.query);
         res.json(requestData);
       } catch (err) {
         res.status(400).send(err.message);
       }
     });
 
-    /* GET /api/reqeusts/:id */
+    this.router.get('/active', async (req: Request, res: Response) => {
+      try {
+        const requestData = await this.model
+          .findRequestsByStatus(req.session!.userId, 'active')
+          .run(this.db.query);
+        res.json(requestData);
+      } catch (err) {
+        res.status(400).send(err.message);
+      }
+    });
+
+    this.router.get('/completed', async (req: Request, res: Response) => {
+      try {
+        const requestData = await this.model
+          .findRequestsByStatus(req.session!.userId, 'closed')
+          .run(this.db.query);
+        res.json(requestData);
+      } catch (err) {
+        res.status(400).send(err.message);
+      }
+    });
+
+    /* GET reqeusts/:id */
     this.router.get('/:id', async (req: Request, res: Response) => {
       const id: number = parseInt(req.params.id, 10);
       try {
@@ -43,6 +66,19 @@ export default class RequestController {
         res.json(request);
       } catch (err) {
         res.status(400).send(err.message);
+      }
+    });
+
+    /* GET /api/requests/:id/bids */
+    this.router.get('/:id/bids', async (req: Request, res: Response) => {
+      try {
+        const requestId = parseInt(req.params.id, 10);
+        const result = await new Bid()
+          .findByRequestSafe(requestId, req.session!.userId)
+          .run(this.db.query);
+        res.json(result);
+      } catch (err) {
+        res.status(500).send({ message: 'sorry error' });
       }
     });
 
@@ -83,10 +119,13 @@ export default class RequestController {
       const requestId: number = parseInt(req.params.id, 10);
       try {
         const userId = req.session!.userId;
-        const request = await this.updateWinningBid(requestId, userId, req.body);
+        const request = await this.updateWinningBid(
+          requestId,
+          userId,
+          req.body,
+        );
         if (!request) throw Error('Cannot find/update request');
         res.sendStatus(200);
-
       } catch (err) {
         res.status(500).send({ error: 'Failed to update request.' });
       }
@@ -96,7 +135,9 @@ export default class RequestController {
     this.router.get('/:id/bids', async (req: Request, res: Response) => {
       try {
         const requestId = parseInt(req.params.id, 10);
-        const result = await new Bid().findByRequestSafe(requestId, req.session!.userId).run(this.db.query);
+        const result = await new Bid()
+          .findByRequestSafe(requestId, req.session!.userId)
+          .run(this.db.query);
         res.json(result);
       } catch (err) {
         res.status(500).send({ error: 'Failed to retrieve bids for request' });
@@ -116,6 +157,10 @@ export default class RequestController {
   }
 
   private updateWinningBid(requestId: number, userId: number, input: any) {
-    return this.model.update(input).where({ userId, id: requestId }).limit(1).run(this.db.query);
+    return this.model
+      .update(input)
+      .where({ userId, id: requestId })
+      .limit(1)
+      .run(this.db.query);
   }
 }

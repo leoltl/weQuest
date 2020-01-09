@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  IonCard,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardContent,
-  IonButton
-} from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonButton } from '@ionic/react';
 import moment from 'moment';
 
 const currencyFormatter = (input) => {
@@ -20,6 +14,7 @@ const currencyFormatter = (input) => {
 
 const RequestListItem = props => {
   const isLoggedIn = true;
+
   return (
     <IonCard onClick={props.selectCard}>
       <IonCardHeader>
@@ -27,7 +22,7 @@ const RequestListItem = props => {
           <IonCardSubtitle
             style={{
               fontSize: '1.15rem',
-              padding: 0
+              padding: 0,
             }}
           >
             {props.requestDetails.title}
@@ -35,7 +30,7 @@ const RequestListItem = props => {
           <IonCardContent
             style={{
               fontSize: '1.3rem',
-              padding: 0
+              padding: 0,
             }}
           >
             ${currencyFormatter(props.currentBid)}
@@ -54,12 +49,7 @@ const RequestListItem = props => {
       {props.isSelected ? (
         <>
           <IonCardContent>{props.requestDetails.description}</IonCardContent>
-          <IonButton
-            className="ion-margin"
-            disabled={isLoggedIn ? false : true}
-            expand="block"
-            onClick={props.onBidClick}
-          >
+          <IonButton className="ion-margin" disabled={isLoggedIn ? false : true} expand="block" onClick={props.onBidClick}>
             Bid Now
           </IonButton>
         </>

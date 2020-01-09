@@ -16,9 +16,10 @@ export default class UserController {
   private initRoutes(db: DB) {
     this.router.get('/', async (req, res) => {
       if (req.session!.userId) {
-        const user = (
-          await this.model.findById(req.session!.userId).run(db.query)
-        )[0];
+        const user = await this.model
+          .findById(req.session!.userId)
+          .run(db.query);
+        console.log('user', user);
         res.json(user);
       }
     });

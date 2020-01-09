@@ -1,4 +1,5 @@
 // tslint:disable: import-name
+// prettier-ignore
 import Model from '../lib/model';
 import SQL, { and, or } from '../lib/sql';
 import User from './user';
@@ -13,6 +14,7 @@ export interface BidInterface {
   userId: number;
   requestId: number;
   itemId: number;
+  isActive: boolean;
 }
 
 export default class Bid extends Model {
@@ -26,47 +28,97 @@ export default class Bid extends Model {
       notes: { name: 'notes', type: 'string', required: true },
       requestId: { name: 'request_id', type: Number.isInteger, required: true },
       itemId: { name: 'item_id', type: Number.isInteger, required: true },
-      createdAt: { name: 'created_at', type: Number.isInteger, required: false },
+      createdAt: {
+        name: 'created_at',
+        type: Number.isInteger,
+        required: false,
+      },
+      isActive: { name: 'is_active', type: 'boolean' },
     };
 
+    this.safeColumns = ['isActive'];
+
     this.joins = {
-      requests: { joinColumn: 'requestId', foreignJoinColumn: 'id', foreignModel: Request },
-      items: { joinColumn: 'itemId', foreignJoinColumn: 'id', foreignModel: Item },
+      requests: {
+        joinColumn: 'requestId',
+        foreignJoinColumn: 'id',
+        foreignModel: Request,
+      },
+      items: {
+        joinColumn: 'itemId',
+        foreignJoinColumn: 'id',
+        foreignModel: Item,
+      },
     };
   }
 
   public find(id: number, includeItem = true): SQL {
-    return includeItem ?
-      this.select('items.*', '*').where({ id }).limit(1) :
-      this.select().where({ id }).limit(1);
+    return includeItem
+      ? this.select('items.*', '*')
+          .where({ id })
+          .limit(1)
+      : this.select()
+          .where({ id })
+          .limit(1);
   }
 
   public findSafe(id: number, includeItem = true): SQL {
-    return includeItem ?
-      this.select(
-        'items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId',
-      ).where({ id }).limit(1) :
-      this.select('id', 'priceCent', 'notes').where({ id }).limit(1);
+    return includeItem
+      ? this.select(
+          'items.name',
+          'items.description',
+          'items.pictureUrl',
+          'id',
+          'priceCent',
+          'notes',
+          'requestId',
+        )
+          .where({ id })
+          .limit(1)
+      : this.select('id', 'priceCent', 'notes')
+          .where({ id })
+          .limit(1);
   }
 
   public findByUser(userId: number, includeItem = true): SQL {
-    return includeItem ?
-      this.select('items.*', '*').where({ 'items.userId': userId }).order([['id', 'DESC']]) :
-      this.select().where({ userId }).order([['id', 'DESC']]);
+    return includeItem
+      ? this.select('items.*', '*')
+          .where({ 'items.userId': userId })
+          .order([['id', 'DESC']])
+      : this.select()
+          .where({ userId })
+          .order([['id', 'DESC']]);
   }
 
-  public findByUserSafe(userId: number, includeItem = true): SQL {
-    return includeItem ?
-      this.select(
-        'items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId',
-      ).where({ 'items.userId': userId }).order([['id', 'DESC']]) :
-      this.select('id', 'priceCent', 'notes').where({ userId }).order([['id', 'DESC']]);
+  public findByUserSafe(
+    userId: number,
+    active = true,
+    includeItem = true,
+  ): SQL {
+    return includeItem
+      ? this.select(
+          'items.name',
+          'items.description',
+          'items.pictureUrl',
+          'id',
+          'priceCent',
+          'notes',
+        )
+          .where({ 'items.userId': userId, isActive: active })
+          .order([['id', 'DESC']])
+      : this.select('id', 'priceCent', 'notes')
+          .where({ userId })
+          .order([['id', 'DESC']]);
   }
 
   public findByRequest(requestId: number, includeItem = true): SQL {
-    return includeItem ?
-      this.select('items.*', '*').where({ requestId }).order([['id', 'DESC']]) :
-      this.select().where({ requestId }).order([['id', 'DESC']]);
+    return includeItem
+      ? this.select('items.*', '*')
+          .where({ requestId })
+          .order([['id', 'DESC']])
+      : this.select()
+          .where({ requestId })
+          .order([['id', 'DESC']]);
   }
 
   public findByRequestSafe(requestId: number, userId: number): SQL {

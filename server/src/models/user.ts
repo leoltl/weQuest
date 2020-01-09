@@ -43,6 +43,12 @@ export default class User extends Model {
   }
 
   public findById(id: number): SQL {
+    console.log(
+      this.select()
+        .where({ id })
+        .limit(1)
+        .do(),
+    );
     return this.select()
       .where({ id })
       .limit(1);

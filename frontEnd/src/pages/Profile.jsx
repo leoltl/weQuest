@@ -11,18 +11,12 @@ import {
   IonBackButton,
 } from '@ionic/react';
 import { AuthContext } from '../contexts/authContext';
-import ProfileAvatar from '../components/ProfileAvatar';
+import ProfileAvatar from '../components/User/ProfileAvatar';
 
 export default function Profile(props) {
   return (
     <IonPage id="profile-page">
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonBackButton />
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
+      <IonHeader></IonHeader>
       <IonContent>
         <ProfileAvatar></ProfileAvatar>
       </IonContent>

@@ -2,7 +2,8 @@ import React, { useState, useContext, useEffect } from 'react';
 import { IonHeader, IonToolbar, IonContent, IonItem, IonLabel, IonInput, IonList, IonButton } from '@ionic/react';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
-import { AuthContext } from '../contexts/authContext';
+import { AuthContext } from '../../contexts/authContext';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = props => {
@@ -11,6 +12,7 @@ const Login = props => {
   const [password, setPassword] = useState('');
   const [formErrors, setFormErrors] = useState({});
   const { user, setUser } = useContext(AuthContext);
+  const history = useHistory();
 
   const responseFacebook = async response => {
     console.log('Facebook', response.name);
@@ -26,6 +28,7 @@ const Login = props => {
   const submit = async e => {
     try {
       await axios.post('/api/users/login', { email, password }).then(response => setUser(response));
+      history.push('/requestFeed');
     } catch (e) {
       console.log(e);
       setFormErrors(e);

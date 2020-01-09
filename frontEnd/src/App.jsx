@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
-import { apps, flash, list, addCircleOutline, add } from 'ionicons/icons';
+import { apps, flash, list, add } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
 import Tab1 from './pages/Tab1';
 import NewRequest from './pages/NewRequest';
@@ -9,7 +9,9 @@ import LoginScreen from './pages/LoginScreen';
 import Details from './pages/Details';
 import RequestFeed from './pages/RequestFeed';
 import Profile from './pages/Profile';
+import ActivityFeed from './pages/ActivityFeed';
 import AuthContextProvider from './contexts/authContext';
+import ProtectedRoute from './Routes/ProtectedRoute';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -41,8 +43,9 @@ const App = () => (
             <Route path="/tab2/details" component={Details} />
             <Route path="/requestFeed" component={RequestFeed} />
             <Route path="/login" component={LoginScreen} />
+            <Route path="/activity" component={ActivityFeed} />
             <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
-            <Route path="/profile" component={Profile} />
+            <ProtectedRoute path="/profile" component={Profile} exact={true} />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
             <IonTabButton tab="tab1" href="/tab1">
@@ -58,7 +61,11 @@ const App = () => (
               <IonIcon icon={add} />
               <IonLabel>Tab Two</IonLabel>
             </IonTabButton>
-            <IonTabButton tab="tab4" href="/login">
+            <IonTabButton tab="activityFeed" href="/activity">
+              <IonIcon icon={list} />
+              <IonLabel>Activity</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="tab4" href="/profile">
               <IonIcon icon={apps} />
               <IonLabel>Profile</IonLabel>
             </IonTabButton>

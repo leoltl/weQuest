@@ -6,27 +6,29 @@ import axios from 'axios';
 
 import './RequestList.scss';
 
-
 const RequestList = props => {
   const isLoggedIn = true;
-  const [requests, setRequests] = useState([]);
+  const { requests, setRequests } = props;
   const [showBidForm, setShowBidForm] = useState(false);
-  
 
-  useEffect(() => {
-    axios.get('/api/requests').then(res => setRequests(res.data));
-  }, []);
+  // useEffect(() => {
+  //   axios.get('/api/requests').then(res => setRequests(res.data));
+  // }, []);
 
   const updateRequestById = useCallback((id, payload) => {
-    
-    setRequests(prev => prev.map(request => {
-      return (request.id === id) ? { ...request, ...payload } : request;
-    }));
+    setRequests(prev =>
+      prev.map(request => {
+        return request.id === id ? { ...request, ...payload } : request;
+      }),
+    );
   }, []);
 
-  const getRequestById = useCallback((id) => {
-    return requests.find((request) => request.id === id);
-  }, [requests]);
+  const getRequestById = useCallback(
+    id => {
+      return requests.find(request => request.id === id);
+    },
+    [requests],
+  );
 
   const renderedRequestItem = requests.map(listItem => {
     return (
@@ -36,9 +38,7 @@ const RequestList = props => {
         user={listItem.email}
         requestDetails={listItem}
         isSelected={listItem.id === props.selectedId}
-        selectCard={() =>
-          props.onClick(listItem.id === props.selectedId ? null : listItem.id)
-        }
+        selectCard={() => props.onClick(listItem.id === props.selectedId ? null : listItem.id)}
         onBidClick={e => {
           e.preventDefault();
           e.stopPropagation();
@@ -48,20 +48,22 @@ const RequestList = props => {
     );
   });
 
+  console.log(renderedRequestItem);
+
   return (
-    <IonContent id="request-list-item">
+    <>
       {isLoggedIn && (
         <BidFormModal
           {...{
             showModal: showBidForm,
             setShowModal: setShowBidForm,
             request: getRequestById(props.selectedId) || { id: 0, priceCent: 0 },
-            updateRequestById
+            updateRequestById,
           }}
         />
       )}
       <IonList>{renderedRequestItem}</IonList>
-    </IonContent>
+    </>
   );
 };
 
