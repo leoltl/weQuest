@@ -95,7 +95,7 @@ function bidReducer(state, { type, payload }) {
       return {
         ...state,
         product: null,
-        price: payload.price - 50,
+        price: Math.max(payload.price - 100, 0),
         notes: '',
       };
 
@@ -187,7 +187,7 @@ export default function BidFormModal({ showModal, setShowModal, request, updateR
   }, []);
 
   return (
-    <Modal {...{ showModal, setShowModal, showSpinner, title: `Bid on Tesla ${ request.id}` }}>
+    <Modal {...{ showModal, setShowModal, showSpinner, title: `Bid on ${ request.title}` }}>
       {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
       <form onSubmit={submitBid}>
         {/* <h3>Pick a Product</h3> */}
@@ -202,7 +202,7 @@ export default function BidFormModal({ showModal, setShowModal, request, updateR
           {/* <h3>Name Your Price</h3> */}
           <IonItem>
             <IonLabel position='floating'>Name Your Price</IonLabel>
-            <IonInput type='number' name='price' max={(request.priceCent - 50) / 100} value={bidState.price / 100} step={0.5} inputmode='decimal' onIonChange={(e) => setPrice(e.currentTarget.value * 100)} debounce={100} required></IonInput>
+            <IonInput type='number' name='price' max={Math.max((request.priceCent - 100) / 100, 0)} min={0} value={bidState.price / 100} step={0.5} inputmode='decimal' onIonChange={(e) => setPrice(e.currentTarget.value * 100)} debounce={100} required></IonInput>
           </IonItem>
           {/* <h3>Notes</h3> */}
           <IonItem>
