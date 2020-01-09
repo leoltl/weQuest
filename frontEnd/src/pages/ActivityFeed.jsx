@@ -16,7 +16,7 @@ import {
 } from '@ionic/react';
 import { AuthContext } from '../contexts/authContext';
 
-const LoginScreen = props => {
+const ActivityFeed = props => {
   const [tab, setTab] = useState('requests');
   const history = useHistory();
 
@@ -42,4 +42,4 @@ const LoginScreen = props => {
   );
 };
 
-export default LoginScreen;
+export default ActivityFeed;

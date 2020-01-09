@@ -9,15 +9,15 @@ const Requests = props => {
   const [completedRequests, setCompletedRequests] = useState([]);
   const [selected, setSelected] = useState(null);
 
-  useIonViewWillEnter(() => {
+  useEffect(() => {
     axios.get('/api/requests/').then(res => setActiveRequests(res.data));
     axios.get('/api/requests/completed').then(res => setCompletedRequests(res.data));
-  });
+  }, []);
 
   const updateRequestById = (id, payload) => {
     setActiveRequests(prev =>
       prev.map(request => {
-        console.log(prev);
+        // console.log(prev);
         if (request.id === id) {
           return { ...request, ...payload };
         } else {
@@ -41,19 +41,15 @@ const Requests = props => {
         //     }}
         //   />)
       }
-      <IonList>
-        <IonListHeader>Active Requests</IonListHeader>
-        <RequestList requests={activeRequests} setRequests={setActiveRequests} selectedId={selected} onClick={setSelected}></RequestList>
-      </IonList>
-      <IonList>
-        <IonListHeader>Completed Requests</IonListHeader>
-        <RequestList
-          requests={completedRequests}
-          setRequests={setCompletedRequests}
-          selectedId={selected}
-          onClick={setSelected}
-        ></RequestList>
-      </IonList>
+      <IonListHeader>Active Requests</IonListHeader>
+      <RequestList requests={activeRequests} setRequests={setActiveRequests} selectedId={selected} onClick={setSelected}></RequestList>
+      <IonListHeader>Completed Requests</IonListHeader>
+      <RequestList
+        requests={completedRequests}
+        setRequests={setCompletedRequests}
+        selectedId={selected}
+        onClick={setSelected}
+      ></RequestList>
     </>
   );
 };

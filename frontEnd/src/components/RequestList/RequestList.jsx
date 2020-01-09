@@ -11,9 +11,9 @@ const RequestList = props => {
   const { requests, setRequests } = props;
   const [showBidForm, setShowBidForm] = useState(false);
 
-  useEffect(() => {
-    axios.get('/api/requests').then(res => setRequests(res.data));
-  }, []);
+  // useEffect(() => {
+  //   axios.get('/api/requests').then(res => setRequests(res.data));
+  // }, []);
 
   const updateRequestById = useCallback((id, payload) => {
     setRequests(prev =>

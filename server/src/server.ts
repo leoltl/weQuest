@@ -7,7 +7,7 @@ config();
 import App from './app';
 // import ReactController from './routes/react';
 import UserController from './routes/users';
-import RequestController from './routes/request-router';
+import RequestController from './routes/request';
 import BidController from './routes/bids';
 import ItemController from './routes/items';
 import morgan from 'morgan';
@@ -44,8 +44,6 @@ const app = new App({
     }),
   ],
 });
-
-
 
 // dummy login for dev
 app.app.get('/api/login/:id', async (req, res) => {

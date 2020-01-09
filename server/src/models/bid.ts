@@ -120,4 +120,14 @@ export default class Bid extends Model {
           .where({ requestId })
           .order([['id', 'DESC']]);
   }
+
+  public findByRequestSafe(requestId: number, includeItem = true): SQL {
+    return includeItem ?
+      this.select(
+        'items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId',
+      ).where({ requestId }).order([['id', 'DESC']]) :
+      this.select(
+        'items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId',
+      ).where({ requestId }).order([['id', 'DESC']]);
+  }
 }

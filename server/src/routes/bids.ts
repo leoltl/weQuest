@@ -41,6 +41,7 @@ export default class BidController {
           const output = await this.create(req.body);
           res.json(output);
         } catch (err) {
+          console.log(err);
           res.status(404).json({ error: 'Failed to save item' });
         }
       });
@@ -67,11 +68,10 @@ export default class BidController {
         if (!bid) throw Error('No record created');
 
         // update current bid in request
-        (new Request())
+        const request = await new Request()
           .update({ currentBidId: bid.id })
           .where({ id: bid.requestId })
           .run(query);
-
         return bid;
       },
     );
