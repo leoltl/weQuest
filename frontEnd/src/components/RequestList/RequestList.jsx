@@ -40,7 +40,7 @@ const RequestList = props => {
     if (isLoggedIn) {
       setShowBidForm(true);
     } else {
-      props.history.push('/login')
+      props.history.push({ pathname: '/login', state:  { redirectOnSuccess: '/requests' } })
     }
   }
 
