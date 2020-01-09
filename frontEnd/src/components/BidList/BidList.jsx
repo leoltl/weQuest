@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { IonList } from '@ionic/react';
 import BidListItem from './BidListItem';
 
-export default function BidList({ selectWinner }) {
+export default function BidList({ selectWinner, bids }) {
 
   console.log('rendering bid list');
 
@@ -14,7 +14,7 @@ export default function BidList({ selectWinner }) {
 
   return (
     <IonList>
-      {Array(10).fill(undefined).map((p, i) => <BidListItem {...{ key: i, isExpanded: expandedBid === i, expand, selectWinner, id: i }} />)}
+      {bids.map((bid) => <BidListItem {...{ key: bid.id, isExpanded: expandedBid === bid.id, expand, selectWinner, ...bid }} />)}
     </IonList>
   );
 

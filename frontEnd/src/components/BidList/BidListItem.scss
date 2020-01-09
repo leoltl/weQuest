@@ -22,7 +22,8 @@
     &-name {
       flex-grow: 1;
       flex-shrink: 1;
-      font-size: 1.4em;
+      font-size: 1.3rem;
+      font-weight: 600;
       margin: 0;
       padding: 0 1.2rem;
       white-space: nowrap;
@@ -33,17 +34,17 @@
       flex-grow: 0;
       flex-shrink: 0;
       justify-self: end;
-      font-size: 1.2em;
+      font-size: 1.2rem;
     }
   }
 
   .bid-card &__heading {
-    margin: 0.4em 0;
+    margin: 0.4rem 0;
     font-weight: 700;
   }
 
   p {
-    margin-bottom: 1.4em
+    margin-bottom: 1.4rem;
   }
 
   &__btn {

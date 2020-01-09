@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 
 import Modal from '../components/Modal';
 import ErrorAlert from '../components/ErrorAlert';
@@ -10,7 +11,7 @@ import BidList from "../components/BidList/BidList";
 // need to control state of expanded bid (or should bid list do it? - YES)
 // component need to make an axios call when winning bid selected - PUT TO REQUESTS ROUTE
 
-export default function BidModal({ showModal, setShowModal, request, updateRequestById }) {
+export default function BidModal({ showModal, setShowModal, requestId, updateRequestById }) {
 
   console.log('rendering bid');
 
@@ -18,7 +19,7 @@ export default function BidModal({ showModal, setShowModal, request, updateReque
   const [errorMessage, setErrorMessage] = useState('');
 
   // bids data - from server
-  const [bids, setBids] = useState({});
+  const [bids, setBids] = useState([]);
 
   const selectWinner = useCallback((bidId) => {
     console.log('selecting winning bid');
@@ -26,18 +27,19 @@ export default function BidModal({ showModal, setShowModal, request, updateReque
     setShowSpinner('Saving...');
 
     // TODO: replace resolve with axios call
-    new Promise((resolve) => {
-      setTimeout(() => resolve({}), 3000);
-    })
-    // axios.post('/api/requests', 'TBD')
-    .then(() => {
+    // new Promise((resolve) => {
+    //   setTimeout(() => resolve({}), 3000);
+    // })
+    axios.put(`/api/requests/${requestId}`, { winningBidId: bidId })
+    .then((data) => {
+      console.log('winning bid updated');
       setShowModal(false);
       // updateRequestById(requestId, { priceCent });
     })
     .catch((err) => setErrorMessage(err.message))
     .finally(() => setShowSpinner(false));
 
-  }, []);
+  }, [requestId]);
 
   // load product data
   useEffect(() => {
@@ -46,22 +48,24 @@ export default function BidModal({ showModal, setShowModal, request, updateReque
     setShowSpinner(true);
     
     // TODO: replace resolve with axios call
-    new Promise((resolve) => {
-      setTimeout(() => resolve({}), 3000);
-    })
-    // axios.get(`/api/requests/${request.id}/bids`)
-    // .then(({ data: products }) => {
-      // setBids(data);
+    // new Promise((resolve) => {
+    //   setTimeout(() => resolve({}), 3000);
     // })
+    axios.get(`/api/requests/${requestId}/bids`)
+    .then(({ data: bids}) => {
+      console.log(bids);
+      setBids(bids);
+      setShowModal(false);
+    })
     .catch((err) => setErrorMessage(err.message))
     .finally(() => setShowSpinner(false));
 
-  }, [request.id]);
+  }, [requestId]);
 
   return (
-    <Modal {...{ showModal, setShowModal, showSpinner, title: `Bids for ${ request.id}` }}>
+    <Modal {...{ showModal, setShowModal, showSpinner, title: `Bids for ${ requestId}` }}>
       {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
-      <BidList {...{ selectWinner }} />
+      <BidList {...{ selectWinner, bids }} />
     </Modal>
   );
 }

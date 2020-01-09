@@ -116,15 +116,32 @@ export default class RequestController {
       const requestId: number = parseInt(req.params.id, 10);
       try {
         const userId = req.session!.userId;
+<<<<<<< HEAD
         const request = await this.updateWinningBid(
           requestId,
           userId,
           req.body,
         );
         if (!request) throw Error('Cannot update request');
+=======
+        const request = await this.updateWinningBid(requestId, userId, req.body);
+        if (!request) throw Error('Cannot find/update request');
+>>>>>>> master
         res.sendStatus(200);
+
       } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send({ error: 'Failed to update request.' });
+      }
+    });
+
+    /* GET /api/requests/:id/bids */
+    this.router.get('/:id/bids', async (req: Request, res: Response) => {
+      try {
+        const requestId = parseInt(req.params.id, 10);
+        const result = await new Bid().findByRequestSafe(requestId, req.session!.userId).run(this.db.query);
+        res.json(result);
+      } catch (err) {
+        res.status(500).send({ error: 'Failed to retrieve bids for request' });
       }
     });
 

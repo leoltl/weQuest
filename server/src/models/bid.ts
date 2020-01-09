@@ -121,13 +121,16 @@ export default class Bid extends Model {
           .order([['id', 'DESC']]);
   }
 
-  public findByRequestSafe(requestId: number, includeItem = true): SQL {
-    return includeItem ?
-      this.select(
-        'items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId',
-      ).where({ requestId }).order([['id', 'DESC']]) :
-      this.select(
-        'items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId',
-      ).where({ requestId }).order([['id', 'DESC']]);
+  public findByRequestSafe(requestId: number, userId: number): SQL {
+    return this.sql(
+      `SELECT bids.id, bids.price_cent, bids.notes, bids.request_id, items.name, items.description, items.picture_url, users.name as username
+      FROM bids
+      JOIN items ON bids.item_id = items.id
+      JOIN requests ON bids.request_id = requests.id
+      JOIN users ON items.user_id = users.id
+      WHERE requests.id = $1 AND requests.user_id = $2
+      ORDER BY bids.id DESC`,
+      [requestId, userId],
+    );
   }
 }
