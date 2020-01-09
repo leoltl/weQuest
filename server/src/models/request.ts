@@ -34,6 +34,10 @@ export class Request extends Model {
         required: false,
       },
       title: { name: 'title', type: 'string', required: true },
+      status: {
+        name: 'request_status',
+        type: 'string',
+      },
     };
 
     this.joins = {
@@ -49,7 +53,12 @@ export class Request extends Model {
       }, // missing in schema
     };
 
-    this.safeColumns = ['description', 'winningBidId', 'currentBidId'];
+    this.safeColumns = [
+      'description',
+      'winningBidId',
+      'currentBidId',
+      'status',
+    ];
   }
 
   public create(input: ColumnInput): SQLQuery {
@@ -59,7 +68,7 @@ export class Request extends Model {
     );
   }
 
-  public findForRequestFeed() {
+  public findAllRequest() {
     return this.sql(
       `SELECT requests.id, requests.title, requests.auction_end, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, COALESCE(bids.price_cent, requests.budget) as price_cent, bids.item_id
         FROM requests LEFT JOIN users ON requests.user_id = users.id
@@ -75,5 +84,17 @@ export class Request extends Model {
 
   public findBidsByRequestId(id: number): SQLQuery {
     return this.select('*', 'bids.*').where({ id });
+  }
+
+  public findRequestsByStatus(userId: number, status: string): SQLQuery {
+    return this.sql(
+      `SELECT requests.id, requests.title, requests.auction_end, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, COALESCE(bids.price_cent, requests.budget) as price_cent, bids.item_id
+        FROM requests LEFT JOIN users ON requests.user_id = users.id
+        LEFT JOIN bids on requests.current_bid_id = bids.id
+        WHERE user_id = $1 AND requests.request_status = $2
+        ORDER BY requests.id DESC
+        LIMIT 10`,
+      [userId, status],
+    );
   }
 }

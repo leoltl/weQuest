@@ -28,7 +28,7 @@ export default class RequestController {
     this.router.get('/', async (req: Request, res: Response) => {
       try {
         const requestData = await this.model
-          .findForRequestFeed()
+          .findAllRequest()
           .run(this.db.query);
         res.json(requestData);
       } catch (err) {
@@ -38,7 +38,9 @@ export default class RequestController {
 
     this.router.get('/active', async (req: Request, res: Response) => {
       try {
-        const requestData = await this.findActiveRequests(this.db);
+        const requestData = await this.model
+          .findRequestsByStatus(req.session!.userId, 'active')
+          .run(this.db.query);
         res.json(requestData);
       } catch (err) {
         res.status(400).send(err.message);
@@ -47,7 +49,9 @@ export default class RequestController {
 
     this.router.get('/completed', async (req: Request, res: Response) => {
       try {
-        const requestData = await this.findCompletedRequests(this.db);
+        const requestData = await this.model
+          .findRequestsByStatus(req.session!.userId, 'closed')
+          .run(this.db.query);
         res.json(requestData);
       } catch (err) {
         res.status(400).send(err.message);
@@ -70,7 +74,7 @@ export default class RequestController {
       try {
         const requestId = parseInt(req.params.id, 10);
         const result = await new Bid()
-          .findByRequestSafe(requestId)
+          .findByRequestSafe(requestId, req.session!.userId)
           .run(this.db.query);
         res.json(result);
       } catch (err) {
@@ -116,19 +120,13 @@ export default class RequestController {
       const requestId: number = parseInt(req.params.id, 10);
       try {
         const userId = req.session!.userId;
-<<<<<<< HEAD
         const request = await this.updateWinningBid(
           requestId,
           userId,
           req.body,
         );
-        if (!request) throw Error('Cannot update request');
-=======
-        const request = await this.updateWinningBid(requestId, userId, req.body);
         if (!request) throw Error('Cannot find/update request');
->>>>>>> master
         res.sendStatus(200);
-
       } catch (err) {
         res.status(500).send({ error: 'Failed to update request.' });
       }
@@ -138,7 +136,9 @@ export default class RequestController {
     this.router.get('/:id/bids', async (req: Request, res: Response) => {
       try {
         const requestId = parseInt(req.params.id, 10);
-        const result = await new Bid().findByRequestSafe(requestId, req.session!.userId).run(this.db.query);
+        const result = await new Bid()
+          .findByRequestSafe(requestId, req.session!.userId)
+          .run(this.db.query);
         res.json(result);
       } catch (err) {
         res.status(500).send({ error: 'Failed to retrieve bids for request' });
@@ -163,21 +163,5 @@ export default class RequestController {
       .where({ userId, id: requestId })
       .limit(1)
       .run(this.db.query);
-  }
-
-  private async findActiveRequests(db: DB) {
-    return this.model
-      .select()
-      .where({ request_status: 'active' })
-      .limit(10)
-      .run(db.query);
-  }
-
-  private async findCompletedRequests(db: DB) {
-    return this.model
-      .select()
-      .where({ request_status: 'closed' })
-      .limit(10)
-      .run(db.query);
   }
 }
