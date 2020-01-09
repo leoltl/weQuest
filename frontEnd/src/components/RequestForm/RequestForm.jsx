@@ -3,12 +3,14 @@ import { IonContent, IonButton, IonText } from '@ionic/react';
 import axios from 'axios';
 import moment from 'moment';
 
+import { withRouter } from "react-router";
+
 import { AuthContext } from '../../contexts/authContext';
 
 import './RequestForm.scss';
 import RequestFieldGroup from './RequestFieldGroup';
 
-const RequestForm = () => {
+const RequestForm = (props) => {
   const [item, setItem] = useState('');
   const [notes, setNotes] = useState('');
   const [budget, setBudget] = useState(null);
@@ -49,6 +51,7 @@ const RequestForm = () => {
       axios.post('/api/requests', { payload: data }).then(res => {
         if (res.status === 201) {
           resetFields();
+          props.history.push('/requestFeed')
         } else {
           window.alert('server error');
         }
@@ -106,4 +109,4 @@ const RequestForm = () => {
   );
 };
 
-export default RequestForm;
+export default withRouter(RequestForm);
