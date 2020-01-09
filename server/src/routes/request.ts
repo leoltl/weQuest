@@ -32,7 +32,7 @@ export default class RequestController {
           .run(this.db.query);
         res.json(requestData);
       } catch (err) {
-        res.status(400).send(err.message);
+        res.status(400).send({ error: 'Failed to retrieve requests'});
       }
     });
 
@@ -43,7 +43,7 @@ export default class RequestController {
           .run(this.db.query);
         res.json(requestData);
       } catch (err) {
-        res.status(400).send(err.message);
+        res.status(400).send({ error: 'Failed to retrieve active requests'});
       }
     });
 
@@ -56,7 +56,7 @@ export default class RequestController {
 
         res.json(requestData);
       } catch (err) {
-        res.status(400).send(err.message);
+        res.status(400).send({ error: 'Failed to retrieve completed requests'});
       }
     });
 
@@ -67,20 +67,7 @@ export default class RequestController {
         const request = await this.model.findRequestById(id).run(this.db.query);
         res.json(request);
       } catch (err) {
-        res.status(400).send(err.message);
-      }
-    });
-
-    /* GET /api/requests/:id/bids */
-    this.router.get('/:id/bids', async (req: Request, res: Response) => {
-      try {
-        const requestId = parseInt(req.params.id, 10);
-        const result = await new Bid()
-          .findByRequestSafe(requestId, req.session!.userId)
-          .run(this.db.query);
-        res.json(result);
-      } catch (err) {
-        res.status(500).send({ message: 'sorry error' });
+        res.status(400).send({ error: 'Failed to retrieve request'});
       }
     });
 

@@ -1,15 +1,24 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
+import { withRouter } from 'react-router';
 import { IonContent, IonList, IonButton } from '@ionic/react';
 import RequestListItem from './RequestListItem';
 import BidFormModal from '../../pages/BidFormModal';
 import axios from 'axios';
 
 import './RequestList.scss';
+import { AuthContext } from '../../contexts/authContext';
 
+<<<<<<< HEAD
 const RequestList = ({ modal: Modal, ...props }) => {
   const isLoggedIn = true;
+=======
+const RequestList = props => {
+  const { user: isLoggedIn } = useContext(AuthContext);
+>>>>>>> master
   const { requests, setRequests } = props;
   const [showBidForm, setShowBidForm] = useState(false);
+
+  console.log('RENDERLIST', isLoggedIn);
 
   // useEffect(() => {
   //   axios.get('/api/requests').then(res => setRequests(res.data));
@@ -30,6 +39,16 @@ const RequestList = ({ modal: Modal, ...props }) => {
     [requests],
   );
 
+  const onBidClick = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isLoggedIn) {
+      setShowBidForm(true);
+    } else {
+      props.history.push('/login')
+    }
+  }
+
   const renderedRequestItem = requests.map(listItem => {
     return (
       <RequestListItem
@@ -39,6 +58,7 @@ const RequestList = ({ modal: Modal, ...props }) => {
         requestDetails={listItem}
         isSelected={listItem.id === props.selectedId}
         selectCard={() => props.onClick(listItem.id === props.selectedId ? null : listItem.id)}
+<<<<<<< HEAD
         buttonTitle={props.buttonTitle}
         onBidClick={e => {
           e.preventDefault();
@@ -46,6 +66,9 @@ const RequestList = ({ modal: Modal, ...props }) => {
           setShowBidForm(true);
         }}
       ></RequestListItem>
+=======
+        onBidClick={onBidClick} />
+>>>>>>> master
     );
   });
 
@@ -66,4 +89,4 @@ const RequestList = ({ modal: Modal, ...props }) => {
   );
 };
 
-export default RequestList;
+export default withRouter(RequestList);

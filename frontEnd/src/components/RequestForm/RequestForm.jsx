@@ -11,6 +11,7 @@ import './RequestForm.scss';
 import RequestFieldGroup from './RequestFieldGroup';
 
 const RequestForm = (props) => {
+  const { user } = useContext(AuthContext);
   const [item, setItem] = useState('');
   const [notes, setNotes] = useState('');
   const [budget, setBudget] = useState(null);
@@ -27,12 +28,12 @@ const RequestForm = (props) => {
     setStartDate(moment().format());
     setEndDate(
       moment()
-        .add(1, 'days')
-        .format()
-    );
-    setNotes('');
-  };
-
+      .add(1, 'days')
+      .format()
+      );
+      setNotes('');
+    };
+    
   const parseBudgetToCent = (budget) => {
     const _budget = parseFloat(budget) * 100
     return parseInt(_budget, 10);
@@ -46,6 +47,11 @@ const RequestForm = (props) => {
       borrowEnd: endDate,
       description: notes
     };
+
+    if (!user) {
+      props.history.push('/login')
+      return
+    }
 
     if (isValid(data)) {
       axios.post('/api/requests', { payload: data }).then(res => {
@@ -74,9 +80,7 @@ const RequestForm = (props) => {
     );
   };
 
-  const { user } = useContext(AuthContext);
-  // TODO: fix tmpuser
-  const tmpuser = true;
+
   return (
     <IonContent>
       <form
@@ -97,11 +101,11 @@ const RequestForm = (props) => {
         />
         <IonButton
           className="ion-margin"
-          disabled={tmpuser ? false : true} //temp using tmp user, change it back to user.....
           expand="block"
           type="submit"
+
         >
-          Request It
+          { user ? 'Request It' : 'Login to request' }
         </IonButton>
         <IonButton expand="block" fill="clear" type="button">
           Cancel
