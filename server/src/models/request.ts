@@ -26,6 +26,7 @@ export class Request extends Model {
       winningBidId: { name: 'winning_bid_id', type: Number.isInteger, required: false },
       currentBidId: { name: 'current_bid_id', type: Number.isInteger, required: false },
       title: { name: 'title', type: 'string', required: true },
+      budgetCent: { name: 'budget_cent', type: Number.isInteger, required: true},
     };
 
     this.joins = {
@@ -46,7 +47,7 @@ export class Request extends Model {
   public findForRequestFeed() {
     return this
       .sql(
-        `SELECT requests.id, requests.title, requests.auction_end, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, COALESCE(bids.price_cent, requests.budget) as price_cent, bids.item_id
+        `SELECT requests.id, requests.title, requests.auction_end, requests.user_id, requests.description, requests.current_bid_id, users.name, users.email, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
         FROM requests LEFT JOIN users ON requests.user_id = users.id
         LEFT JOIN bids on requests.current_bid_id = bids.id
         ORDER BY requests.id DESC

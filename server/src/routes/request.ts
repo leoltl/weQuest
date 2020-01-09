@@ -51,7 +51,6 @@ export default class RequestController {
     /* POST requests/ */
     this.router.post('/', async (req: Request, res: Response) => {
       try {
-        // need to get user ID to create a request.. To be confirmed the implementation.
         const userId: number = req.session!.userId;
         const request = req.body.payload;
         const borrowStart: String = new Date(request.borrowStart).toISOString();
@@ -75,7 +74,7 @@ export default class RequestController {
           .run(this.db.query);
         res.sendStatus(201);
       } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send({error: 'Failed to create new request.'});
       }
     });
 
