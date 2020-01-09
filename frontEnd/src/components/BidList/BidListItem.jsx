@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonAvatar, IonImg, IonBadge, IonButton } from '@ionic/react';
 import './BidListItem.scss';
+import { currencyFormatter } from '../../lib/utils';
 
 export default function BidListItem({ isExpanded, expand, selectWinner, id, name, pictureUrl, priceCent, notes, description, username }) {
 
@@ -17,13 +18,13 @@ export default function BidListItem({ isExpanded, expand, selectWinner, id, name
   
   return (
     <IonCard className={'bid-card'} onClick={handleExpand}>
-      {isExpanded && <IonImg className={'bid-card__img'} src={pictureUrl} alt={name || 'test'} title={name} />}
+      {isExpanded && <IonImg className={'bid-card__img'} src={pictureUrl} alt={name} title={name} />}
       <IonCardHeader className={'bid-card__header'} color={isExpanded ? 'tertiary' : undefined}>
         {!isExpanded && <IonAvatar className={'bid-card__header-img'}>
           <IonImg src={pictureUrl} alt={name} title={name} />
         </IonAvatar>}
         <IonCardTitle className={'bid-card__header-name'}>{name}</IonCardTitle>
-        <IonBadge className={'bid-card__header-price'}>{`$${priceCent / 100}`}</IonBadge>
+        <IonBadge className={'bid-card__header-price'}>{currencyFormatter(priceCent)}</IonBadge>
       </IonCardHeader>
       {isExpanded && <IonCardContent>
         <h2 class={'bid-card__heading'}>Item Description</h2>

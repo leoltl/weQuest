@@ -7,16 +7,7 @@ import {
   IonButton
 } from '@ionic/react';
 import moment from 'moment';
-
-const currencyFormatter = (input) => {
-  return new Intl.NumberFormat('en-US', {
-      style: 'decimal',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-      useGrouping: false
-  }).format(input/100);
-}
+import { currencyFormatter } from '../../lib/utils'
 
 const RequestListItem = props => {
   const isLoggedIn = true;
@@ -38,7 +29,7 @@ const RequestListItem = props => {
               padding: 0
             }}
           >
-            ${currencyFormatter(props.currentBid)}
+            {props.currentBid && currencyFormatter(props.currentBid) || 'Free'}
           </IonCardContent>
         </div>
         <IonCardContent className="request-card__user">
