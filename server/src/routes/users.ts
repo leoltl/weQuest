@@ -19,8 +19,9 @@ export default class UserController {
         const user = await this.model
           .findById(req.session!.userId)
           .run(db.query);
-        res.json(user);
+        return res.json(user);
       }
+      res.json(null);
     });
 
     this.router.post('/', async (req, res) => {
@@ -48,7 +49,7 @@ export default class UserController {
             req.body.user.password,
           );
           this.updateSession(req, userData);
-          res.json(userData.id);
+          res.json(userData);
         } catch (err) {
           res.status(400).send(err.message);
         }

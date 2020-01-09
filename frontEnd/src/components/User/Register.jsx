@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { IonHeader, IonToolbar, IonContent, IonItem, IonLabel, IonInput, IonList, IonButton } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
+import { AuthContext } from '../../contexts/authContext';
 
 const Register = props => {
   const [name, setName] = useState('');
@@ -27,11 +28,15 @@ const Register = props => {
     }
   };
 
+  const { setUser } = useContext(AuthContext);
+
   const submit = async e => {
     validateForm(e);
     try {
       await axios.post('/api/users', {
         user: { name: name, email: email, password: password },
+      }).then(res => {
+        setUser(res.data);
       });
       history.push('/requestFeed');
     } catch (e) {

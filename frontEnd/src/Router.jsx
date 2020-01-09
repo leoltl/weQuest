@@ -23,17 +23,18 @@ export default function Router(props) {
   
   useEffect(() => {
     const getCurrentState = async e => {
-      const user = await axios.get('/api/users');
-      setUser(user.data);
-      console.log("USER DEBUG", user)
+      const _user = await axios.get('/api/users');
+      setUser(prev => (prev && _user.data && prev.id === _user.data.id) ? prev : _user.data || null );
+      console.log("USER DEBUG", user, _user.data);
       setinitialRender(false);
     };
 
-    if (initialRender) {
-      getCurrentState();
-    }
+    getCurrentState();
 
-  }, []);
+    // if (initialRender) {
+    //   getCurrentState();
+    // }
+  }, [user]);
 
 
   
@@ -42,9 +43,8 @@ export default function Router(props) {
       <IonTabs>
         <IonRouterOutlet>
           <Route path="/tab1" component={Tab1} exact={true} />
-          <Route path="/tab2" component={NewRequest} exact={true} />
-          <Route path="/tab2/details" component={Details} />
-          <Route path="/requestFeed" component={RequestFeed} />
+          <Route path="/request/new" component={NewRequest} exact={true} />
+          <Route path="/requests" component={RequestFeed} />
           <Route path="/login" component={LoginScreen} />
           <Route path="/activity" component={ActivityFeed} />
           <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
@@ -56,11 +56,11 @@ export default function Router(props) {
             <IonLabel>Tab One</IonLabel>
           </IonTabButton>{' '}
           */}
-          <IonTabButton tab="requestFeed" href="/requestFeed">
+          <IonTabButton tab="requestFeed" href="/requests">
             <IonIcon icon={list} />
             <IonLabel>Request Feed</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
+          <IonTabButton tab="tab2" href="/request/new">
             <IonIcon icon={add} />
             <IonLabel>Tab Two</IonLabel>
           </IonTabButton>
