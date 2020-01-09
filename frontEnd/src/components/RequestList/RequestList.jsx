@@ -58,12 +58,10 @@ const RequestList = ({ modal: Modal, ...props }) => {
     );
   });
 
-  console.log(renderedRequestItem);
-
   return (
     <>
       {isLoggedIn && (
-        <BidFormModal
+        <Modal
           {...{
             showModal: showBidForm,
             setShowModal: setShowBidForm,

@@ -33,8 +33,7 @@ export default class UserController {
         res.json(user.id);
       } else {
         try {
-          console.log('userData', req.body.user);
-          const hashPassword = await bcrypt.hash(req.body.user.password, 10);
+          const hashPassword = bcrypt.hashSync(req.body.user.password, 10);
           const user = (
             await this.model
               .createUser({
@@ -53,7 +52,6 @@ export default class UserController {
           res.json(userData.id);
         } catch (err) {
           res.status(400).send(err.message);
-          console.log(err);
         }
       }
     });
@@ -99,7 +97,7 @@ export default class UserController {
             .where({ email })
             .run(db.query)
         )[0];
-        const match = await bcrypt.compare(password, user.password);
+        const match = bcrypt.compareSync(password, user.password);
         if (!match) {
           throw Error(
             'Incorrect Password | email does not exist in our system',
