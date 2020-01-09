@@ -52,6 +52,8 @@ export default class RequestController {
         const requestData = await this.model
           .findRequestsByStatus(req.session!.userId, 'closed')
           .run(this.db.query);
+        console.log(requestData);
+
         res.json(requestData);
       } catch (err) {
         res.status(400).send(err.message);
@@ -110,7 +112,7 @@ export default class RequestController {
           .run(this.db.query);
         res.sendStatus(201);
       } catch (err) {
-        res.status(500).send({error: 'Failed to create new request.'});
+        res.status(500).send({ error: 'Failed to create new request.' });
       }
     });
 
