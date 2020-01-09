@@ -48,8 +48,10 @@ const RequestList = props => {
     );
   });
 
+  console.log(renderedRequestItem);
+
   return (
-    <IonContent id="request-list-item">
+    <>
       {isLoggedIn && (
         <BidFormModal
           {...{
@@ -61,7 +63,7 @@ const RequestList = props => {
         />
       )}
       <IonList>{renderedRequestItem}</IonList>
-    </IonContent>
+    </>
   );
 };
 

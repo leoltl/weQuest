@@ -10,7 +10,7 @@ const Requests = props => {
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
-    axios.get('/api/requests/').then(res => setActiveRequests(res.data));
+    axios.get('/api/requests/active').then(res => setActiveRequests(res.data));
     axios.get('/api/requests/completed').then(res => setCompletedRequests(res.data));
   }, []);
 

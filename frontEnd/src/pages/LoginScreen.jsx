@@ -12,7 +12,7 @@ import {
   IonToolbar,
   IonButtons,
   IonBackButton,
-  useIonViewDidEnter,
+  useIonViewWillEnter,
 } from '@ionic/react';
 import { AuthContext } from '../contexts/authContext';
 import axios from 'axios';
@@ -22,18 +22,18 @@ const LoginScreen = props => {
   const { user, setUser } = useContext(AuthContext);
   const history = useHistory();
 
-  const getCurrentState = async e => {
-    axios.get('/api/users').then(user => {
-      setUser(user.data);
-      if (user) {
-        history.push('/profile');
-      }
-    });
-  };
+  // const getCurrentState = async e => {
+  //   axios.get('/api/users').then(user => {
+  //     setUser(user.data);
+  //     if (user) {
+  //       history.push('/profile');
+  //     }
+  //   });
+  // };
 
-  useIonViewDidEnter(() => {
-    getCurrentState();
-  });
+  // useIonViewWillEnter(() => {
+  //   getCurrentState();
+  // });
 
   return (
     <IonPage id="login-page">
