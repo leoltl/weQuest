@@ -39,6 +39,7 @@ const RequestList = ({ modal: Modal, ...props }) => {
         requestDetails={listItem}
         isSelected={listItem.id === props.selectedId}
         selectCard={() => props.onClick(listItem.id === props.selectedId ? null : listItem.id)}
+        buttonTitle={props.buttonTitle}
         onBidClick={e => {
           e.preventDefault();
           e.stopPropagation();

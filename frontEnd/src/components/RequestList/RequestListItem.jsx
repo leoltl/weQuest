@@ -41,7 +41,7 @@ const RequestListItem = props => {
         <>
           <IonCardContent>{props.requestDetails.description}</IonCardContent>
           <IonButton className="ion-margin" disabled={isLoggedIn ? false : true} expand="block" onClick={props.onBidClick}>
-            Bid Now
+            {props.buttonTitle}
           </IonButton>
         </>
       ) : (

@@ -21,7 +21,7 @@ const RequestFeed = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <RequestList modal={BidFormModal} requests={requests} setRequests={setRequests} selectedId={selected} onClick={setSelected}></RequestList>
+        <RequestList modal={BidFormModal} requests={requests} setRequests={setRequests} selectedId={selected} onClick={setSelected} buttonTitle='Bid Now' ></RequestList>
       </IonContent>
     </IonPage>
   );

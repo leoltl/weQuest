@@ -32,7 +32,7 @@ const Requests = props => {
   return (
     <>
       <IonListHeader>Active Requests</IonListHeader>
-      <RequestList modal={BidModal} requests={activeRequests} setRequests={setActiveRequests} selectedId={selected} onClick={setSelected}></RequestList>
+      <RequestList modal={BidModal} requests={activeRequests} setRequests={setActiveRequests} selectedId={selected} onClick={setSelected} buttonTitle='Winning Bids' ></RequestList>
       <IonListHeader>Completed Requests</IonListHeader>
       <RequestList
         modal={BidModal}
