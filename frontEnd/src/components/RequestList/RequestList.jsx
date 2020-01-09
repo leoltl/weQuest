@@ -48,8 +48,6 @@ const RequestList = props => {
     );
   });
 
-  console.log(renderedRequestItem);
-
   return (
     <>
       {isLoggedIn && (
