@@ -11,7 +11,9 @@ import RequestFeed from './pages/RequestFeed';
 import Profile from './pages/Profile';
 import ActivityFeed from './pages/ActivityFeed';
 import AuthContextProvider from './contexts/authContext';
+
 import ProtectedRoute from './Routes/ProtectedRoute';
+import Router from './Router';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -35,43 +37,7 @@ import './theme/variables.css';
 const App = () => (
   <IonApp>
     <AuthContextProvider>
-      <IonReactRouter>
-        <IonTabs>
-          <IonRouterOutlet>
-            <Route path="/tab1" component={Tab1} exact={true} />
-            <Route path="/request/new" component={NewRequest} exact={true} />
-            <Route path="/tab2/details" component={Details} />
-            <Route path="/requests" component={RequestFeed} />
-            <Route path="/login" component={LoginScreen} />
-            <Route path="/activity" component={ActivityFeed} />
-            <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
-            <ProtectedRoute path="/profile" component={Profile} exact={true} />
-          </IonRouterOutlet>
-          <IonTabBar slot="bottom">
-            <IonTabButton tab="tab1" href="/tab1">
-              <IonIcon icon={flash} />
-              <IonLabel>Tab One</IonLabel>
-            </IonTabButton>{' '}
-            */}
-            <IonTabButton tab="requestFeed" href="/requests">
-              <IonIcon icon={list} />
-              <IonLabel>Request Feed</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="new-request" href="/request/new">
-              <IonIcon icon={add} />
-              <IonLabel>Tab Two</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="activityFeed" href="/activity">
-              <IonIcon icon={list} />
-              <IonLabel>Activity</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="tab4" href="/profile">
-              <IonIcon icon={apps} />
-              <IonLabel>Profile</IonLabel>
-            </IonTabButton>
-          </IonTabBar>
-        </IonTabs>
-      </IonReactRouter>
+      <Router></Router>
     </AuthContextProvider>
   </IonApp>
 );

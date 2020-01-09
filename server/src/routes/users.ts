@@ -19,9 +19,9 @@ export default class UserController {
         const user = await this.model
           .findById(req.session!.userId)
           .run(db.query);
-        console.log('user', user);
-        res.json(user);
+        return res.json(user);
       }
+      res.json(null);
     });
 
     this.router.post('/', async (req, res) => {

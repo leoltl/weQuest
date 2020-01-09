@@ -8,7 +8,7 @@ import axios from 'axios';
 import './RequestList.scss';
 import { AuthContext } from '../../contexts/authContext';
 
-const RequestList = props => {
+const RequestList = ({ modal: Modal, ...props }) => {
   const { user: isLoggedIn } = useContext(AuthContext);
   const { requests, setRequests } = props;
   const [showBidForm, setShowBidForm] = useState(false);
@@ -53,6 +53,7 @@ const RequestList = props => {
         requestDetails={listItem}
         isSelected={listItem.id === props.selectedId}
         selectCard={() => props.onClick(listItem.id === props.selectedId ? null : listItem.id)}
+        buttonTitle={props.buttonTitle}
         onBidClick={onBidClick} />
     );
   });
