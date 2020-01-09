@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { IonHeader, IonToolbar, IonPage, IonTitle, IonContent, useIonViewDidEnter } from '@ionic/react';
 import axios from 'axios';
 import RequestList from '../components/RequestList/RequestList';
+import BidFormModal from './BidFormModal';
+
 
 const RequestFeed = () => {
   const [requests, setRequests] = useState([]);
@@ -19,7 +21,7 @@ const RequestFeed = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <RequestList requests={requests} setRequests={setRequests} selectedId={selected} onClick={setSelected}></RequestList>
+        <RequestList modal={BidFormModal} requests={requests} setRequests={setRequests} selectedId={selected} onClick={setSelected} buttonTitle='Bid Now' ></RequestList>
       </IonContent>
     </IonPage>
   );

@@ -52,6 +52,8 @@ export default class RequestController {
         const requestData = await this.model
           .findRequestsByStatus(req.session!.userId, 'closed')
           .run(this.db.query);
+        console.log(requestData);
+
         res.json(requestData);
       } catch (err) {
         res.status(400).send({ error: 'Failed to retrieve completed requests'});
