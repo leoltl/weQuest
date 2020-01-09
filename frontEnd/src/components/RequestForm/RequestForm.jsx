@@ -57,7 +57,7 @@ const RequestForm = (props) => {
       axios.post('/api/requests', { payload: data }).then(res => {
         if (res.status === 201) {
           resetFields();
-          props.history.push('/requestFeed')
+          props.history.push('/requests')
         } else {
           // TODO: make error looks better
           window.alert('server error');
