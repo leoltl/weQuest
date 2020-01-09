@@ -3,12 +3,14 @@ import { IonContent, IonButton, IonText } from '@ionic/react';
 import axios from 'axios';
 import moment from 'moment';
 
+import { withRouter } from "react-router";
+
 import { AuthContext } from '../../contexts/authContext';
 
 import './RequestForm.scss';
 import RequestFieldGroup from './RequestFieldGroup';
 
-const RequestForm = () => {
+const RequestForm = (props) => {
   const [item, setItem] = useState('');
   const [notes, setNotes] = useState('');
   const [budget, setBudget] = useState(null);
@@ -31,10 +33,15 @@ const RequestForm = () => {
     setNotes('');
   };
 
+  const parseBudgetToCent = (budget) => {
+    const _budget = parseFloat(budget) * 100
+    return parseInt(_budget, 10);
+  }
+
   const submit = () => {
     const data = {
       title: item,
-      // budget,
+      budgetCent: parseBudgetToCent(budget),
       borrowStart: startDate,
       borrowEnd: endDate,
       description: notes
@@ -44,11 +51,14 @@ const RequestForm = () => {
       axios.post('/api/requests', { payload: data }).then(res => {
         if (res.status === 201) {
           resetFields();
+          props.history.push('/requestFeed')
         } else {
+          // TODO: make error looks better
           window.alert('server error');
         }
       });
     } else {
+      // TODO: make error looks better
       window.alert('invalid form');
     }
   };
@@ -57,16 +67,15 @@ const RequestForm = () => {
     console.log(data);
     return (
       data.title &&
-      // data.budget &&
+      data.budgetCent &&
       data.borrowStart &&
       data.borrowEnd &&
-      data.description &&
       data.borrowStart <= data.borrowEnd
     );
   };
 
-  const { user, hardChangeAuth } = useContext(AuthContext);
-  // temperoary hard set user to true;
+  const { user } = useContext(AuthContext);
+  // TODO: fix tmpuser
   const tmpuser = true;
   return (
     <IonContent>
@@ -102,4 +111,4 @@ const RequestForm = () => {
   );
 };
 
-export default RequestForm;
+export default withRouter(RequestForm);
