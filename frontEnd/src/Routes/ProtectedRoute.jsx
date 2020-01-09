@@ -5,16 +5,16 @@ import axios from 'axios';
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   const { user, setUser } = useContext(AuthContext);
-  const getCurrentState = async e => {
-    axios.get('/api/users').then(user => {
-      setUser(user.data);
-    });
-  };
 
   useEffect(() => {
+    const getCurrentState = async e => {
+      const user = await axios.get('/api/users');
+      setUser(user.data);
+    };
     getCurrentState();
   }, []);
-  console.log('user', user);
+
+  console.log('checking user', user);
   return <Route {...rest} render={props => (user ? <Component {...props} /> : <Redirect to="/login" />)} />;
 };
 

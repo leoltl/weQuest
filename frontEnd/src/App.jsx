@@ -45,7 +45,7 @@ const App = () => (
             <Route path="/login" component={LoginScreen} />
             <Route path="/activity" component={ActivityFeed} />
             <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
-            <ProtectedRoute path="/profile" component={Profile} />
+            <ProtectedRoute path="/profile" component={Profile} exact={true} />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
             <IonTabButton tab="tab1" href="/tab1">
