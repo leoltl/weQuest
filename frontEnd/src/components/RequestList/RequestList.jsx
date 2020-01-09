@@ -1,15 +1,19 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
+import { withRouter } from 'react-router';
 import { IonContent, IonList, IonButton } from '@ionic/react';
 import RequestListItem from './RequestListItem';
 import BidFormModal from '../../pages/BidFormModal';
 import axios from 'axios';
 
 import './RequestList.scss';
+import { AuthContext } from '../../contexts/authContext';
 
 const RequestList = props => {
-  const isLoggedIn = true;
+  const { user: isLoggedIn } = useContext(AuthContext);
   const { requests, setRequests } = props;
   const [showBidForm, setShowBidForm] = useState(false);
+
+  console.log('RENDERLIST', isLoggedIn);
 
   // useEffect(() => {
   //   axios.get('/api/requests').then(res => setRequests(res.data));
@@ -30,6 +34,16 @@ const RequestList = props => {
     [requests],
   );
 
+  const onBidClick = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isLoggedIn) {
+      setShowBidForm(true);
+    } else {
+      props.history.push('/login')
+    }
+  }
+
   const renderedRequestItem = requests.map(listItem => {
     return (
       <RequestListItem
@@ -39,12 +53,7 @@ const RequestList = props => {
         requestDetails={listItem}
         isSelected={listItem.id === props.selectedId}
         selectCard={() => props.onClick(listItem.id === props.selectedId ? null : listItem.id)}
-        onBidClick={e => {
-          e.preventDefault();
-          e.stopPropagation();
-          setShowBidForm(true);
-        }}
-      ></RequestListItem>
+        onBidClick={onBidClick} />
     );
   });
 
@@ -67,4 +76,4 @@ const RequestList = props => {
   );
 };
 
-export default RequestList;
+export default withRouter(RequestList);
