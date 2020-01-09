@@ -9,8 +9,9 @@ export function accessControl(
   res: Response,
   next: NextFunction,
 ): Response | void {
-  if (!req.session || !req.session.userId)
+  if (!req.session || !req.session.userId) {
     return res.status(403).json({ error: 'Unauthorized acess' });
+  }
   next();
 }
 
