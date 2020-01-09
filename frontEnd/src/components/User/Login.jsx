@@ -32,7 +32,7 @@ const Login = props => {
       if (history.location.state.redirectOnSuccess) {
         history.push(history.location.state.redirectOnSuccess)
       } else {
-        history.push('/requestFeed');
+        history.push('/requests');
       }
     } catch (e) {
       console.log(e);
