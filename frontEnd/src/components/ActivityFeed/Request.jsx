@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonList, IonListHeader, useIonViewWillEnter } from '@ionic/react';
+import BidModal from '../../pages/BidModal';
 import RequestList from '../RequestList/RequestList';
 import axios from 'axios';
 
@@ -8,6 +9,7 @@ const Requests = props => {
   const [activeRequests, setActiveRequests] = useState([]);
   const [completedRequests, setCompletedRequests] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [showBidForm, setShowBidForm] = useState(false);
 
   useEffect(() => {
     axios.get('/api/requests/active').then(res => setActiveRequests(res.data));
@@ -29,22 +31,11 @@ const Requests = props => {
 
   return (
     <>
-      {
-        isLoggedIn
-        // insert winning bid modal
-        //   (<BidFormModal
-        //     {...{
-        //       showModal: showBidForm,
-        //       setShowModal: setShowBidForm,
-        //       request: { id: props.selectedId, currentPrice: 5000 },
-        //       updateRequestById: updateRequestById,
-        //     }}
-        //   />)
-      }
       <IonListHeader>Active Requests</IonListHeader>
-      <RequestList requests={activeRequests} setRequests={setActiveRequests} selectedId={selected} onClick={setSelected}></RequestList>
+      <RequestList modal={BidModal} requests={activeRequests} setRequests={setActiveRequests} selectedId={selected} onClick={setSelected}></RequestList>
       <IonListHeader>Completed Requests</IonListHeader>
       <RequestList
+        modal={BidModal}
         requests={completedRequests}
         setRequests={setCompletedRequests}
         selectedId={selected}

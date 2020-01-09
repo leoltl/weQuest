@@ -6,7 +6,7 @@ import axios from 'axios';
 
 import './RequestList.scss';
 
-const RequestList = props => {
+const RequestList = ({ modal: Modal, ...props }) => {
   const isLoggedIn = true;
   const { requests, setRequests } = props;
   const [showBidForm, setShowBidForm] = useState(false);
@@ -51,7 +51,7 @@ const RequestList = props => {
   return (
     <>
       {isLoggedIn && (
-        <BidFormModal
+        <Modal
           {...{
             showModal: showBidForm,
             setShowModal: setShowBidForm,

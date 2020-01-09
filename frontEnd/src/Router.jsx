@@ -17,21 +17,24 @@ import axios from 'axios';
 
 
 export default function Router(props) {
-  const [initialRender, setinitialRender] = useState(true)
+  const [initialRender, setinitialRender] = useState(true);
   const { user, setUser } = useContext(AuthContext);
 
+  
   useEffect(() => {
     const getCurrentState = async e => {
       const user = await axios.get('/api/users');
       setUser(user.data);
-      setinitialRender(false)
+      console.log("USER DEBUG", user)
+      setinitialRender(false);
     };
-    
+
     if (initialRender) {
       getCurrentState();
     }
 
   }, []);
+
 
   
   return initialRender ? <Spinner message='weQuest' ></Spinner> : (

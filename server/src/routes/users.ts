@@ -19,7 +19,6 @@ export default class UserController {
         const user = await this.model
           .findById(req.session!.userId)
           .run(db.query);
-        console.log('user', user);
         res.json(user);
       }
     });
@@ -33,7 +32,6 @@ export default class UserController {
         res.json(user.id);
       } else {
         try {
-          console.log('userData', req.body.user);
           const hashPassword = bcrypt.hashSync(req.body.user.password, 10);
           const user = (
             await this.model
@@ -53,7 +51,6 @@ export default class UserController {
           res.json(userData.id);
         } catch (err) {
           res.status(400).send(err.message);
-          console.log(err);
         }
       }
     });

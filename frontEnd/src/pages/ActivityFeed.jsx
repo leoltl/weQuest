@@ -18,7 +18,6 @@ import { AuthContext } from '../contexts/authContext';
 
 const ActivityFeed = props => {
   const [tab, setTab] = useState('requests');
-  const history = useHistory();
 
   return (
     <IonPage id="activity-page">
