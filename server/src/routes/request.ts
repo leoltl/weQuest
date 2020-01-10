@@ -8,31 +8,38 @@
 import express, { Router, Request, Response } from 'express';
 // import RequestService from '../models/RequestService';
 // import { Request as UserRequest, Requests } from '../interfaces/requests';
-import { Request as UserRequest } from '../models/request';
+import UserRequest from '../models/request';
 import { accessControl } from '../lib/utils';
 
 import Bid from '../models/bid';
 import DB from '../lib/db';
+import Socket from '../lib/socket';
 
 export default class RequestController {
-  public path: String = '/api/requests';
+  public path: string = '/api/requests';
   public router: Router = express.Router();
   public model = new UserRequest();
 
-  constructor(public db: DB) {
+  constructor(public db: DB, public socket: Socket) {
     this.init();
   }
 
   private init() {
-    /* GET /api/reqeusts */
+    /* GET /api/requests */
     this.router.get('/', async (req: Request, res: Response) => {
       try {
         const requestData = await this.model
           .findAllActiveRequest()
           .run(this.db.query);
+
+        const sessionId = req.cookies['session.sig'];
+        requestData.forEach((request: Record<string, any>) => {
+          this.socket.subscribe(sessionId, 'get-requests', String(request.id));
+        });
+
         res.json(requestData);
       } catch (err) {
-        res.status(400).send({ error: 'Failed to retrieve requests'});
+        res.status(400).send({ error: 'Failed to retrieve requests' });
       }
     });
 
@@ -114,6 +121,7 @@ export default class RequestController {
           req.body,
         );
         if (!request) throw Error('Cannot find/update request');
+        this.socket.emit('get-requests', request, String(request.id));
         res.status(200).send(request);
       } catch (err) {
         res.status(500).send({ error: 'Failed to update request.' });

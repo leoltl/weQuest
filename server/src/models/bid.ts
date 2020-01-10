@@ -3,7 +3,7 @@
 import Model from '../lib/model';
 import SQL, { and, or } from '../lib/sql';
 import User from './user';
-import { Request } from './mocks';
+import Request from './request';
 import Item from './item';
 
 export interface BidInterface {
