@@ -28,7 +28,7 @@ export default class RequestController {
     this.router.get('/', async (req: Request, res: Response) => {
       try {
         const requestData = await this.model
-          .findAllRequest()
+          .findAllActiveRequest()
           .run(this.db.query);
         res.json(requestData);
       } catch (err) {
