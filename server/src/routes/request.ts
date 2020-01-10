@@ -32,7 +32,7 @@ export default class RequestController {
           .run(this.db.query);
         res.json(requestData);
       } catch (err) {
-        res.status(400).send({ error: 'Failed to retrieve requests'});
+        res.status(400).send({ error: 'Failed to retrieve requests' });
       }
     });
 
@@ -43,7 +43,7 @@ export default class RequestController {
           .run(this.db.query);
         res.json(requestData);
       } catch (err) {
-        res.status(400).send({ error: 'Failed to retrieve active requests'});
+        res.status(400).send({ error: 'Failed to retrieve active requests' });
       }
     });
 
@@ -56,7 +56,7 @@ export default class RequestController {
 
         res.json(requestData);
       } catch (err) {
-        res.status(400).send({ error: 'Failed to retrieve completed requests'});
+        res.status(400).send({ error: 'Failed to retrieve completed requests' });
       }
     });
 
@@ -67,7 +67,7 @@ export default class RequestController {
         const request = await this.model.findRequestById(id).run(this.db.query);
         res.json(request);
       } catch (err) {
-        res.status(400).send({ error: 'Failed to retrieve request'});
+        res.status(400).send({ error: 'Failed to retrieve request' });
       }
     });
 
@@ -137,7 +137,7 @@ export default class RequestController {
   private updateWinningBid(requestId: number, userId: number, input: any) {
     return this.db.transaction(async (query) => {
 
-      // update request status to closed when a winning bid is chosen 
+      // update request status to closed when a winning bid is chosen
       const request = await this.model
       .update({ ...input, status: 'closed' })
       .where({ userId, id: requestId })
