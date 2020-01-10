@@ -132,24 +132,22 @@ export default class RequestController {
         res.status(500).send({ error: 'Failed to retrieve bids for request' });
       }
     });
-
-    // /* DELETE requests/:id */
-    // this.router.delete('/:id', async (req: Request, res: Response) => {
-    //   try {
-    //     const id: number = parseInt(req.params.id, 10);
-    //     await RequestService.remove(id);
-    //     res.status(200);
-    //   } catch (err) {
-    //     res.status(500).send(err.message);
-    //   }
-    // });
   }
 
   private updateWinningBid(requestId: number, userId: number, input: any) {
-    return this.model
+    return this.db.transaction(async (query) => {
+
+      // update request status to closed when a winning bid is chosen 
+      const request = await this.model
       .update({ ...input, status: 'closed' })
       .where({ userId, id: requestId })
       .limit(1)
-      .run(this.db.query);
+      .run(query);
+
+      // update non winning bids associated with the request of column is_Active to false
+      await new Bid().update({ isActive: false }).where({ requestId, id: [input.winningBidId, '<>'] }).run(query);
+
+      return request;
+    });
   }
 }
