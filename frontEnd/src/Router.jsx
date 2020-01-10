@@ -53,9 +53,9 @@ export default function Router(props) {
             <IonIcon icon={list} />
             <IonLabel>Request Feed</IonLabel>
           </IonTabButton>
-          <IonTabButton tab='tab2' href='/request/new'>
+          <IonTabButton tab='newRequest' href='/request/new'>
             <IonIcon icon={add} />
-            <IonLabel>Tab Two</IonLabel>
+            <IonLabel>New Request</IonLabel>
           </IonTabButton>
           <IonTabButton tab='activityFeed' href='/activity'>
             <IonIcon icon={list} />

@@ -15,27 +15,28 @@ import {
   useIonViewDidEnter,
 } from '@ionic/react';
 import { AuthContext } from '../contexts/authContext';
+import './ActivityFeed.scss';
 
 const ActivityFeed = props => {
   const [tab, setTab] = useState('requests');
 
   return (
-    <IonPage id="activity-page">
+    <IonPage id='activity-page'>
       <IonHeader>
         <IonToolbar></IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonToolbar>
+        <IonToolbar className='activity-toolbar'>
           <IonSegment onIonChange={e => setTab(e.detail.value)}>
-            <IonSegmentButton value="requests" checked={tab === 'requests'}>
+            <IonSegmentButton value='requests' checked={tab === 'requests'}>
               <IonLabel>Requests</IonLabel>
             </IonSegmentButton>
-            <IonSegmentButton value="bids" checked={tab === 'bids'}>
+            <IonSegmentButton value='bids' checked={tab === 'bids'}>
               <IonLabel>Bids</IonLabel>
             </IonSegmentButton>
           </IonSegment>
+          {tab === 'requests' ? <Request></Request> : <Bids></Bids>}
         </IonToolbar>
-        {tab === 'requests' ? <Request></Request> : <Bids></Bids>}
       </IonContent>
     </IonPage>
   );

@@ -16,6 +16,7 @@ import {
 } from '@ionic/react';
 import { AuthContext } from '../contexts/authContext';
 import axios from 'axios';
+import './LoginScreen.scss';
 
 const LoginScreen = props => {
   const [segment, setSegment] = useState('login');
@@ -36,23 +37,21 @@ const LoginScreen = props => {
   // });
 
   return (
-    <IonPage id="login-page">
+    <IonPage id='login-page'>
       <IonHeader>
         <IonToolbar></IonToolbar>
       </IonHeader>
-      <IonContent>
-        <IonToolbar>
-          <IonSegment onIonChange={e => setSegment(e.detail.value)}>
-            <IonSegmentButton value="login" checked={segment === 'login'}>
-              <IonLabel>Login</IonLabel>
-            </IonSegmentButton>
-            <IonSegmentButton value="register" checked={segment === 'register'}>
-              <IonLabel>Register</IonLabel>
-            </IonSegmentButton>
-          </IonSegment>
-        </IonToolbar>
-        {segment === 'login' ? <Login></Login> : <Register></Register>}
-      </IonContent>
+      <IonToolbar className='login-toolbar'>
+        <IonSegment onIonChange={e => setSegment(e.detail.value)}>
+          <IonSegmentButton value='login' checked={segment === 'login'}>
+            <IonLabel>Login</IonLabel>
+          </IonSegmentButton>
+          <IonSegmentButton value='register' checked={segment === 'register'}>
+            <IonLabel>Register</IonLabel>
+          </IonSegmentButton>
+        </IonSegment>
+      </IonToolbar>
+      {segment === 'login' ? <Login></Login> : <Register></Register>}
     </IonPage>
   );
 };
