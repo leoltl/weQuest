@@ -7,8 +7,7 @@ import {
   IonTitle,
   IonIcon,
   IonButton,
-  IonButtons,
-  IonLoading
+  IonButtons
 } from '@ionic/react';
 import { arrowBack } from 'ionicons/icons';
 import Spinner from './Spinner';

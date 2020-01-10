@@ -7,38 +7,38 @@ import ErrorAlert from '../components/ErrorAlert';
 import ProductList from "../components/ProductList/ProductList";
 
 // dummy data
-const dummyProducts = [
-  {
-    id: 1,
-    name: 'Barbecue',
-    description: 'product description',
-    pictureUrl: 'https://images.unsplash.com/photo-1500840922267-8ff91fbf85aa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80'
-  },
-  {
-    id: 2,
-    name: 'Drill',
-    description: 'product description',
-    pictureUrl: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1686&q=80'
-  },
-  {
-    id: 3,
-    name: 'Clown',
-    description: 'product description',
-    pictureUrl: 'https://images.unsplash.com/photo-1502488207239-dcf4114041cd?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80'
-  },
-  {
-    id: 4,
-    name: 'Keyboard',
-    description: 'product description',
-    pictureUrl: 'https://images.unsplash.com/photo-1545112719-ce81d7de0b71?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1622&q=80'
-  },
-  {
-    id: 5,
-    name: 'Camera',
-    description: 'product description',
-    pictureUrl: 'https://images.unsplash.com/photo-1519638831568-d9897f54ed69?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80'
-  }
-];
+// const dummyProducts = [
+//   {
+//     id: 1,
+//     name: 'Barbecue',
+//     description: 'product description',
+//     pictureUrl: 'https://images.unsplash.com/photo-1500840922267-8ff91fbf85aa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80'
+//   },
+//   {
+//     id: 2,
+//     name: 'Drill',
+//     description: 'product description',
+//     pictureUrl: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1686&q=80'
+//   },
+//   {
+//     id: 3,
+//     name: 'Clown',
+//     description: 'product description',
+//     pictureUrl: 'https://images.unsplash.com/photo-1502488207239-dcf4114041cd?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80'
+//   },
+//   {
+//     id: 4,
+//     name: 'Keyboard',
+//     description: 'product description',
+//     pictureUrl: 'https://images.unsplash.com/photo-1545112719-ce81d7de0b71?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1622&q=80'
+//   },
+//   {
+//     id: 5,
+//     name: 'Camera',
+//     description: 'product description',
+//     pictureUrl: 'https://images.unsplash.com/photo-1519638831568-d9897f54ed69?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80'
+//   }
+// ];
 
 const bidInitialState = {
   products: [],
