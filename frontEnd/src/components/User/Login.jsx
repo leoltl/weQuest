@@ -15,7 +15,7 @@ const Login = props => {
   const history = useHistory();
 
   const responseFacebook = async response => {
-    console.log('Facebook', response.name);
+    console.log('Facebook', response);
     const userData = { user: { name: response.name, email: response.email, password: '123' } };
     await axios.post('/api/users', userData, response => console.log('id:', response));
     setUser(response);

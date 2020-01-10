@@ -5,7 +5,6 @@ import BidFormModal from '../../pages/BidFormModal';
 import axios from 'axios';
 
 const Bids = props => {
-  const isLoggedIn = true;
   const [activeBids, setActiveBids] = useState([]);
   const [completedBids, setCompletedBids] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -17,7 +16,7 @@ const Bids = props => {
 
   return (
     <>
-      <IonListHeader>Active Requests</IonListHeader>
+      <IonListHeader>Active Bids</IonListHeader>
       <BidList
         modal={BidFormModal}
         bids={activeBids}
@@ -26,7 +25,7 @@ const Bids = props => {
         onClick={setSelected}
         buttonTitle='Re Bids'
       ></BidList>
-      <IonListHeader>Completed Requests</IonListHeader>
+      <IonListHeader>Completed Bids</IonListHeader>
       <BidList modal={BidFormModal} bids={completedBids} setBids={setCompletedBids} selectedId={selected} onClick={setSelected}></BidList>
     </>
   );
