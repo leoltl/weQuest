@@ -50,7 +50,7 @@ export default class RequestController {
           .run(this.db.query);
         res.json(requestData);
       } catch (err) {
-        res.status(400).send({ error: 'Failed to retrieve active requests'});
+        res.status(400).send({ error: 'Failed to retrieve active requests' });
       }
     });
 
@@ -63,7 +63,7 @@ export default class RequestController {
 
         res.json(requestData);
       } catch (err) {
-        res.status(400).send({ error: 'Failed to retrieve completed requests'});
+        res.status(400).send({ error: 'Failed to retrieve completed requests' });
       }
     });
 
@@ -74,7 +74,7 @@ export default class RequestController {
         const request = await this.model.findRequestById(id).run(this.db.query);
         res.json(request);
       } catch (err) {
-        res.status(400).send({ error: 'Failed to retrieve request'});
+        res.status(400).send({ error: 'Failed to retrieve request' });
       }
     });
 
@@ -140,24 +140,22 @@ export default class RequestController {
         res.status(500).send({ error: 'Failed to retrieve bids for request' });
       }
     });
-
-    // /* DELETE requests/:id */
-    // this.router.delete('/:id', async (req: Request, res: Response) => {
-    //   try {
-    //     const id: number = parseInt(req.params.id, 10);
-    //     await RequestService.remove(id);
-    //     res.status(200);
-    //   } catch (err) {
-    //     res.status(500).send(err.message);
-    //   }
-    // });
   }
 
   private updateWinningBid(requestId: number, userId: number, input: any) {
-    return this.model
+    return this.db.transaction(async (query) => {
+
+      // update request status to closed when a winning bid is chosen
+      const request = await this.model
       .update({ ...input, status: 'closed' })
       .where({ userId, id: requestId })
       .limit(1)
-      .run(this.db.query);
+      .run(query);
+
+      // update all winning bids associated with the request column of is_Active to false
+      await new Bid().update({ isActive: false }).where({ requestId }).run(query);
+
+      return request;
+    });
   }
 }

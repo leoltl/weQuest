@@ -1,19 +1,10 @@
 import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
-import { apps, flash, list, add } from 'ionicons/icons';
-import { IonReactRouter } from '@ionic/react-router';
-import Tab1 from './pages/Tab1';
-import NewRequest from './pages/NewRequest';
-import LoginScreen from './pages/LoginScreen';
-import Details from './pages/Details';
-import RequestFeed from './pages/RequestFeed';
-import Profile from './pages/Profile';
-import ActivityFeed from './pages/ActivityFeed';
+import { IonApp } from '@ionic/react';
+
+import Router from './Router';
+
 import AuthContextProvider from './contexts/authContext';
 
-import ProtectedRoute from './Routes/ProtectedRoute';
-import Router from './Router';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';

@@ -22,7 +22,7 @@ const BidListItem = props => {
               padding: 0,
             }}
           >
-            {props.currentBid && currencyFormatter(props.currentBid) || 'Free'}
+            {props.currentBid && (currencyFormatter(props.currentBid) || 'Free')}
           </IonCardContent>
         </div>
         <IonCardContent className="request-card__user">
