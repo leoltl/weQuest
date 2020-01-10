@@ -28,11 +28,11 @@ export default class RequestController {
     this.router.get('/', async (req: Request, res: Response) => {
       try {
         const requestData = await this.model
-          .findAllRequest()
+          .findAllActiveRequest()
           .run(this.db.query);
         res.json(requestData);
       } catch (err) {
-        res.status(400).send(err.message);
+        res.status(400).send({ error: 'Failed to retrieve requests'});
       }
     });
 
@@ -43,7 +43,7 @@ export default class RequestController {
           .run(this.db.query);
         res.json(requestData);
       } catch (err) {
-        res.status(400).send(err.message);
+        res.status(400).send({ error: 'Failed to retrieve active requests'});
       }
     });
 
@@ -52,9 +52,11 @@ export default class RequestController {
         const requestData = await this.model
           .findRequestsByStatus(req.session!.userId, 'closed')
           .run(this.db.query);
+        console.log(requestData);
+
         res.json(requestData);
       } catch (err) {
-        res.status(400).send(err.message);
+        res.status(400).send({ error: 'Failed to retrieve completed requests'});
       }
     });
 
@@ -65,20 +67,7 @@ export default class RequestController {
         const request = await this.model.findRequestById(id).run(this.db.query);
         res.json(request);
       } catch (err) {
-        res.status(400).send(err.message);
-      }
-    });
-
-    /* GET /api/requests/:id/bids */
-    this.router.get('/:id/bids', async (req: Request, res: Response) => {
-      try {
-        const requestId = parseInt(req.params.id, 10);
-        const result = await new Bid()
-          .findByRequestSafe(requestId, req.session!.userId)
-          .run(this.db.query);
-        res.json(result);
-      } catch (err) {
-        res.status(500).send({ message: 'sorry error' });
+        res.status(400).send({ error: 'Failed to retrieve request'});
       }
     });
 
@@ -110,7 +99,7 @@ export default class RequestController {
           .run(this.db.query);
         res.sendStatus(201);
       } catch (err) {
-        res.status(500).send({error: 'Failed to create new request.'});
+        res.status(500).send({ error: 'Failed to create new request.' });
       }
     });
 
@@ -125,7 +114,7 @@ export default class RequestController {
           req.body,
         );
         if (!request) throw Error('Cannot find/update request');
-        res.sendStatus(200);
+        res.status(200).send(request);
       } catch (err) {
         res.status(500).send({ error: 'Failed to update request.' });
       }
@@ -158,7 +147,7 @@ export default class RequestController {
 
   private updateWinningBid(requestId: number, userId: number, input: any) {
     return this.model
-      .update(input)
+      .update({ ...input, status: 'closed' })
       .where({ userId, id: requestId })
       .limit(1)
       .run(this.db.query);

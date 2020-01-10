@@ -4,8 +4,6 @@ import moment from 'moment';
 import { currencyFormatter } from '../../lib/utils'
 
 const RequestListItem = props => {
-  const isLoggedIn = true;
-
   return (
     <IonCard onClick={props.selectCard}>
       <IonCardHeader>
@@ -29,23 +27,21 @@ const RequestListItem = props => {
         </div>
         <IonCardContent className="request-card__user">
           <div className="request-card__left">
-            <img alt="user avatar" src="https://i.pravatar.cc/50"></img>
-            <span className="request-card__user-rating">4/5</span>
+            <img alt="profile image" src={`https://i.pravatar.cc/50?u=${props.requestDetails.name}`}></img>
+            <span className="request-card__user-rating">{props.requestDetails.name}</span>
           </div>
           <div className="request-card__right">
             <span className="request-card__auction-end">Ends {moment(props.requestDetails.auctionEnd).fromNow()}</span>
           </div>
         </IonCardContent>
       </IonCardHeader>
-      {props.isSelected ? (
+      {props.isSelected && (
         <>
           <IonCardContent>{props.requestDetails.description}</IonCardContent>
-          <IonButton className="ion-margin" disabled={isLoggedIn ? false : true} expand="block" onClick={props.onBidClick}>
-            Bid Now
+          <IonButton className="ion-margin" expand="block" onClick={props.onBidClick}>
+            {props.buttonTitle}
           </IonButton>
         </>
-      ) : (
-        ''
       )}
     </IonCard>
   );

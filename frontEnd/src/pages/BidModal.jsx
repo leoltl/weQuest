@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import Modal from '../components/Modal';
 import ErrorAlert from '../components/ErrorAlert';
-import BidList from "../components/BidList/BidList";
+import BidList from "../components/BidList/BidListModal";
 
 // component should be passed a function to select the winning bid
 // also need requestId
@@ -11,7 +11,7 @@ import BidList from "../components/BidList/BidList";
 // need to control state of expanded bid (or should bid list do it? - YES)
 // component need to make an axios call when winning bid selected - PUT TO REQUESTS ROUTE
 
-export default function BidModal({ showModal, setShowModal, requestId, updateRequestById }) {
+export default function BidModal({ showModal, setShowModal, request, updateRequestById }) {
 
   console.log('rendering bid');
 
@@ -30,7 +30,7 @@ export default function BidModal({ showModal, setShowModal, requestId, updateReq
     // new Promise((resolve) => {
     //   setTimeout(() => resolve({}), 3000);
     // })
-    axios.put(`/api/requests/${requestId}`, { winningBidId: bidId })
+    axios.put(`/api/requests/${request.id}`, { winningBidId: bidId })
     .then((data) => {
       console.log('winning bid updated');
       setShowModal(false);
@@ -39,7 +39,7 @@ export default function BidModal({ showModal, setShowModal, requestId, updateReq
     .catch((err) => setErrorMessage(err.message))
     .finally(() => setShowSpinner(false));
 
-  }, [requestId]);
+  }, [request.id]);
 
   // load product data
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function BidModal({ showModal, setShowModal, requestId, updateReq
     // new Promise((resolve) => {
     //   setTimeout(() => resolve({}), 3000);
     // })
-    axios.get(`/api/requests/${requestId}/bids`)
+    axios.get(`/api/requests/${request.id}/bids`)
     .then(({ data: bids}) => {
       console.log(bids);
       setBids(bids);
@@ -60,10 +60,10 @@ export default function BidModal({ showModal, setShowModal, requestId, updateReq
     .catch((err) => setErrorMessage(err.message))
     .finally(() => setShowSpinner(false));
 
-  }, [requestId]);
+  }, [request.id]);
 
   return (
-    <Modal {...{ showModal, setShowModal, showSpinner, title: `Bids for ${ requestId}` }}>
+    <Modal {...{ showModal, setShowModal, showSpinner, title: `Bids for ${request.title}` }}>
       {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
       <BidList {...{ selectWinner, bids }} />
     </Modal>

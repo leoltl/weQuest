@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { IonHeader, IonToolbar, IonContent, IonItem, IonLabel, IonInput, IonList, IonButton } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
+import { AuthContext } from '../../contexts/authContext';
 
 const Register = props => {
   const [name, setName] = useState('');
@@ -27,13 +28,25 @@ const Register = props => {
     }
   };
 
+  const { setUser } = useContext(AuthContext);
+
+  const clearForm = () => {
+    setName('');
+    setEmail('');
+    setPassword('');
+    setPasswordConfirmation('');
+  }
+
   const submit = async e => {
     validateForm(e);
     try {
       await axios.post('/api/users', {
         user: { name: name, email: email, password: password },
+      }).then(res => {
+        setUser(res.data);
+        clearForm();
       });
-      history.push('/requestFeed');
+      history.push('/requests');
     } catch (e) {
       setFormErrors(e);
     }
@@ -41,10 +54,7 @@ const Register = props => {
 
   return (
     <>
-      <IonHeader>
-        <IonToolbar></IonToolbar>
-      </IonHeader>
-      <IonContent>
+      <IonContent className={'login-container'}>
         <form
           onSubmit={e => {
             e.preventDefault();
@@ -54,28 +64,28 @@ const Register = props => {
           <div>{formErrors ? formErrors.message : null}</div>
           <IonList>
             <IonItem>
-              <IonLabel position="floating">Name</IonLabel>
-              <IonInput name="name" type="name" value={name} clearInput inputMode="text" onIonChange={e => setName(e.target.value)} />
+              <IonLabel position='floating'>Name</IonLabel>
+              <IonInput name='name' type='name' value={name} clearInput autcomplete='on' onIonChange={e => setName(e.target.value)} />
             </IonItem>
             <IonItem>
-              <IonLabel position="floating">Email</IonLabel>
-              <IonInput name="email" type="email" value={email} clearInput onIonChange={e => setEmail(e.target.value)} />
+              <IonLabel position='floating'>Email</IonLabel>
+              <IonInput name='email' type='email' value={email} clearInput autcomplete='on' onIonChange={e => setEmail(e.target.value)} />
             </IonItem>
             <IonItem>
-              <IonLabel position="floating">Password</IonLabel>
-              <IonInput name="password" type="password" value={password} onIonChange={e => setPassword(e.target.value)} />
+              <IonLabel position='floating'>Password</IonLabel>
+              <IonInput name='password' type='password' value={password} onIonChange={e => setPassword(e.target.value)} />
             </IonItem>
             <IonItem>
-              <IonLabel position="floating">Password Confirmation</IonLabel>
+              <IonLabel position='floating'>Password Confirmation</IonLabel>
               <IonInput
-                name="passwordConfirmation"
-                type="password"
+                name='passwordConfirmation'
+                type='password'
                 value={passwordConfirmation}
                 onIonChange={e => setPasswordConfirmation(e.target.value)}
               />
             </IonItem>
           </IonList>
-          <IonButton expand="block" fill="outline" type="submit">
+          <IonButton expand='block' fill='outline' type='submit'>
             Register
           </IonButton>
         </form>

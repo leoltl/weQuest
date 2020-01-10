@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { IonButton, IonList, IonItem } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authContext';
@@ -11,8 +11,10 @@ export default function ProfileAvatar(props) {
   const signOut = async e => {
     setUser(null);
     axios.get('/api/users/logout');
-    history.goBack();
+    // history.goBack();
   };
+
+  console.log("USER PROFILE ", user);
 
   const userInfo = user => (
     <>

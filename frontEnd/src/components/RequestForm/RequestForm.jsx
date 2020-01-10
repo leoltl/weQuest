@@ -3,14 +3,14 @@ import { IonContent, IonButton, IonText } from '@ionic/react';
 import axios from 'axios';
 import moment from 'moment';
 
-import { withRouter } from "react-router";
+import { withRouter } from 'react-router';
 
 import { AuthContext } from '../../contexts/authContext';
 
-import './RequestForm.scss';
 import RequestFieldGroup from './RequestFieldGroup';
 
-const RequestForm = (props) => {
+const RequestForm = props => {
+  const { user } = useContext(AuthContext);
   const [item, setItem] = useState('');
   const [notes, setNotes] = useState('');
   const [budget, setBudget] = useState(null);
@@ -18,7 +18,7 @@ const RequestForm = (props) => {
   const [endDate, setEndDate] = useState(
     moment()
       .add(1, 'days')
-      .format()
+      .format(),
   );
 
   const resetFields = () => {
@@ -28,15 +28,15 @@ const RequestForm = (props) => {
     setEndDate(
       moment()
         .add(1, 'days')
-        .format()
+        .format(),
     );
     setNotes('');
   };
 
-  const parseBudgetToCent = (budget) => {
-    const _budget = parseFloat(budget) * 100
+  const parseBudgetToCent = budget => {
+    const _budget = parseFloat(budget) * 100;
     return parseInt(_budget, 10);
-  }
+  };
 
   const submit = () => {
     const data = {
@@ -44,14 +44,19 @@ const RequestForm = (props) => {
       budgetCent: parseBudgetToCent(budget),
       borrowStart: startDate,
       borrowEnd: endDate,
-      description: notes
+      description: notes,
     };
+
+    if (!user) {
+      props.history.push({ pathname: '/login', state: { redirectOnSuccess: '/request/new' } });
+      return;
+    }
 
     if (isValid(data)) {
       axios.post('/api/requests', { payload: data }).then(res => {
         if (res.status === 201) {
           resetFields();
-          props.history.push('/requestFeed')
+          props.history.push('/requests');
         } else {
           // TODO: make error looks better
           window.alert('server error');
@@ -65,20 +70,11 @@ const RequestForm = (props) => {
 
   const isValid = data => {
     console.log(data);
-    return (
-      data.title &&
-      data.budgetCent &&
-      data.borrowStart &&
-      data.borrowEnd &&
-      data.borrowStart <= data.borrowEnd
-    );
+    return data.title && data.budgetCent && data.borrowStart && data.borrowEnd && data.borrowStart <= data.borrowEnd;
   };
 
-  const { user } = useContext(AuthContext);
-  // TODO: fix tmpuser
-  const tmpuser = true;
   return (
-    <IonContent>
+    <>
       <form
         onSubmit={e => {
           e.preventDefault();
@@ -91,23 +87,18 @@ const RequestForm = (props) => {
             setItem,
             setStartDate,
             setEndDate,
-            setNotes
+            setNotes,
           }}
           formValues={{ budget, item, startDate, endDate, notes }}
         />
-        <IonButton
-          className="ion-margin"
-          disabled={tmpuser ? false : true} //temp using tmp user, change it back to user.....
-          expand="block"
-          type="submit"
-        >
-          Request It
+        <IonButton expand='block' type='submit'>
+          {user ? 'Request It' : 'Login to request'}
         </IonButton>
-        <IonButton expand="block" fill="clear" type="button">
+        <IonButton expand='block' fill='clear' type='button'>
           Cancel
         </IonButton>
       </form>
-    </IonContent>
+    </>
   );
 };
 
