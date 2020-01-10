@@ -9,7 +9,7 @@ import './RequestList.scss';
 import { AuthContext } from '../../contexts/authContext';
 
 const RequestList = ({ modal: Modal, ...props }) => {
-  const isLoggedIn = true;
+  const { user: isLoggedIn } = useContext(AuthContext);
   const { requests, setRequests } = props;
   const [showBidForm, setShowBidForm] = useState(false);
 
@@ -40,9 +40,9 @@ const RequestList = ({ modal: Modal, ...props }) => {
     if (isLoggedIn) {
       setShowBidForm(true);
     } else {
-      props.history.push('/login')
+      props.history.push({ pathname: '/login', state: { redirectOnSuccess: '/requests' } });
     }
-  }
+  };
 
   const renderedRequestItem = requests.map(listItem => {
     return (
@@ -54,12 +54,8 @@ const RequestList = ({ modal: Modal, ...props }) => {
         isSelected={listItem.id === props.selectedId}
         selectCard={() => props.onClick(listItem.id === props.selectedId ? null : listItem.id)}
         buttonTitle={props.buttonTitle}
-        onBidClick={e => {
-          e.preventDefault();
-          e.stopPropagation();
-          setShowBidForm(true);
-        }}
-      ></RequestListItem>
+        onBidClick={onBidClick}
+      />
     );
   });
 

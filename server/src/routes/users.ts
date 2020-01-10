@@ -49,7 +49,7 @@ export default class UserController {
             req.body.user.password,
           );
           this.updateSession(req, userData);
-          res.json(userData.id);
+          res.json(userData);
         } catch (err) {
           res.status(400).send(err.message);
         }
