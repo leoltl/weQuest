@@ -1,17 +1,19 @@
 // tslint:disable: import-name
 import { Router } from 'express';
 import DB from '../lib/db';
+import Socket from '../lib/socket';
 import { accessControl } from '../lib/utils';
-import { Request } from '../models/mocks';
+import Request from '../models/request';
 import Bid, { BidInterface } from '../models/bid';
 import { ItemInterface } from '../models/item';
+import { emit } from 'cluster';
 
 export default class BidController {
   public path: string = '/api/bids';
   public router: Router = Router();
   public model = new Bid();
 
-  constructor(public db: DB) {
+  constructor(public db: DB, public socket: Socket) {
     this.init();
   }
 
@@ -27,10 +29,20 @@ export default class BidController {
           // const output = await this.getAllByUser(req.session!.userId);
           const isActive = !req.query.completed;
           console.log('params', isActive);
-          const output = await this.model
+
+          const bids = await this.model
             .findByUserSafe(req.session!.userId, isActive)
             .run(this.db.query);
-          res.json(output);
+
+          const sessionId = req.cookies['session.sig'];
+          bids.forEach((bid: Partial<BidInterface>) => {
+            this.socket.subscribe(sessionId, 'get-bids', String(bid.id));
+          });
+          console.log(this.socket);
+          this.socket.emit('get-bids', { hello: 'world' }, '1');
+
+          res.json(bids);
+
         } catch (err) {
           console.log(err);
           res.status(404).json({ error: 'Failed to retrieve items for user' });
@@ -38,8 +50,11 @@ export default class BidController {
       })
       .post(async (req, res) => {
         try {
-          const output = await this.create(req.body);
-          res.json(output);
+          const bid = await this.create(req.body);
+          const updatedRequest = await new Request().findSafe(bid.requestId).run(this.db.query);
+          this.socket.emit('get-requests', updatedRequest, String(bid.requestId));
+          res.json(bid);
+
         } catch (err) {
           console.log(err);
           res.status(404).json({ error: 'Failed to save item' });
