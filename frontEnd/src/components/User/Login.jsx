@@ -15,14 +15,23 @@ const Login = props => {
   const history = useHistory();
 
   const responseFacebook = async response => {
-    console.log('Facebook', response.name);
+    // console.log('Facebook', response.name);
     const userData = { user: { name: response.name, email: response.email, password: '123' } };
     await axios.post('/api/users', userData, response => console.log('id:', response));
     setUser(response);
   };
 
-  const responseGoogle = response => {
-    console.log('Google', response);
+  const responseGoogle = async response => {
+    console.log('Google', response.w3);
+    const userData = {
+      user: {
+        name: response.w3.ig,
+        email: response.w3.U3,
+        password: '123',
+      },
+    };
+    await axios.post('/api/users', userData, response => console.log('id:', response));
+    setUser(response);
   };
 
   const submit = async e => {
