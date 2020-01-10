@@ -34,6 +34,17 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
+//instantiate socket connection
+import io from 'socket.io-client';
+const socket = io('/', { path: '/socket' });
+// const socket = io('/');
+socket.on('connect', () => {
+  console.log('socket connected', socket.connected);
+  socket.emit('hi');
+});
+socket.on('news', (msg) => console.log(msg));
+
+
 const App = () => (
   <IonApp>
     <AuthContextProvider>
