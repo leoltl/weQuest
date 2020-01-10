@@ -3,7 +3,7 @@ import Model, { ColumnInput } from '../lib/model';
 import { isDate } from '../lib/utils';
 // tslint:disable-next-line: import-name
 
-import SQLQuery from '../lib/sql';
+import sql from '../lib/sql';
 
 import user from './user';
 import bid from './bid';
@@ -66,7 +66,7 @@ export class Request extends Model {
     ];
   }
 
-  public create(input: ColumnInput): SQLQuery {
+  public create(input: ColumnInput): sql {
     return this.insert(
       input,
       new WeakMap([[this, this.requiredColumns.concat('description')]]),
@@ -84,15 +84,15 @@ export class Request extends Model {
     );
   }
 
-  public findRequestById(id: number): SQLQuery {
+  public findRequestById(id: number): sql {
     return this.find(id);
   }
 
-  public findBidsByRequestId(id: number): SQLQuery {
+  public findBidsByRequestId(id: number): sql {
     return this.select('*', 'bids.*').where({ id });
   }
 
-  public findRequestsByStatus(userId: number, status: string): SQLQuery {
+  public findRequestsByStatus(userId: number, status: string): sql {
     return this.sql(
       `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, users.name, COALESCE(bids.price_cent, requests.budget_cent) as       price_cent, bids.item_id
         FROM requests LEFT JOIN users ON requests.user_id = users.id

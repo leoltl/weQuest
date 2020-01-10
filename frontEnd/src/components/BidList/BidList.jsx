@@ -1,9 +1,6 @@
-import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { withRouter } from 'react-router';
-import { IonContent, IonList, IonButton } from '@ionic/react';
+import React, { useState, useCallback, useContext } from 'react';
+import { IonList } from '@ionic/react';
 import BidListItem from './BidListItem';
-import BidFormModal from '../../pages/BidFormModal';
-import axios from 'axios';
 
 import { AuthContext } from '../../contexts/authContext';
 
@@ -32,16 +29,6 @@ const BidList = ({ modal: Modal, ...props }) => {
     },
     [bids],
   );
-
-  const onBidClick = e => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (isLoggedIn) {
-      setShowBidForm(true);
-    } else {
-      props.history.push('/login');
-    }
-  };
 
   const renderedRequestItem = bids.map(listItem => {
     console.log('bids', listItem);

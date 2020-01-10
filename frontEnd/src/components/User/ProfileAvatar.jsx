@@ -1,11 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { IonButton, IonList, IonItem } from '@ionic/react';
-import { useHistory } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authContext';
 import axios from 'axios';
 
 export default function ProfileAvatar(props) {
-  const history = useHistory();
   const { user, setUser } = useContext(AuthContext);
 
   const signOut = async e => {

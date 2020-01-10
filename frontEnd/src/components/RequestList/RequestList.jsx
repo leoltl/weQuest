@@ -1,9 +1,7 @@
-import React, { useEffect, useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { withRouter } from 'react-router';
-import { IonContent, IonList, IonButton } from '@ionic/react';
+import { IonList } from '@ionic/react';
 import RequestListItem from './RequestListItem';
-import BidFormModal from '../../pages/BidFormModal';
-import axios from 'axios';
 
 import './RequestList.scss';
 import { AuthContext } from '../../contexts/authContext';
@@ -25,7 +23,7 @@ const RequestList = ({ modal: Modal, ...props }) => {
         return request.id === id ? { ...request, ...payload } : request;
       }),
     );
-  }, []);
+  }, [setRequests]);
 
   const getRequestById = useCallback(
     id => {

@@ -18,23 +18,13 @@ import {
   IonButton,
 } from '@ionic/react';
 import { book, build, colorFill, grid } from 'ionicons/icons';
-import React, { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../contexts/authContext';
-
-import BidModal from './BidModal';
+import React, { useState } from 'react';
 
 import './Tab1.scss';
 
 const Tab1 = props => {
   const [state, setState] = useState({ user: {} });
-  const { user, setUser } = useContext(AuthContext);
-
   const [showBidForm, setShowBidForm] = useState(false);
-
-  const signOut = async e => {
-    setUser(null);
-    props.history.goBack();
-  };
 
   return (
     <IonPage>
@@ -82,7 +72,7 @@ const Tab1 = props => {
           {state.user.name && (
             <IonItem>
               <IonThumbnail slot="start">
-                <img src={state.user.picture.data.url} />
+                <img alt="hi" src={state.user.picture.data.url} />
               </IonThumbnail>
               <IonLabel>
                 <h3>{state.user.name}</h3>

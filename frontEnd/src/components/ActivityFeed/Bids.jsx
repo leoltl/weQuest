@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonContent, IonList, IonListHeader } from '@ionic/react';
+import { IonListHeader } from '@ionic/react';
 import BidList from '../BidList/BidList';
 import BidFormModal from '../../pages/BidFormModal';
 import axios from 'axios';

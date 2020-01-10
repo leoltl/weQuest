@@ -1,5 +1,4 @@
-import React, { useState, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
 import Request from '../components/ActivityFeed/Request';
 import Bids from '../components/ActivityFeed/Bids';
 import {
@@ -10,11 +9,8 @@ import {
   IonPage,
   IonHeader,
   IonToolbar,
-  IonButtons,
-  IonBackButton,
-  useIonViewDidEnter,
 } from '@ionic/react';
-import { AuthContext } from '../contexts/authContext';
+
 import './ActivityFeed.scss';
 
 const ActivityFeed = props => {
