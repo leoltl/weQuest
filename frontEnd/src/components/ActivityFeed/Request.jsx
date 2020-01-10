@@ -5,7 +5,6 @@ import RequestList from '../RequestList/RequestList';
 import axios from 'axios';
 
 const Requests = props => {
-  const isLoggedIn = true;
   const [activeRequests, setActiveRequests] = useState([]);
   const [completedRequests, setCompletedRequests] = useState([]);
   const [selected, setSelected] = useState(null);

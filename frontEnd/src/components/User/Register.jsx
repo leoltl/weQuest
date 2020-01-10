@@ -30,6 +30,13 @@ const Register = props => {
 
   const { setUser } = useContext(AuthContext);
 
+  const clearForm = () => {
+    setName('');
+    setEmail('');
+    setPassword('');
+    setPasswordConfirmation('');
+  }
+
   const submit = async e => {
     validateForm(e);
     try {
@@ -37,8 +44,9 @@ const Register = props => {
         user: { name: name, email: email, password: password },
       }).then(res => {
         setUser(res.data);
+        clearForm();
       });
-      history.push('/requestFeed');
+      history.push('/requests');
     } catch (e) {
       setFormErrors(e);
     }

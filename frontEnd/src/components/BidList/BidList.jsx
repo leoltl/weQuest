@@ -8,7 +8,7 @@ import axios from 'axios';
 import { AuthContext } from '../../contexts/authContext';
 
 const BidList = ({ modal: Modal, ...props }) => {
-  const isLoggedIn = true;
+  const {user: isLoggedIn} = useContext(AuthContext);
   const { bids, setBids } = props;
   const [showBidForm, setShowBidForm] = useState(false);
 

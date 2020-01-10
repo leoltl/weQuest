@@ -15,7 +15,7 @@ const Login = props => {
   const history = useHistory();
 
   const responseFacebook = async response => {
-    console.log('Facebook', response.name);
+    console.log('Facebook', response);
     const userData = { user: { name: response.name, email: response.email, password: '123' } };
     await axios.post('/api/users', userData, response => console.log('id:', response));
     setUser(response);
@@ -25,9 +25,19 @@ const Login = props => {
     console.log('Google', response);
   };
 
+
+  const clearForm = () => {
+    setEmail('');
+    setPassword('');
+  }
+
   const submit = async e => {
     try {
-      await axios.post('/api/users/login', { email, password }).then(response => setUser(response));
+      await axios.post('/api/users/login', { email, password })
+        .then(response => {
+          setUser(response);
+          clearForm();
+        })
       //redirectOnSuccess comes from Request Form
       if (history.location.state.redirectOnSuccess) {
         history.push(history.location.state.redirectOnSuccess);
