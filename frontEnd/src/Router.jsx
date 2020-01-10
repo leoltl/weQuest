@@ -46,15 +46,14 @@ export default function Router(props) {
           <IonTabButton tab='tab1' href='/tab1'>
             <IonIcon icon={flash} />
             <IonLabel>Tab One</IonLabel>
-          </IonTabButton>{' '}
-          */}
+          </IonTabButton>
           <IonTabButton tab='requestFeed' href='/requests'>
             <IonIcon icon={list} />
             <IonLabel>Request Feed</IonLabel>
           </IonTabButton>
-          <IonTabButton tab='tab2' href='/request/new'>
+          <IonTabButton tab='newRequest' href='/request/new'>
             <IonIcon icon={add} />
-            <IonLabel>Tab Two</IonLabel>
+            <IonLabel>New Request</IonLabel>
           </IonTabButton>
           <IonTabButton tab='activityFeed' href='/activity'>
             <IonIcon icon={list} />

@@ -23,7 +23,7 @@ const RequestList = ({ modal: Modal, ...props }) => {
         return request.id === id ? { ...request, ...payload } : request;
       }),
     );
-  }, []);
+  }, [setRequests]);
 
   const getRequestById = useCallback(
     id => {
