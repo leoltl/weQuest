@@ -8,17 +8,12 @@ import axios from 'axios';
 import './RequestList.scss';
 import { AuthContext } from '../../contexts/authContext';
 
-<<<<<<< HEAD
 const RequestList = ({ modal: Modal, ...props }) => {
   const isLoggedIn = true;
-=======
-const RequestList = props => {
-  const { user: isLoggedIn } = useContext(AuthContext);
->>>>>>> master
   const { requests, setRequests } = props;
   const [showBidForm, setShowBidForm] = useState(false);
 
-  console.log('RENDERLIST', isLoggedIn);
+  // console.log('RENDERLIST', isLoggedIn);
 
   // useEffect(() => {
   //   axios.get('/api/requests').then(res => setRequests(res.data));
@@ -58,7 +53,6 @@ const RequestList = props => {
         requestDetails={listItem}
         isSelected={listItem.id === props.selectedId}
         selectCard={() => props.onClick(listItem.id === props.selectedId ? null : listItem.id)}
-<<<<<<< HEAD
         buttonTitle={props.buttonTitle}
         onBidClick={e => {
           e.preventDefault();
@@ -66,9 +60,6 @@ const RequestList = props => {
           setShowBidForm(true);
         }}
       ></RequestListItem>
-=======
-        onBidClick={onBidClick} />
->>>>>>> master
     );
   });
 

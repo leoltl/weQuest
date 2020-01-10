@@ -20,20 +20,18 @@ export default function Router(props) {
   const [initialRender, setinitialRender] = useState(true);
   const { user, setUser } = useContext(AuthContext);
 
+  const getCurrentState = async e => {
+    const user = await axios.get('/api/users');
+    setUser(user.data);
+    // console.log("USER DEBUG", user.data)
+    setinitialRender(false);
+  };
   
   useEffect(() => {
-    const getCurrentState = async e => {
-      const user = await axios.get('/api/users');
-      setUser(user.data);
-      console.log("USER DEBUG", user)
-      setinitialRender(false);
-    };
-
     if (initialRender) {
       getCurrentState();
     }
-
-  }, []);
+  }, [user]);
 
 
   

@@ -4,6 +4,7 @@ import moment from 'moment';
 import { currencyFormatter } from '../../lib/utils'
 
 const RequestListItem = props => {
+  const isLoggedIn = true
   return (
     <IonCard onClick={props.selectCard}>
       <IonCardHeader>

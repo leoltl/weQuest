@@ -16,7 +16,7 @@ const Login = props => {
 
   const responseFacebook = async response => {
     console.log('Facebook', response.name);
-    const userData = { user: { name: response.name, email: response.email, password: 'dummy' } };
+    const userData = { user: { name: response.name, email: response.email, password: '123' } };
     await axios.post('/api/users', userData, response => console.log('id:', response));
     setUser(response);
   };
@@ -27,7 +27,7 @@ const Login = props => {
 
   const submit = async e => {
     try {
-      await axios.post('/api/users/login', { email, password }).then(response => setUser(response));
+      await axios.post('/api/users/login', { email, password }).then(user => setUser(user));
       history.push('/requestFeed');
     } catch (e) {
       console.log(e);
