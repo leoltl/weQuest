@@ -30,17 +30,23 @@ const Register = props => {
 
   const { setUser } = useContext(AuthContext);
 
+  const clearForm = () => {
+    setName('');
+    setEmail('');
+    setPassword('');
+    setPasswordConfirmation('');
+  }
+
   const submit = async e => {
     validateForm(e);
     try {
-      await axios
-        .post('/api/users', {
-          user: { name: name, email: email, password: password },
-        })
-        .then(res => {
-          setUser(res.data);
-        });
-      history.push('/requestFeed');
+      await axios.post('/api/users', {
+        user: { name: name, email: email, password: password },
+      }).then(res => {
+        setUser(res.data);
+        clearForm();
+      });
+      history.push('/requests');
     } catch (e) {
       setFormErrors(e);
     }

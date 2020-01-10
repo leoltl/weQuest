@@ -28,7 +28,7 @@ export default class RequestController {
     this.router.get('/', async (req: Request, res: Response) => {
       try {
         const requestData = await this.model
-          .findAllRequest()
+          .findAllActiveRequest()
           .run(this.db.query);
         res.json(requestData);
       } catch (err) {
@@ -114,7 +114,7 @@ export default class RequestController {
           req.body,
         );
         if (!request) throw Error('Cannot find/update request');
-        res.sendStatus(200);
+        res.status(200).send(request);
       } catch (err) {
         res.status(500).send({ error: 'Failed to update request.' });
       }
@@ -147,7 +147,7 @@ export default class RequestController {
 
   private updateWinningBid(requestId: number, userId: number, input: any) {
     return this.model
-      .update(input)
+      .update({ ...input, status: 'closed' })
       .where({ userId, id: requestId })
       .limit(1)
       .run(this.db.query);
