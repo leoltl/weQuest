@@ -1,49 +1,53 @@
-import React, { useCallback } from 'react';
-import { IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonAvatar, IonImg, IonBadge, IonButton } from '@ionic/react';
-import './BidListItem.scss';
-import { currencyFormatter } from '../../lib/utils';
+import React from 'react';
+import { IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonButton } from '@ionic/react';
+import moment from 'moment';
+import { currencyFormatter } from '../../lib/utils'
 
-export default function BidListItem({ isExpanded, expand, selectWinner, id, name, pictureUrl, priceCent, notes, description, username }) {
-
-  const handleExpand = useCallback((e) => {
-    e.preventDefault();
-    expand(id);
-  }, [id]);
-
-  const handleWinner = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    selectWinner(id);
-  }, [id]);
-  
+const BidListItem = props => {
+  const isLoggedIn = true
   return (
-    <IonCard className={'bid-card'} onClick={handleExpand}>
-      {isExpanded && <IonImg className={'bid-card__img'} src={pictureUrl} alt={name} title={name} />}
-      <IonCardHeader className={'bid-card__header'} color={isExpanded ? 'tertiary' : undefined}>
-        {!isExpanded && <IonAvatar className={'bid-card__header-img'}>
-          <IonImg src={pictureUrl} alt={name} title={name} />
-        </IonAvatar>}
-        <IonCardTitle className={'bid-card__header-name'}>{name}</IonCardTitle>
-        <IonBadge className={'bid-card__header-price'}>{currencyFormatter(priceCent)}</IonBadge>
-      </IonCardHeader>
-      {isExpanded && <IonCardContent>
-        <h2 class={'bid-card__heading'}>Item Description</h2>
-        <p>{description}</p>
-        <h2 class={'bid-card__heading'}>Notes</h2>
-        <p>{notes}</p>
-
-        <h2 class={'bid-card__heading'}>About the Bidder</h2>
-        <div className={'bid-card__user'}>
-          <IonAvatar className={'bid-card__user-img'}>
-            <IonImg src={'https://images.unsplash.com/photo-1571942676558-281b2f9b1f8d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1489&q=80'} alt={username} title={username} />
-          </IonAvatar>
-          <IonCardTitle className={'bid-card__user-name'}>{username}</IonCardTitle>
-          <IonBadge className={'bid-card__user-rating'}>3/5</IonBadge>
+    <IonCard onClick={props.selectCard}>
+      <IonCardHeader>
+        <div className="request-card__header">
+          <IonCardSubtitle
+            style={{
+              fontSize: '1.15rem',
+              padding: 0,
+            }}
+          >
+            {props.requestDetails.title}
+          </IonCardSubtitle>
+          <IonCardContent
+            style={{
+              fontSize: '1.3rem',
+              padding: 0,
+            }}
+          >
+            {props.currentBid && currencyFormatter(props.currentBid) || 'Free'}
+          </IonCardContent>
         </div>
-
-        {selectWinner && <IonButton className={'bid-card__btn'} onClick={handleWinner} color={'tertiary'}>Select Bid</IonButton>}
-      </IonCardContent>}
+        <IonCardContent className="request-card__user">
+          <div className="request-card__left">
+            <img alt="user avatar" src="https://i.pravatar.cc/50"></img>
+            <span className="request-card__user-rating">4/5</span>
+          </div>
+          <div className="request-card__right">
+            <span className="request-card__auction-end">Ends {moment(props.requestDetails.auctionEnd).fromNow()}</span>
+          </div>
+        </IonCardContent>
+      </IonCardHeader>
+      {props.isSelected ? (
+        <>
+          <IonCardContent>{props.requestDetails.description}</IonCardContent>
+          <IonButton className="ion-margin" disabled={isLoggedIn ? false : true} expand="block" onClick={props.onBidClick}>
+            {props.buttonTitle}
+          </IonButton>
+        </>
+      ) : (
+        ''
+      )}
     </IonCard>
   );
+};
 
- }
+export default BidListItem;

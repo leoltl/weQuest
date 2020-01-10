@@ -13,7 +13,7 @@ const RequestList = ({ modal: Modal, ...props }) => {
   const { requests, setRequests } = props;
   const [showBidForm, setShowBidForm] = useState(false);
 
-  console.log('RENDERLIST', isLoggedIn);
+  // console.log('RENDERLIST', isLoggedIn);
 
   // useEffect(() => {
   //   axios.get('/api/requests').then(res => setRequests(res.data));
@@ -40,9 +40,9 @@ const RequestList = ({ modal: Modal, ...props }) => {
     if (isLoggedIn) {
       setShowBidForm(true);
     } else {
-      props.history.push({ pathname: '/login', state:  { redirectOnSuccess: '/requests' } })
+      props.history.push({ pathname: '/login', state: { redirectOnSuccess: '/requests' } });
     }
-  }
+  };
 
   const renderedRequestItem = requests.map(listItem => {
     return (
@@ -54,7 +54,8 @@ const RequestList = ({ modal: Modal, ...props }) => {
         isSelected={listItem.id === props.selectedId}
         selectCard={() => props.onClick(listItem.id === props.selectedId ? null : listItem.id)}
         buttonTitle={props.buttonTitle}
-        onBidClick={onBidClick} />
+        onBidClick={onBidClick}
+      />
     );
   });
 

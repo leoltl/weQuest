@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import Modal from '../components/Modal';
 import ErrorAlert from '../components/ErrorAlert';
-import BidList from "../components/BidList/BidList";
+import BidList from "../components/BidList/BidListModal";
 
 // component should be passed a function to select the winning bid
 // also need requestId

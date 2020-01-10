@@ -36,7 +36,7 @@ export const AuthContext = createContext();
 // }
 
 const AuthContextProvider = props => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
   const hardChangeAuth = () => {
     setUser(prevState => (prevState ? null : 'Leo'));
   };

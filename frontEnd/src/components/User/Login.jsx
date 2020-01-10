@@ -16,7 +16,7 @@ const Login = props => {
 
   const responseFacebook = async response => {
     console.log('Facebook', response.name);
-    const userData = { user: { name: response.name, email: response.email, password: 'dummy' } };
+    const userData = { user: { name: response.name, email: response.email, password: '123' } };
     await axios.post('/api/users', userData, response => console.log('id:', response));
     setUser(response);
   };
@@ -30,7 +30,7 @@ const Login = props => {
       await axios.post('/api/users/login', { email, password }).then(response => setUser(response));
       //redirectOnSuccess comes from Request Form
       if (history.location.state.redirectOnSuccess) {
-        history.push(history.location.state.redirectOnSuccess)
+        history.push(history.location.state.redirectOnSuccess);
       } else {
         history.push('/requests');
       }
@@ -39,7 +39,6 @@ const Login = props => {
       setFormErrors(e);
     }
   };
-
 
   return (
     <>
@@ -54,25 +53,25 @@ const Login = props => {
           <div>{formErrors ? formErrors.message : null}</div>
           <IonList>
             <IonItem>
-              <IonLabel position="floating">Email</IonLabel>
-              <IonInput name="email" type="email" value={email} clearInput onIonChange={e => setEmail(e.target.value)} />
+              <IonLabel position='floating'>Email</IonLabel>
+              <IonInput name='email' type='email' value={email} clearInput onIonChange={e => setEmail(e.target.value)} />
             </IonItem>
             <IonItem>
-              <IonLabel position="floating">Password</IonLabel>
-              <IonInput name="password" type="password" value={password} onIonChange={e => setPassword(e.target.value)} />
+              <IonLabel position='floating'>Password</IonLabel>
+              <IonInput name='password' type='password' value={password} onIonChange={e => setPassword(e.target.value)} />
             </IonItem>
           </IonList>
-          <IonButton expand="block" fill="outline" type="submit">
+          <IonButton expand='block' fill='outline' type='submit'>
             Log in
           </IonButton>
-          <FacebookLogin appId="625636154855382" fields="name,email,picture" callback={responseFacebook} onFailure={responseFacebook} />
+          <FacebookLogin appId='625636154855382' fields='name,email,picture' callback={responseFacebook} onFailure={responseFacebook} />
           <GoogleLogin
-            clientId="90834222802-0s3k5otim13fak7fbdhaambgh1vjb3vt.apps.googleusercontent.com"
-            buttonText="LOGIN WITH GOOGLE"
+            clientId='90834222802-0s3k5otim13fak7fbdhaambgh1vjb3vt.apps.googleusercontent.com'
+            buttonText='LOGIN WITH GOOGLE'
             onSuccess={responseGoogle}
             onFailure={responseGoogle}
           />
-          <IonButton expand="block" fill="clear" type="submit">
+          <IonButton expand='block' fill='clear' type='submit'>
             Forgot your password?
           </IonButton>
         </form>
