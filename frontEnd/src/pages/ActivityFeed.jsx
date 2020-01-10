@@ -26,15 +26,17 @@ const ActivityFeed = props => {
         <IonToolbar></IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonSegment onIonChange={e => setTab(e.detail.value)}>
-          <IonSegmentButton value='requests' checked={tab === 'requests'}>
-            <IonLabel>Requests</IonLabel>
-          </IonSegmentButton>
-          <IonSegmentButton value='bids' checked={tab === 'bids'}>
-            <IonLabel>Bids</IonLabel>
-          </IonSegmentButton>
-        </IonSegment>
-        {tab === 'requests' ? <Request></Request> : <Bids></Bids>}
+        <IonToolbar className='activity-toolbar'>
+          <IonSegment onIonChange={e => setTab(e.detail.value)}>
+            <IonSegmentButton value='requests' checked={tab === 'requests'}>
+              <IonLabel>Requests</IonLabel>
+            </IonSegmentButton>
+            <IonSegmentButton value='bids' checked={tab === 'bids'}>
+              <IonLabel>Bids</IonLabel>
+            </IonSegmentButton>
+          </IonSegment>
+          {tab === 'requests' ? <Request></Request> : <Bids></Bids>}
+        </IonToolbar>
       </IonContent>
     </IonPage>
   );

@@ -24,7 +24,7 @@ export default function BidListItem({ isExpanded, expand, selectWinner, id, name
   return (
     <IonCard className={'bid-card'} onClick={handleExpand}>
       {isExpanded && <IonImg className={'bid-card__img'} src={pictureUrl} alt={name} title={name} />}
-      <IonCardHeader className={'bid-card__header'} color={isExpanded ? 'tertiary' : undefined}>
+      <IonCardHeader className={'bid-card__header'} color={isExpanded ? 'primary' : undefined}>
         {!isExpanded && (
           <IonAvatar className={'bid-card__header-img'}>
             <IonImg src={pictureUrl} alt={name} title={name} />
@@ -56,7 +56,7 @@ export default function BidListItem({ isExpanded, expand, selectWinner, id, name
           </div>
 
           {selectWinner && (
-            <IonButton className={'bid-card__btn'} onClick={handleWinner} color={'tertiary'}>
+            <IonButton className={'bid-card__btn'} onClick={handleWinner} color={'primary'}>
               Select Bid
             </IonButton>
           )}

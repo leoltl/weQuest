@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar
-} from '@ionic/react';
-
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import './NewRequest.scss';
 import RequestForm from '../components/RequestForm/RequestForm.jsx';
 
 const Tab2: React.FC = () => {
@@ -17,7 +11,7 @@ const Tab2: React.FC = () => {
           <IonTitle></IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent className='new-request-container'>
         <RequestForm />
       </IonContent>
     </IonPage>
