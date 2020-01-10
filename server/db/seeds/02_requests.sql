@@ -7,6 +7,10 @@ insert into requests (user_id, title, auction_start, auction_end, borrow_start, 
 insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, is_active, description) values 
 (1, 'Basketball Court', '2020-01-10 10:09:43', '2020-01-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 25000, true, 'Not willing to travel, delivery only. Thanks');
 
+insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, description) values 
+(1, 'Completed Request', '2020-01-10 10:09:43', '2020-01-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 2500, 'completed request');
+
+
 
 
 

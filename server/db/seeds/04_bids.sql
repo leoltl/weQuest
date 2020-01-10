@@ -1,4 +1,5 @@
 insert into bids (item_id, request_id, price_cent, notes) values (1, 1, 3350, 'Happy to travel. Cheers!');
+
 insert into bids (item_id, request_id, price_cent, notes) values (2, 1, 1350, 'Good for space travel use. Pickup Only');
 
 insert into bids (item_id, request_id, price_cent, notes) values (4, 3, 15500, 'Will sent via Canada Post. Expect 7 weeks delivery :)');

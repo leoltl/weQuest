@@ -8,7 +8,10 @@ insert into items (user_id, name, description, picture_url) values
 (2, 'Grandma', 'Most friendly grandma you have ever met', 'https://i.ytimg.com/vi/tL3c7ewdGIo/maxresdefault.jpg');
 
 insert into items (user_id, name, description, picture_url) values 
-(2, 'Basketball Court', 'Better than the other teams', 'https://images-na.ssl-images-amazon.com/images/I/91zoZ57saEL._AC_SL1500_.jpg');
+(2, 'Basketball Court', 'Portable basketball court kit deliver right to your doorstep.', 'https://images-na.ssl-images-amazon.com/images/I/91zoZ57saEL._AC_SL1500_.jpg');
+
+insert into items (user_id, name, description, picture_url) values 
+(2, 'Space Mug', 'Perfect space compatible mug', 'https://wequest.s3.amazonaws.com/item-5.jpg');
 
 
 
