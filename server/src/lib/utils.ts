@@ -49,4 +49,5 @@ export function socketSessionIdParser(client: socketIO.Socket, next: (err?: any)
 
   // attach 'sessionId' key to client object
   client.sessionId = cookies['session.sig'];
+  next();
 }

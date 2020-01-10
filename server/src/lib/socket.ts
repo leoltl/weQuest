@@ -82,6 +82,8 @@ export default class Socket {
 
   public subscribe(sessionId: string, event: string): void {
 
+    console.log('subscribing to', event, sessionId);
+    
     const client = this.clients[sessionId];
     if (!client) throw Error('Socket client is not registered');
 
@@ -92,6 +94,7 @@ export default class Socket {
     // add event to client's subscriptions
     const subscriptions = this.subscriptions.get(client) || new Set();
     this.subscriptions.set(client, subscriptions.add(event));
+    console.log(this);
 
   }
 

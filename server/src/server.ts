@@ -97,7 +97,7 @@ const socket = new Socket({ server, path: '/socket' });
 // });
 
 app.app.get('/testsocket', (req, res) => {
-  console.log(socket);
+  console.log(req);
 });
 
 app.app.get('/*', (req, res) => {
