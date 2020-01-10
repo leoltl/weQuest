@@ -144,8 +144,8 @@ export default class RequestController {
       .limit(1)
       .run(query);
 
-      // update non winning bids associated with the request of column is_Active to false
-      await new Bid().update({ isActive: false }).where({ requestId, id: [input.winningBidId, '<>'] }).run(query);
+      // update all winning bids associated with the request column of is_Active to false
+      await new Bid().update({ isActive: false }).where({ requestId }).run(query);
 
       return request;
     });
