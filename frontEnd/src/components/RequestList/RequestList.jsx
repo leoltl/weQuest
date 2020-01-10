@@ -13,12 +13,6 @@ const RequestList = ({ modal: Modal, ...props }) => {
   const { requests, setRequests } = props;
   const [showBidForm, setShowBidForm] = useState(false);
 
-  // console.log('RENDERLIST', isLoggedIn);
-
-  // useEffect(() => {
-  //   axios.get('/api/requests').then(res => setRequests(res.data));
-  // }, []);
-
   const updateRequestById = useCallback((id, payload) => {
     setRequests(prev =>
       prev.map(request => {
