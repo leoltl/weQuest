@@ -38,7 +38,7 @@ export default class Request extends Model {
       },
     };
 
-    this.safeColumns = ['description', 'winningBidId', 'currentBidId', 'status'];
+    this.safeColumns = ['description', 'winningBidId', 'currentBidId', 'requestStatus'];
 
     this.joins = {
       users: {
