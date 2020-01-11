@@ -46,6 +46,11 @@ socket.on('get-requests', (data) => {
   console.log(socketData);
 });
 
+socket.on('queue', ({ event, data }) => {
+  event && (socketData[event] = socketData[event] || []).push(data);
+  console.log(socketData);
+});
+
 
 const App = () => (
   <IonApp>

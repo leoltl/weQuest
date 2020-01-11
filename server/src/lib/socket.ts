@@ -91,10 +91,7 @@ export default class Socket {
 
   }
 
-  public subscribe(sessionId: string, event: string, eventKey = 'default'): void {
-
-    console.log('subscribing to', event, sessionId);
-    
+  public subscribe(sessionId: string, event: string, eventKey = 'default'): this {
     const client = this.clients[sessionId];
     if (!client) throw Error('Socket client is not registered');
 
@@ -108,8 +105,8 @@ export default class Socket {
     subscriptions[event] = subscriptions[event] || new Set();
     subscriptions[event].add(eventKey);
     this.subscriptions.set(client, subscriptions);
-    console.log(this);
 
+    return this;
   }
 
   // unsubscribe from all if event is not supplied
@@ -201,7 +198,7 @@ export default class Socket {
   broadcastToQueue(event: string, data: any, options: SocketBroadcastOptions): this {
     // set default options parameters
     const queue = options.queue || 'queue';
-    this.emit(event, data, options);
+    this.emit(event, data, { ...options, queue });
     return this;
   }
 

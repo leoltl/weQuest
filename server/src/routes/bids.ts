@@ -22,37 +22,69 @@ export default class BidController {
     this.router.use(accessControl);
 
     // declare routes
-    this.router
-      .route('/')
+    this.router.route('/')
       .get(async (req, res) => {
         try {
           // const output = await this.getAllByUser(req.session!.userId);
-          const isActive = !req.query.completed;
+          const isActive: boolean = req.query.completed || true;
           console.log('params', isActive);
 
-          const bids = await this.model
-            .findByUserSafe(req.session!.userId, isActive)
-            .run(this.db.query);
+          const bids = await this.model.findByUserSafe(req.session!.userId, isActive).run(this.db.query);
 
+          // subscribe to updates for all retrieved bids
           const sessionId = req.cookies['session.sig'];
           bids.forEach((bid: Partial<BidInterface>) => {
             this.socket.subscribe(sessionId, 'get-bids', String(bid.id));
           });
-          console.log(this.socket);
-          this.socket.emit('get-bids', { hello: 'world' }, '1');
+          this.socket.broadcastToQueue('get-bids', { hello: 'world' }, { eventKey: '1' });
 
           res.json(bids);
 
         } catch (err) {
-          console.log(err);
           res.status(404).json({ error: 'Failed to retrieve items for user' });
         }
       })
       .post(async (req, res) => {
         try {
+
+          // to check:
+          // - bidder owns item
+          // - price is lower than current bid
+          // - request status is active
+          // const request = await new Request().select('bids?.*', '*')
+          //   .where({ requestId: req.body.requestId, status: 'active', userId: [req.session!.userId, '<>'] }).limit(1).lock();
+          // console.log(new Request()
+          //   .select(['bids?.id', 'bidId'], 'bids?.priceCent', '*')
+          //   .where({ id: req.body.requestId, status: 'active', userId: [req.session!.userId, '<>'], 'bids?.isActive': true })
+          //   .order([['bids?.id', 'DESC']]).limit(1)
+          //   .do());
+          // const request = await new Request()
+          //   .select(['bids?.id', 'bidId'], 'bids?.priceCent', '*')
+          //   .where({ id: req.body.requestId, status: 'active', userId: [req.session!.userId, '<>'] })
+          //   .order([['bids?.id', 'DESC']]).limit(1).run(this.db.query);
+          // console.log(request);
+
+          console.log(new Request()
+            .select(['currentBids?.id', 'bidId'], 'currentBids?.priceCent', '*')
+            .where({ id: req.body.requestId, requestStatus: 'active', userId: [req.session!.userId, '<>'] })
+            .limit(1)
+            .do());
+
+          const request = await new Request()
+            .select(['currentBids?.id', 'bidId'], 'currentBids?.priceCent', '*')
+            .where({ id: req.body.requestId, requestStatus: 'active', userId: [req.session!.userId, '<>'] })
+            .run(this.db.query);
+          console.log(request);
+
           const bid = await this.create(req.body);
+
+          // set bidder's prior bids on requests to inactive
+          // await this.model.update({ isActive: false })
+          //   .where({ requestId: req.body.requestId, itemId: req.body.itemId, isActive: true }).run(this.db.query);
+
+          // send update through socket
           const updatedRequest = await new Request().findSafe(bid.requestId).run(this.db.query);
-          this.socket.emit('get-requests', updatedRequest, String(bid.requestId));
+          this.socket.broadcastToQueue('get-requests', updatedRequest, { eventKey: String(bid.requestId) });
           res.json(bid);
 
         } catch (err) {
