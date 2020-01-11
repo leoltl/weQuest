@@ -19,8 +19,7 @@ export default class ItemController {
     this.router.use(accessControl);
 
     // declare routes
-    this.router
-      .route('/')
+    this.router.route('/')
       .get(async (req, res) => {
         try {
           // const output = await this.getAllByUser(req.session!.userId);
@@ -28,6 +27,7 @@ export default class ItemController {
             .findByUserSafe(req.session!.userId)
             .run(this.db.query);
           res.json(output);
+
         } catch (err) {
           res.status(404).json({ error: 'Failed to retrieve items for user' });
         }
@@ -39,6 +39,7 @@ export default class ItemController {
             userId: req.session!.userId,
           });
           res.json(output);
+
         } catch (err) {
           res.status(404).json({ error: 'Failed to save item' });
         }
@@ -58,8 +59,7 @@ export default class ItemController {
     return this.db.transaction(
       async (query): Promise<Partial<ItemInterface>> => {
         // check that input includes image as model will validate dummy example.com (front-end pictureUrl is a base64 string)
-        if (typeof input.pictureUrl !== 'string' || !input.pictureUrl)
-          throw Error('No picture supplied');
+        if (typeof input.pictureUrl !== 'string' || !input.pictureUrl) throw Error('No picture supplied');
 
         const item: ItemInterface = await this.model
           .create({ ...input, pictureUrl: 'https://example.com' })
