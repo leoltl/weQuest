@@ -12,6 +12,17 @@ export type SocketParams = {
   path?: string,
 };
 
+export type SocketEmitOptions = {
+  eventKey?: string,
+  sessionId?: string,
+  queue?: string,
+};
+
+export type SocketBroadcastOptions = {
+  eventKey?: string,
+  queue?: string,
+};
+
 export default class Socket {
 
   private io: socketIO.Server | null = null;
@@ -23,9 +34,9 @@ export default class Socket {
 
   // SUBSCRIPTIONS LOOKUP - uses set instead of arrays for constant time add/delete operations
   // event to sockets
-  private events: Record<string, Set<socketIO.Socket>> = {};
+  private events: Record<string, Record<string, Set<socketIO.Socket>>> = {};
   // socket to events
-  private subscriptions: Map<socketIO.Socket, Set<string>> = new Map();
+  private subscriptions: Map<socketIO.Socket, Record<string, Set<string>>> = new Map();
 
   private static instances: Socket[] = [];
   private static instanceEqualityChecks: (keyof SocketParams)[] = ['server', 'path'];
@@ -80,78 +91,115 @@ export default class Socket {
 
   }
 
-  public subscribe(sessionId: string, event: string): void {
-
-    console.log('subscribing to', event, sessionId);
-    
+  public subscribe(sessionId: string, event: string, eventKey = 'default'): this {
     const client = this.clients[sessionId];
     if (!client) throw Error('Socket client is not registered');
 
     // add client to event
-    this.events[event] = this.events[event] || new Set();
-    this.events[event].add(client);
+    this.events[event] = this.events[event] || {};
+    this.events[event][eventKey] = this.events[event][eventKey] || new Set();
+    this.events[event][eventKey].add(client);
 
     // add event to client's subscriptions
-    const subscriptions = this.subscriptions.get(client) || new Set();
-    this.subscriptions.set(client, subscriptions.add(event));
-    console.log(this);
+    const subscriptions = this.subscriptions.get(client) || {};
+    subscriptions[event] = subscriptions[event] || new Set();
+    subscriptions[event].add(eventKey);
+    this.subscriptions.set(client, subscriptions);
 
+    return this;
   }
 
   // unsubscribe from all if event is not supplied
-  public unsubscribe(sessionId: string, event?: string): void {
+  public unsubscribe(sessionId: string, event?: string, eventKey?: string): this {
 
     const client = this.clients[sessionId];
 
-    // client should always exit when functin called from unregisterSocket
+    // client should always exist when function called from unregisterSocket
     if (!client) throw Error('Socket client is not registered');
     const subscriptions = this.subscriptions.get(client);
     // exit if no subscriptions
-    if (!subscriptions) return;
+    if (!subscriptions) return this;
 
     // unsubscribe from individual event
     if (event) {
+      this.events[event] = this.events[event] || {};
+
+      // unsubscribe from eventKey only if supplied
+      if (eventKey) {
+        this.events[event][eventKey] && this.events[event][eventKey].delete(client);
+        // remove from subscriptions
+        subscriptions[event].delete(eventKey);
+
+        return this;
+      }
+
       // remove from event
-      this.events[event] = this.events[event] || new Set();
-      this.events[event].delete(client);
-
+      this.events[event].default && this.events[event].default.delete(client);
       // remove from subscriptions
-      subscriptions.delete(event);
+      delete subscriptions[event];
 
-      return;
+      return this;
     }
 
     // unsubscribe client from all subscriptions
-    for (const subscription of subscriptions) {
+    for (const [subscription, eventKeys] of Object.entries(subscriptions)) {
+      // unsubscribe from individual eventKeys
+      for (const eventKey of eventKeys) {
+        this.unsubscribe(sessionId, subscription, eventKey);
+      }
+      // unsubscribe from event
       this.unsubscribe(sessionId, subscription);
     }
 
     // delete client key in subscriptions
     this.subscriptions.delete(client);
 
+    return this;
+
   }
 
-  broadcast(event: string, data: string) {
-    this.emit(event, data);
-  }
+  emit(event: string, data: any, options: SocketEmitOptions = {}): this {
+    // set default options parameters
+    const eventKey = options.eventKey || 'default';
+    const sessionId = options.sessionId;
+    const queue = options.queue;
 
-  emit(event: string, data: string, sessionId?: string) {
     // get subscribers for event
-    const clients = this.events[event];
+    const clients = this.events[event] && this.events[event][eventKey];
 
     // exit if event was never initialized i.e. has no subscribers
-    if (!clients) return;
+    if (!clients) return this;
 
     // single client
     if (sessionId) {
       const client = this.clients[sessionId];
-      client && client.emit(event, data);
+      client && (queue !== undefined
+        && client.emit(queue || 'queue', { event, eventKey, data })
+        || client.emit(event, { eventKey, data })
+      );
+      return this;
     }
 
     // broadcast
     for (const client of clients) {
-      client.emit(event, data);
+      queue !== undefined
+        && client.emit(queue || 'queue', { event, eventKey, data })
+        || client.emit(event, { eventKey, data });
     }
+
+    return this;
+  }
+
+  broadcast(event: string, data: any, options: SocketBroadcastOptions): this {
+    this.emit(event, data, options);
+    return this;
+  }
+
+  broadcastToQueue(event: string, data: any, options: SocketBroadcastOptions): this {
+    // set default options parameters
+    const queue = options.queue || 'queue';
+    this.emit(event, data, { ...options, queue });
+    return this;
   }
 
 }

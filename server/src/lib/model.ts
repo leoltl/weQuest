@@ -21,23 +21,35 @@ export interface Join {
   foreignInstance?: () => Model;
 }
 
+/**
+ * name/key: column key in model
+ * value: [value, operator] or value
+ * e.g. {
+ *   name: 'John Doe'
+ *   age: [25, '>=']
+ * }
+ */
 export type ColumnInput = {
-  [alias: string]: any | [any, string];
+  [name: string]: any | [any, string];
 };
 
-export type ColumnAliases = string[];
+/** array of column names (column keys in model) or of [name, alias]
+ * e.g. [['name', 'username'], 'age']
+ * will translate to 'model table'.name AS username, 'model table'.age
+ */
+export type ColumnNamesAliases = (string | [string, string])[];
 
-export type PermittedColumns = WeakMap<Model, ColumnAliases>;
+export type PermittedColumns = WeakMap<Model, string[]>;
 
 export default class Model {
 
   public alias: string = '';
   public table: string = '';
   public columns: {
-    [alias: string]: Column;
+    [name: string]: Column;
   } = {};
   public joins: {
-    [alias: string]: Join;
+    [name: string]: Join;
   } = {};
   public requiredColumns: string[] = [];
   public primaryKey: string = '';
@@ -49,8 +61,8 @@ export default class Model {
     if (this.table === '') throw Error('Table property is missing from the model. Model is meant to be an abstract class.');
 
     const newBlockJoins = !blockJoins.length && [this.alias] || blockJoins;
-    Object.entries(this.joins).forEach(([alias, join]: [string, Join]): void => {
-      this.joins[alias] = this.setJoinInstance(alias, join, newBlockJoins);
+    Object.entries(this.joins).forEach(([columnName, join]: [string, Join]): void => {
+      this.joins[columnName] = this.setJoinInstance(columnName, join, newBlockJoins);
     });
     this.setKeyColumns();
   }
@@ -59,48 +71,60 @@ export default class Model {
   protected init(): void {}
 
   validate(
-    input: ColumnAliases, permitJoins?: boolean, enforceRequired?: boolean, permitOnly?: PermittedColumns,
-  ): ColumnAliases;
+    input: ColumnNamesAliases, permitJoins?: boolean, enforceRequired?: boolean, permitOnly?: PermittedColumns,
+  ): ColumnNamesAliases;
   validate(
     input: ColumnInput, permitJoins?: boolean, enforceRequired?: boolean, permitOnly?: PermittedColumns,
   ): ColumnInput;
   public validate(
-    input: ColumnAliases | ColumnInput, permitJoins = true, enforceRequired = false, permitOnly?: PermittedColumns,
+    input: ColumnNamesAliases | ColumnInput, permitJoins = true, enforceRequired = false, permitOnly?: PermittedColumns,
   ) {
 
+    // checks that all of the current model's required fields are present (e.g. CREATE operation)
     if (enforceRequired) {
-      const inputColumns: ColumnAliases = input instanceof Array ? input : Object.keys(input);
-      this.requiredColumns.forEach((alias: string) => {
-        if (!inputColumns.includes(alias)) throw Error(`Missing required column: ${alias}`);
+      const inputColumns: string[] = input instanceof Array
+        ? input.map(column => column instanceof Array ? column[0] : column)
+        : Object.keys(input);
+
+      this.requiredColumns.forEach((columnName: string) => {
+        if (!inputColumns.includes(columnName)) throw Error(`Missing required column: ${columnName}`);
       });
     }
 
     return input instanceof Array ?
-      this.validateColumnAliases(input, permitJoins, enforceRequired, permitOnly) :
+      this.validateColumnNames(input, permitJoins, enforceRequired, permitOnly) :
       this.validateColumnInput(input, permitJoins, enforceRequired, permitOnly);
   }
 
-  private validateColumnAliases(
-    input: ColumnAliases, permitJoins = true, enforceRequired = false, permitOnly?: PermittedColumns,
-  ): ColumnAliases {
+  private validateColumnNames(
+    input: ColumnNamesAliases, permitJoins = true, enforceRequired = false, permitOnly?: PermittedColumns,
+  ): ColumnNamesAliases {
     return input.reduce(
-      (safeInput: ColumnAliases, alias): ColumnAliases => {
+      (safeInput: ColumnNamesAliases, columnName): ColumnNamesAliases => {
 
-        // split alias by '.' to access join tables
-        const joins = alias.split('.');
+        const [name, alias] = columnName instanceof Array ? columnName : [columnName, undefined];
+
+        // split columnName by '.' to access join tables
+        const joins = name.split('.');
         if (joins.length > 1) {
+          // remove left/right joins indicators
+          joins[0] = joins[0].replace(/[?!]$/, '');
+
           if (!permitJoins) throw Error(`Join relations not permitted: ${joins[0]}`);
           if (!(joins[0] in this.joins)) throw Error(`Unknown join relation: ${joins[0]}`);
 
           this.joins[joins[0]].foreignInstance!().validate(
-            [joins.slice(1).join('.')], permitJoins, enforceRequired, permitOnly,
-          ) && safeInput.push(alias);
+            [alias ? [joins.slice(1).join('.'), alias] : joins.slice(1).join('.')],
+            permitJoins,
+            enforceRequired,
+            permitOnly,
+          ) && safeInput.push(columnName);
 
         } else {
-          if (alias !== '*' && !(alias in this.columns)) throw Error(`Unknown column: ${alias}`);
-          if (permitOnly && (!permitOnly.has(this) || !permitOnly.get(this)!.includes(alias))) throw Error(`Restricted column: ${alias}`);
-          if (alias === '*' && enforceRequired) throw Error('Wildcard is not permitted');
-          safeInput.push(alias);
+          if (name !== '*' && !(name in this.columns)) throw Error(`Unknown column: ${name}`);
+          if (permitOnly && (!permitOnly.has(this) || !permitOnly.get(this)!.includes(name))) throw Error(`Restricted column: ${name}`);
+          if (name === '*' && enforceRequired) throw Error('Wildcard is not permitted');
+          safeInput.push(columnName);
         }
 
         return safeInput;
@@ -111,32 +135,35 @@ export default class Model {
 
   private validateColumnInput(input: ColumnInput, permitJoins = true, enforceRequired = false, permitOnly?: PermittedColumns): ColumnInput {
     return Object.entries(input).reduce(
-      (safeInput: ColumnInput, [alias, value]): ColumnInput => {
+      (safeInput: ColumnInput, [columnName, value]): ColumnInput => {
 
-        // split alias by '.' to access join tables
-        const joins = alias.split('.');
+        // split columnName by '.' to access join tables
+        const joins = columnName.split('.');
         if (joins.length > 1) {
+          // remove left/right joins indicators
+          joins[0] = joins[0].replace(/[?!]$/, '');
+
           if (!permitJoins) throw Error(`Join relation not permitted: ${joins[0]}`);
           if (!(joins[0] in this.joins)) throw Error(`Unknown join relations: ${joins[0]}`);
 
-          safeInput[alias] = this.joins[joins[0]].foreignInstance!().validate(
+          safeInput[columnName] = this.joins[joins[0]].foreignInstance!().validate(
             { [joins.slice(1).join('.')]: value }, permitJoins, enforceRequired, permitOnly,
           ) && value;
 
         } else {
-          if (alias !== '*' && !(alias in this.columns)) throw Error(`Unknown column: ${alias}`);
-          if (permitOnly && (!permitOnly.has(this) || !permitOnly.get(this)!.includes(alias))) throw Error(`Restricted column: ${alias}`);
-          if (alias === '*' && enforceRequired) throw Error('Wildcard is not permitted');
+          if (columnName !== '*' && !(columnName in this.columns)) throw Error(`Unknown column: ${columnName}`);
+          if (permitOnly && (!permitOnly.has(this) || !permitOnly.get(this)!.includes(columnName))) throw Error(`Restricted column: ${columnName}`);
+          if (columnName === '*' && enforceRequired) throw Error('Wildcard is not permitted');
 
-          if (alias !== '*') {
-            const validator: Validator = typeof this.columns[alias].type === 'string' ?
-              (val: any) => typeof val === this.columns[alias].type :
-              this.columns[alias].type as Validator;
+          if (columnName !== '*') {
+            const validator: Validator = typeof this.columns[columnName].type === 'string' ?
+              (val: any) => typeof val === this.columns[columnName].type :
+              this.columns[columnName].type as Validator;
 
-            if (!validator(value instanceof Array ? value[0] : value)) throw Error(`Incorrect value for ${alias}.`);
+            if (!validator(value instanceof Array ? value[0] : value)) throw Error(`Incorrect value for ${columnName}.`);
           }
 
-          safeInput[alias] = value;
+          safeInput[columnName] = value;
         }
 
         return safeInput;
@@ -144,14 +171,14 @@ export default class Model {
       {});
   }
 
-  private setJoinInstance(alias: string, join: Join, blockJoins: string[] = []): Join {
+  private setJoinInstance(columnName: string, join: Join, blockJoins: string[] = []): Join {
     let foreignInstance: Model;
     return {
       ...join,
       foreignInstance(): Model {
         if (foreignInstance) return foreignInstance;
-        if (blockJoins.includes(alias)) throw Error(`Too many joins. Accessing join ${alias} would create an infinite loop.`);
-        return (foreignInstance = new join.foreignModel(blockJoins.concat(alias)));
+        if (blockJoins.includes(columnName)) throw Error(`Too many joins. Accessing join ${columnName} would create an infinite loop.`);
+        return (foreignInstance = new join.foreignModel(blockJoins.concat(columnName)));
       },
     };
 
@@ -159,11 +186,11 @@ export default class Model {
 
   private setKeyColumns(): void {
     const [requiredColumns, primaryKey] = Object.entries(this.columns).reduce(
-      ([requiredColumns, primary]: [ColumnAliases, string], [alias, { required, primaryKey }]: [string, Column],
-      ):[ColumnAliases, string] => {
+      ([requiredColumns, primary]: [string[], string], [columnName, { required, primaryKey }]: [string, Column],
+      ):[string[], string] => {
         return [
-          required ? requiredColumns.concat(alias) : requiredColumns,
-          primaryKey ? alias : primary,
+          required ? requiredColumns.concat(columnName) : requiredColumns,
+          primaryKey ? columnName : primary,
         ];
       },
       [[], '']);
@@ -173,7 +200,7 @@ export default class Model {
     this.primaryKey = primaryKey;
   }
 
-  public select(...columns: ColumnAliases): SQLQuery {
+  public select(...columns: ColumnNamesAliases): SQLQuery {
     return SQLQuery.select(this, columns.length ? columns : undefined);
   }
 
@@ -196,7 +223,7 @@ export default class Model {
       this.select().order([this.primaryKey]);
   }
 
-  // alias for insert
+  // columnName for insert
   public create(input: ColumnInput): SQLQuery {
     return this.insert(input);
   }

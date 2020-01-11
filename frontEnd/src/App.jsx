@@ -33,7 +33,23 @@ socket.on('connect', () => {
   console.log('socket connected', socket.connected);
   socket.emit('hi');
 });
-socket.on('news', (msg) => console.log(msg));
+const socketData = {
+  'get-bids': [],
+  'get-requests': []
+}
+socket.on('get-bids', (data) => {
+  socketData['get-bids'].push(data.data);
+  console.log(socketData);
+});
+socket.on('get-requests', (data) => {
+  socketData['get-requests'].push(data.data);
+  console.log(socketData);
+});
+
+socket.on('queue', ({ event, data }) => {
+  event && (socketData[event] = socketData[event] || []).push(data);
+  console.log(socketData);
+});
 
 
 const App = () => (

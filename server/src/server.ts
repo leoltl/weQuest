@@ -29,32 +29,32 @@ const PORT = parseInt(process.env.PORT || '8080', 10);
 const db = new DB(dbParams);
 const storage = new Storage(storageParams);
 
-const app = new App({
-  port: PORT,
-  controllers: [
-    new UserController(db),
-    new RequestController(db),
-    new BidController(db),
-    new ItemController(db, storage),
-  ],
-  middlewares: [
-    morgan('dev'),
-    bodyParser.json({ limit: '10mb' }),
-    bodyParser.urlencoded({ limit: '10mb', extended: true }),
-    cookieParser('Coolstuffgoesonhere'),
-    cookieSession({
-      name: 'session',
-      keys: ['Coolstuffgoesonhere'],
-      maxAge: 365 * 24 * 60 * 60 * 1000 /* 1 year */,
-    }),
-  ],
-});
+// const app = new App({
+//   port: PORT,
+//   controllers: [
+//     new UserController(db),
+//     new RequestController(db),
+//     new BidController(db),
+//     new ItemController(db, storage),
+//   ],
+//   middlewares: [
+//     morgan('dev'),
+//     bodyParser.json({ limit: '10mb' }),
+//     bodyParser.urlencoded({ limit: '10mb', extended: true }),
+//     cookieParser('Coolstuffgoesonhere'),
+//     cookieSession({
+//       name: 'session',
+//       keys: ['Coolstuffgoesonhere'],
+//       maxAge: 365 * 24 * 60 * 60 * 1000 /* 1 year */,
+//     }),
+//   ],
+// });
 
-// dummy login for dev
-app.app.get('/api/login/:id', async (req, res) => {
-  req.session!.userId = parseInt(req.params.id, 10);
-  res.send(`Logged in as user: ${req.session!.userId}`);
-});
+// // dummy login for dev
+// app.app.get('/api/login/:id', async (req, res) => {
+//   req.session!.userId = parseInt(req.params.id, 10);
+//   res.send(`Logged in as user: ${req.session!.userId}`);
+// });
 
 // app.app.get('/*', (req, res) => {
 //   res.sendFile(path.join(__dirname, 'public/index.html'));
@@ -63,8 +63,43 @@ app.app.get('/api/login/:id', async (req, res) => {
 // app.listen();
 
 // SOCKET TEST
-const server = http.createServer(app.app);
+import express from 'express';
+
+const app = express();
+
+app.use([
+  morgan('dev'),
+  bodyParser.json({ limit: '10mb' }),
+  bodyParser.urlencoded({ limit: '10mb', extended: true }),
+  cookieParser('Coolstuffgoesonhere'),
+  cookieSession({
+    name: 'session',
+    keys: ['Coolstuffgoesonhere'],
+    maxAge: 365 * 24 * 60 * 60 * 1000 /* 1 year */,
+  }),
+]);
+
+const server = http.createServer(app);
 const socket = new Socket({ server, path: '/socket' });
+
+const userController = new UserController(db);
+const requestController = new RequestController(db, socket);
+const bidController = new BidController(db, socket);
+const itemController = new ItemController(db, storage);
+
+app.use(userController.path, userController.router);
+app.use(requestController.path, requestController.router);
+app.use(bidController.path, bidController.router);
+app.use(itemController.path, itemController.router);
+
+// dummy login for dev
+app.get('/api/login/:id', async (req, res) => {
+  req.session!.userId = parseInt(req.params.id, 10);
+  res.send(`Logged in as user: ${req.session!.userId}`);
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
+
 // import http from 'http';
 // import socketio from 'socket.io';
 // const io = socketio(server, { path: '/socket' });
@@ -96,11 +131,11 @@ const socket = new Socket({ server, path: '/socket' });
   // });
 // });
 
-app.app.get('/testsocket', (req, res) => {
+app.get('/testsocket', (req, res) => {
   console.log(req);
 });
 
-app.app.get('/*', (req, res) => {
+app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
