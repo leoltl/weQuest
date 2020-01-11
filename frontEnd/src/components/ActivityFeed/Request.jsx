@@ -17,6 +17,7 @@ const Requests = props => {
     axios.get('/api/requests/completed').then(res => setCompletedRequests(arr2Obj(res.data)));
 
     socket.on('get-requests', event => {
+      console.log('EVENT', event);
       const update = event.data[0];
       setActiveRequests(prev => {
         return { ...prev, [update.id]: update };

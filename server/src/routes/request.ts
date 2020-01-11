@@ -28,9 +28,7 @@ export default class RequestController {
     /* GET /api/requests */
     this.router.get('/', async (req: Request, res: Response) => {
       try {
-        const requestData = await this.model
-          .findAllActiveRequest()
-          .run(this.db.query);
+        const requestData = await this.model.findAllActiveRequest().run(this.db.query);
 
         const sessionId = req.cookies['session.sig'];
         requestData.forEach((request: Record<string, any>) => {
@@ -45,24 +43,20 @@ export default class RequestController {
 
     this.router.get('/active', async (req: Request, res: Response) => {
       try {
-        const requestData = await this.model
-          .findRequestsByStatus(req.session!.userId, 'active')
-          .run(this.db.query);
+        const requestData = await this.model.findRequestsByStatus(req.session!.userId, 'active').run(this.db.query);
         res.json(requestData);
       } catch (err) {
+        console.log(err)
         res.status(400).send({ error: 'Failed to retrieve active requests' });
       }
     });
 
     this.router.get('/completed', async (req: Request, res: Response) => {
       try {
-        const requestData = await this.model
-          .findRequestsByStatus(req.session!.userId, 'closed')
-          .run(this.db.query);
-        console.log(requestData);
-
+        const requestData = await this.model.findRequestsByStatus(req.session!.userId, 'closed').run(this.db.query);
         res.json(requestData);
       } catch (err) {
+        console.log(err);
         res.status(400).send({ error: 'Failed to retrieve completed requests' });
       }
     });
@@ -78,6 +72,7 @@ export default class RequestController {
       }
     });
 
+    // authentication protected route below
     this.router.use(accessControl);
 
     /* POST requests/ */
@@ -88,22 +83,10 @@ export default class RequestController {
         const borrowStart: String = new Date(request.borrowStart).toISOString();
         const borrowEnd: String = new Date(request.borrowEnd).toISOString();
         const requestData = {
-          ...request,
-          borrowStart,
-          borrowEnd,
-          userId: req.session!.userId,
-          auctionStart: new Date().toISOString(),
-          auctionEnd: new Date(
-            Date.now() + 2 * 24 * 60 * 60 * 1000,
-          ).toISOString(),
-          isActive: true,
+          ...request, borrowStart, borrowEnd, userId: req.session!.userId, isActive: true,
+          auctionStart: new Date().toISOString(), auctionEnd: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
         };
-        await this.model
-          .create({
-            ...requestData,
-            userId,
-          })
-          .run(this.db.query);
+        await this.model.create({ ...requestData, userId }).run(this.db.query);
         res.sendStatus(201);
       } catch (err) {
         res.status(500).send({ error: 'Failed to create new request.' });
@@ -115,11 +98,7 @@ export default class RequestController {
       const requestId: number = parseInt(req.params.id, 10);
       try {
         const userId = req.session!.userId;
-        const request = await this.updateWinningBid(
-          requestId,
-          userId,
-          req.body,
-        );
+        const request = await this.updateWinningBid(requestId, userId, req.body);
         if (!request) throw Error('Cannot find/update request');
 
         // send update through socket
@@ -128,6 +107,7 @@ export default class RequestController {
         res.status(200).send(request);
 
       } catch (err) {
+        console.log(err);
         res.status(500).send({ error: 'Failed to update request.' });
       }
     });
@@ -136,9 +116,7 @@ export default class RequestController {
     this.router.get('/:id/bids', async (req: Request, res: Response) => {
       try {
         const requestId = parseInt(req.params.id, 10);
-        const result = await new Bid()
-          .findByRequestSafe(requestId, req.session!.userId)
-          .run(this.db.query);
+        const result = await new Bid().findByRequestSafe(requestId, req.session!.userId).run(this.db.query);
         res.json(result);
 
       } catch (err) {
@@ -151,11 +129,7 @@ export default class RequestController {
     return this.db.transaction(async (query) => {
 
       // update request status to closed when a winning bid is chosen
-      const request = await this.model
-        .update({ ...input, status: 'closed' })
-        .where({ userId, id: requestId })
-        .limit(1)
-        .run(query);
+      const request = await this.model.update({ ...input, requestStatus: 'closed' }).where({ userId, id: requestId }).limit(1).run(query);
 
       // update all winning bids associated with the request column of is_Active to false
       await new Bid().update({ isActive: false }).where({ requestId }).run(query);
