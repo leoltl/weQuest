@@ -5,8 +5,7 @@ import Socket from '../lib/socket';
 import { accessControl } from '../lib/utils';
 import Request from '../models/request';
 import Bid, { BidInterface } from '../models/bid';
-import { ItemInterface } from '../models/item';
-import { emit } from 'cluster';
+import Item, { ItemInterface } from '../models/item';
 
 export default class BidController {
   public path: string = '/api/bids';
@@ -25,9 +24,7 @@ export default class BidController {
     this.router.route('/')
       .get(async (req, res) => {
         try {
-          // req.query is a string. convert a string to boolean so it passes validator with correct type
-          const completed: boolean = (req.query.completed === 'true');
-          const isActive: boolean = !completed;
+          const isActive: boolean = req.query.completed || true;
 
           const bids = await this.model.findByUserSafe(req.session!.userId, isActive).run(this.db.query);
           // const bids = await this.model.findByUserSafe(req.session!.userId, isActive).run(this.db.query);
@@ -39,9 +36,8 @@ export default class BidController {
 
           // console.log(currentBidsInfo);
           // subscribe to updates for all retrieved bids
-          const sessionId = req.cookies['session.sig'];
           bids.forEach((bid: Partial<BidInterface>) => {
-            this.socket.subscribe(sessionId, 'get-bids', String(bid.id));
+            this.socket.subscribe(req.sessionId!, 'get-bids', String(bid.id));
           });
           this.socket.broadcast('get-bids', { hello: 'world' }, { eventKey: '1' });
 
@@ -54,67 +50,55 @@ export default class BidController {
       })
       .post(async (req, res) => {
         try {
+          // create and return a safe bid
+          const bid = await this.create(req.body, req.session!.userId);
 
-          // to check:
-          // - bidder owns item
-          // - price is lower than current bid
-          // - request status is active
-          // const request = await new Request().select('bids?.*', '*')
-          //   .where({ requestId: req.body.requestId, status: 'active', userId: [req.session!.userId, '<>'] }).limit(1).lock();
-          // console.log(new Request()
-          //   .select(['bids?.id', 'bidId'], 'bids?.priceCent', '*')
-          //   .where({ id: req.body.requestId, status: 'active', userId: [req.session!.userId, '<>'], 'bids?.isActive': true })
-          //   .order([['bids?.id', 'DESC']]).limit(1)
-          //   .do());
-          // const request = await new Request()
-          //   .select(['bids?.id', 'bidId'], 'bids?.priceCent', '*')
-          //   .where({ id: req.body.requestId, status: 'active', userId: [req.session!.userId, '<>'] })
-          //   .order([['bids?.id', 'DESC']]).limit(1).run(this.db.query);
-          // console.log(request);
-
-          console.log(new Request()
-            .select(['currentBids?.id', 'bidId'], 'currentBids?.priceCent', '*')
-            .where({ id: req.body.requestId, requestStatus: 'active', userId: [req.session!.userId, '<>'] })
-            .limit(1)
-            .do());
-
-          const request = await new Request()
-            .select(['currentBids?.id', 'bidId'], 'currentBids?.priceCent', '*')
-            .where({ id: req.body.requestId, requestStatus: 'active', userId: [req.session!.userId, '<>'] })
-            .run(this.db.query);
-          console.log(request);
-
-          const bid = await this.create(req.body);
-
-          // set bidder's prior bids on requests to inactive
-          // await this.model.update({ isActive: false })
-          //   .where({ requestId: req.body.requestId, itemId: req.body.itemId, isActive: true }).run(this.db.query);
-
-          // send update through socket
-          const updatedRequest = await new Request().findSafe(bid.requestId).run(this.db.query);
+          // send updates to request through socket
+          const updatedRequest = await new Request().findSafe(bid.requestId!).limit(1).run(this.db.query);
           this.socket.broadcast('get-requests', updatedRequest, { eventKey: String(bid.requestId) });
+
+          // send updates to past bid through socket
+          const pastBid = await this.model.
+            select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId', 'isActive')
+            .where({ requestId: bid.requestId, 'items.userId': req.session!.userId, isActive: false })
+            .order([['id', 'DESC']])
+            .limit(1)
+            .run(this.db.query);
+          this.socket.broadcast('getBids', pastBid, { eventKey: String(bid.id) });
+
+          // respond with safe bid
           res.json(bid);
 
         } catch (err) {
-          console.log(err);
           res.status(404).json({ error: 'Failed to save item' });
         }
       });
   }
 
-  // getAllByUser(id: number, includeItem: false): Promise<Partial<BidInterface>[]>;
-  // getAllByUser(id: number, includeItem?: true): Promise<Partial<ItemInterface & BidInterface>[]>;
-  // getAllByUser(id: number, includeItem: boolean): Promise<Partial<ItemInterface & BidInterface>[]>;
-  // public async getAllByUser(id: number, includeItem = true) {
-  //   const bids: (Partial<ItemInterface & BidInterface>)[] = await this.model.findByUser(id, includeItem).run(this.db.query);
-  //   return bids.map(
-  //     (bid: Partial<ItemInterface & BidInterface>): Partial<ItemInterface & BidInterface> => {
-  //       return this.parseBid(bid, includeItem);
-  //     },
-  //   );
-  // }
+  public async create(input: Partial<ItemInterface & BidInterface>, userId: number): Promise<Partial<ItemInterface & BidInterface>> {
 
-  public async create(input: Partial<ItemInterface & BidInterface>) {
+    // fetch request
+    const request = await new Request()
+      .select()
+      .where({
+        id: input.requestId,
+        requestStatus: 'active',
+        userId: [userId, '<>'],
+        'currentBids?.priceCent': [input.priceCent, '>'],
+      })
+      .run(this.db.query);
+
+    // throw an error if no valid request can be found (e.g. request does not exist,
+    // bidder and requester are the same, price is greater than or equal to current bid price, request is inactive...)
+    if (!request) throw Error('Invalid bid');
+
+    // fetch user item
+    const item = await new Item().select().where({ userId, id: input.itemId });
+
+    // throw if item cannot be found based on itemId and userId (e.g. item does not exist or is not owned by the bidder)
+    if (!item) throw Error('Invalid bid');
+
+    // proceed with creating the bid
     const bid: BidInterface = await this.db.transaction(
       async (query): Promise<Partial<BidInterface>> => {
         const bid: BidInterface = await this.model.create(input).run(query);
@@ -128,6 +112,12 @@ export default class BidController {
           .where({ id: bid.requestId })
           .run(query);
 
+        // update bidder's prior bid for request/item combo (only only active bid per product allowed)
+        await this.model
+          .update({ isActive: false })
+          .where({ itemId: bid.itemId, id: [bid.id, '<>'] })
+          .run(query);
+
         return bid;
       },
     );
@@ -135,16 +125,4 @@ export default class BidController {
     // fetch bid including item
     return await this.model.findSafe(bid.id).run(this.db.query);
   }
-
-  // parseBid(bid: Partial<ItemInterface & BidInterface>, includeItem: false): Partial<BidInterface>;
-  // parseBid(bid: Partial<ItemInterface & BidInterface>, includeItem?: true): Partial<ItemInterface & BidInterface>;
-  // parseBid(bid: Partial<ItemInterface & BidInterface>, includeItem: boolean): Partial<ItemInterface & BidInterface>;
-  // public parseBid(bid: Partial<ItemInterface & BidInterface>, includeItem = true) {
-  //   const { id, priceCent, notes } = bid;
-  //   if (includeItem) {
-  //     const { name, description, pictureUrl } = bid;
-  //     return { id, priceCent, notes, name, description, pictureUrl };
-  //   }
-  //   return { id, priceCent, notes };
-  // }
 }

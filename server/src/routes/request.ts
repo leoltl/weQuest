@@ -30,7 +30,8 @@ export default class RequestController {
       try {
         const requestData = await this.model.findAllActiveRequest().run(this.db.query);
 
-        const sessionId = req.cookies['session.sig'];
+        // const sessionId = req.cookies['session.sig'];
+        const sessionId = req.sessionId!;
         requestData.forEach((request: Record<string, any>) => {
           this.socket.subscribe(sessionId, 'get-requests', String(request.id));
         });
