@@ -68,14 +68,7 @@ export default class Request extends Model {
   }
 
   public findAllActiveRequest(): SQL {
-    return this.sql(
-      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
-      FROM requests LEFT JOIN users ON requests.user_id = users.id
-      LEFT JOIN bids on requests.current_bid_id = bids.id
-      WHERE requests.request_status = 'active'
-      ORDER BY requests.id DESC
-      LIMIT 20`,
-    );
+    return this.findSafe(undefined, 'active');
   }
 
   public findSafe(id?: number, status?: RequestStatus): SQL {

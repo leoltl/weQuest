@@ -27,19 +27,11 @@ export default class BidController {
           const isActive: boolean = req.query.completed || true;
 
           const bids = await this.model.findByUserSafe(req.session!.userId, isActive).run(this.db.query);
-          // const bids = await this.model.findByUserSafe(req.session!.userId, isActive).run(this.db.query);
-          // const currentBidsInfo = await Promise.all(bids.map((bid: { currentBidId: number; }) => {
-          //   console.log(bid.currentBidId);
-          //   return this.model.findSafe(bid.currentBidId).run(this.db.query);
-          // }
-          // ));
 
-          // console.log(currentBidsInfo);
           // subscribe to updates for all retrieved bids
           bids.forEach((bid: Partial<BidInterface>) => {
-            this.socket.subscribe(req.sessionId!, 'get-bids', String(bid.id));
+            this.socket.subscribe(req.sessionId!, 'getBids', String(bid.id));
           });
-          this.socket.broadcast('get-bids', { hello: 'world' }, { eventKey: '1' });
 
           res.json(bids);
 
