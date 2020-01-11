@@ -10,11 +10,8 @@ const Bids = (props) => {
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
-    axios.get('/api/bids/').then(res => setActiveBids(res.data));
+    axios.get('/api/bids').then(res => setActiveBids(res.data));
     axios.get('/api/bids/?completed=true').then(res => setCompletedBids(res.data));
-    return () => {
-      console.log('unomunted')
-    }
   }, []);
 
   return (

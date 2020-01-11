@@ -81,13 +81,36 @@ export default class Bid extends Model {
 
   public findByUserSafe(userId: number, active = true, includeItem = true): SQL {
     return includeItem
-      ? this.select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes')
-        .where({ 'items.userId': userId, isActive: active })
-        .order([['id', 'DESC']])
-      : this.select('id', 'priceCent', 'notes')
-        .where({ userId })
-        .order([['id', 'DESC']]);
+    ? this.sql(`
+        SELECT
+        bids.id, bids.price_cent, bids.notes,
+        items.name, items.description, items.picture_url,
+        requests.current_bid_id, requests.title AS request_title, requests.description AS request_description,
+        current_bid.price_cent AS current_bid_price
+        FROM bids
+        JOIN items ON bids.item_id = items.id
+        JOIN requests ON bids.request_id = requests.id
+        JOIN bids AS current_bid ON requests.current_bid_id = current_bid.id
+        WHERE items.user_id = $1 AND bids.is_active = $2
+      `,
+      // tslint:disable-next-line: align
+      [userId, active])
+    : this.select('id', 'priceCent', 'notes')
+      .where({ userId })
+      .order([['id', 'DESC']]);
+
   }
+  // items.name, items.description,items.pictureUrl, id, priceCent, notes, requests.currentBidId
+
+  // public findByUserSafe(userId: number, active = true, includeItem = true): SQL {
+  //   return includeItem
+  //     ? this.select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', ['requests.currentBidId', 'currentBidId'])
+  //       .where({ 'items.userId': userId, isActive: active })
+  //       .order([['id', 'DESC']])
+  //     : this.select('id', 'priceCent', 'notes')
+  //       .where({ userId })
+  //       .order([['id', 'DESC']]);
+  // }
 
   public findByRequest(requestId: number, includeItem = true): SQL {
     return includeItem

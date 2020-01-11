@@ -35,7 +35,7 @@ const BidList = ({ modal: Modal, ...props }) => {
     return (
       <BidListItem
         key={listItem.id}
-        currentBid={listItem.priceCent}
+        priceCent={listItem.priceCent}
         user={listItem.email}
         requestDetails={listItem}
         isSelected={listItem.id === props.selectedId}

@@ -46,6 +46,7 @@ export default class RequestController {
         const requestData = await this.model.findRequestsByStatus(req.session!.userId, 'active').run(this.db.query);
         res.json(requestData);
       } catch (err) {
+        console.log(err)
         res.status(400).send({ error: 'Failed to retrieve active requests' });
       }
     });
@@ -53,10 +54,9 @@ export default class RequestController {
     this.router.get('/completed', async (req: Request, res: Response) => {
       try {
         const requestData = await this.model.findRequestsByStatus(req.session!.userId, 'closed').run(this.db.query);
-        console.log(requestData);
-
         res.json(requestData);
       } catch (err) {
+        console.log(err);
         res.status(400).send({ error: 'Failed to retrieve completed requests' });
       }
     });
@@ -72,6 +72,7 @@ export default class RequestController {
       }
     });
 
+    // authentication protected route below
     this.router.use(accessControl);
 
     /* POST requests/ */
@@ -105,6 +106,7 @@ export default class RequestController {
         res.status(200).send(request);
 
       } catch (err) {
+        console.log(err);
         res.status(500).send({ error: 'Failed to update request.' });
       }
     });
@@ -126,7 +128,7 @@ export default class RequestController {
     return this.db.transaction(async (query) => {
 
       // update request status to closed when a winning bid is chosen
-      const request = await this.model.update({ ...input, status: 'closed' }).where({ userId, id: requestId }).limit(1).run(query);
+      const request = await this.model.update({ ...input, requestStatus: 'closed' }).where({ userId, id: requestId }).limit(1).run(query);
 
       // update all winning bids associated with the request column of is_Active to false
       await new Bid().update({ isActive: false }).where({ requestId }).run(query);
