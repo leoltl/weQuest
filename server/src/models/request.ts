@@ -67,10 +67,6 @@ export default class Request extends Model {
     );
   }
 
-  public findAllActiveRequest(): SQL {
-    return this.findSafe(undefined, 'active');
-  }
-
   public findSafe(id?: number, status?: RequestStatus): SQL {
     const query = this.sql(
       `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
@@ -93,19 +89,23 @@ export default class Request extends Model {
     return this.find(id);
   }
 
+  public findAllActiveRequest(): SQL {
+    return this.findSafe(undefined, 'active');
+  }
+
   public findBidsByRequestId(id: number): SQL {
     return this.select('*', 'bids.*').where({ id });
   }
 
-  public findRequestsByStatus(userId: number, status: string): SQL {
-    return this.sql(
-      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
-      FROM requests LEFT JOIN users ON requests.user_id = users.id
-      LEFT JOIN bids on requests.current_bid_id = bids.id
-      WHERE user_id = $1 AND requests.request_status = $2
-      ORDER BY requests.id DESC
-      LIMIT 10`,
-      [userId, status],
-    );
-  }
+  // public findRequestsByStatus(userId: number, status: string): SQL {
+  //   return this.sql(
+  //     `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
+  //     FROM requests LEFT JOIN users ON requests.user_id = users.id
+  //     LEFT JOIN bids on requests.current_bid_id = bids.id
+  //     WHERE user_id = $1 AND requests.request_status = $2
+  //     ORDER BY requests.id DESC
+  //     LIMIT 10`,
+  //     [userId, status],
+  //   );
+  // }
 }

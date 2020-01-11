@@ -34,15 +34,15 @@ socket.on('connect', () => {
   socket.emit('hi');
 });
 const socketData = {
-  'get-bids': [],
-  'get-requests': []
+  'getBids': [],
+  'getRequests': []
 }
-socket.on('get-bids', (data) => {
-  socketData['get-bids'].push(data.data);
+socket.on('getBids', (data) => {
+  socketData['getBids'].push(data.data);
   console.log(socketData);
 });
-socket.on('get-requests', (data) => {
-  socketData['get-requests'].push(data.data);
+socket.on('getRequests', (data) => {
+  socketData['getRequests'].push(data.data);
   console.log(socketData);
 });
 
