@@ -4,6 +4,8 @@ import SQL from '../lib/sql';
 import user from './user';
 import bid from './bid';
 
+export type RequestStatus = 'deactivated' | 'active' | 'pending decision' | 'winner selected' | 'closed';
+
 export default class Request extends Model {
   protected init() {
     this.alias = 'requests';
@@ -76,16 +78,22 @@ export default class Request extends Model {
     );
   }
 
-  public findSafe(id: number): SQL {
-    return this.sql(
+  public findSafe(id?: number, status?: RequestStatus): SQL {
+    const query = this.sql(
       `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
       FROM requests LEFT JOIN users ON requests.user_id = users.id
       LEFT JOIN bids on requests.current_bid_id = bids.id
-      WHERE requests.id = $1
-      ORDER BY requests.id DESC
-      LIMIT 20`,
-      [id],
+      ${id !== undefined
+        ? `WHERE requests.id = $1 ${status && ' AND requests.request_status = $2' || ''}
+          ORDER BY requests.id DESC
+          LIMIT 20`
+        : (status && ' AND requests.request_status = $1' || '')}`,
+      id !== undefined
+        ? status && [id, status] || [id]
+        : status && [status] || undefined,
     );
+
+    return id !== undefined ? query.limit(1) : query;
   }
 
   public findRequestById(id: number): SQL {
@@ -98,7 +106,7 @@ export default class Request extends Model {
 
   public findRequestsByStatus(userId: number, status: string): SQL {
     return this.sql(
-      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, users.name, COALESCE(bids.price_cent, requests.budget_cent) as       price_cent, bids.item_id
+      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
       FROM requests LEFT JOIN users ON requests.user_id = users.id
       LEFT JOIN bids on requests.current_bid_id = bids.id
       WHERE user_id = $1 AND requests.request_status = $2

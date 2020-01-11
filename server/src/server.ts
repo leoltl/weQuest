@@ -19,7 +19,8 @@ import { dbParams, storageParams } from './lib/config-vars';
 import DB from './lib/db';
 import Storage from './lib/storage';
 import Socket from './lib/socket';
-const path = require('path');
+import { sessionIdParser } from './lib/utils'
+import path from 'path';
 
 // server config
 const ENV = process.env.ENV || 'development';
@@ -71,12 +72,13 @@ app.use([
   morgan('dev'),
   bodyParser.json({ limit: '10mb' }),
   bodyParser.urlencoded({ limit: '10mb', extended: true }),
-  cookieParser('Coolstuffgoesonhere'),
+  // cookieParser('Coolstuffgoesonhere'),
   cookieSession({
     name: 'session',
     keys: ['Coolstuffgoesonhere'],
     maxAge: 365 * 24 * 60 * 60 * 1000 /* 1 year */,
   }),
+  sessionIdParser,
 ]);
 
 const server = http.createServer(app);

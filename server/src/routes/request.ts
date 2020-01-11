@@ -32,7 +32,8 @@ export default class RequestController {
           .findAllActiveRequest()
           .run(this.db.query);
 
-        const sessionId = req.cookies['session.sig'];
+        // const sessionId = req.cookies['session.sig'];
+        const sessionId = req.sessionId!;
         requestData.forEach((request: Record<string, any>) => {
           this.socket.subscribe(sessionId, 'get-requests', String(request.id));
         });
@@ -123,7 +124,7 @@ export default class RequestController {
         if (!request) throw Error('Cannot find/update request');
 
         // send update through socket
-        this.socket.broadcastToQueue('get-requests', request, { eventKey: String(request.id) });
+        this.socket.broadcast('getRequests', request, { eventKey: String(request.id) });
 
         res.status(200).send(request);
 

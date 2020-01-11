@@ -61,7 +61,7 @@ export default class Bid extends Model {
 
   public findSafe(id: number, includeItem = true): SQL {
     return includeItem
-      ? this.select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId')
+      ? this.select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId', 'isActive')
         .where({ id })
         .limit(1)
       : this.select('id', 'priceCent', 'notes')
@@ -79,10 +79,10 @@ export default class Bid extends Model {
         .order([['id', 'DESC']]);
   }
 
-  public findByUserSafe(userId: number, active = true, includeItem = true): SQL {
+  public findByUserSafe(userId: number, isActive?: boolean, includeItem = true): SQL {
     return includeItem
-      ? this.select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes')
-        .where({ 'items.userId': userId, isActive: active })
+      ? this.select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId', 'isActive')
+        .where(isActive && { isActive, 'items.userId': userId } || { 'items.userId': userId })
         .order([['id', 'DESC']])
       : this.select('id', 'priceCent', 'notes')
         .where({ userId })
@@ -100,7 +100,7 @@ export default class Bid extends Model {
   }
 
   public findByRequestSafe(requestId: number, userId: number): SQL {
-    return this.select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId', ['requests.users.name', 'username'], 'priceCent')
+    return this.select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId', 'isActive', ['requests.users.name', 'username'], 'priceCent')
       .where({ requestId, 'requests.userId': userId })
       .order([['id', 'DESC']]);
   }
