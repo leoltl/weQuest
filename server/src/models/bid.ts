@@ -100,6 +100,8 @@ export default class Bid extends Model {
           'items.name',
           'items.description',
           'items.pictureUrl',
+          'items.users.email',
+          'requests.title',
           'id',
           'priceCent',
           'notes',

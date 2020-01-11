@@ -14,7 +14,7 @@ const BidListItem = props => {
               padding: 0,
             }}
           >
-            {props.requestDetails.title}
+            {props.requestDetails.name}
           </IonCardSubtitle>
           <IonCardContent
             style={{
@@ -27,7 +27,7 @@ const BidListItem = props => {
         </div>
         <IonCardContent className="request-card__user">
           <div className="request-card__left">
-            <img alt="user avatar" src="https://i.pravatar.cc/50"></img>
+            <img alt="item" src={props.requestDetails.pictureUrl}></img>
             <span className="request-card__user-rating">4/5</span>
           </div>
           <div className="request-card__right">

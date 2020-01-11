@@ -31,7 +31,7 @@ const ActivityFeed = props => {
               <IonLabel>Bids</IonLabel>
             </IonSegmentButton>
           </IonSegment>
-          {tab === 'requests' ? <Request></Request> : <Bids></Bids>}
+          {tab === 'requests' ? <Request /> : <Bids />}
         </IonToolbar>
       </IonContent>
     </IonPage>

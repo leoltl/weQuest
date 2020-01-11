@@ -5,7 +5,7 @@ import BidListItem from './BidListItem';
 import { AuthContext } from '../../contexts/authContext';
 
 const BidList = ({ modal: Modal, ...props }) => {
-  const {user: isLoggedIn} = useContext(AuthContext);
+  const { user: isLoggedIn } = useContext(AuthContext);
   const { bids, setBids } = props;
   const [showBidForm, setShowBidForm] = useState(false);
 
