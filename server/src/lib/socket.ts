@@ -93,7 +93,7 @@ export default class Socket {
 
   public subscribe(sessionId: string, event: string, eventKey = 'default'): this {
     const client = this.clients[sessionId];
-    if (!client) throw Error('Socket client is not registered');
+    if (!client) console.error('Socket client is not registered');
 
     // add client to event
     this.events[event] = this.events[event] || {};
@@ -115,7 +115,7 @@ export default class Socket {
     const client = this.clients[sessionId];
 
     // client should always exist when function called from unregisterSocket
-    if (!client) throw Error('Socket client is not registered');
+    if (!client) console.error('Socket client is not registered');
     const subscriptions = this.subscriptions.get(client);
     // exit if no subscriptions
     if (!subscriptions) return this;

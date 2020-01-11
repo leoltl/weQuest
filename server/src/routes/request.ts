@@ -44,6 +44,7 @@ export default class RequestController {
     this.router.get('/active', async (req: Request, res: Response) => {
       try {
         const requestData = await this.model.findRequestsByStatus(req.session!.userId, 'active').run(this.db.query);
+        const sessionId = req.cookies['session.sig'];
         res.json(requestData);
       } catch (err) {
         console.log(err)
@@ -54,6 +55,7 @@ export default class RequestController {
     this.router.get('/completed', async (req: Request, res: Response) => {
       try {
         const requestData = await this.model.findRequestsByStatus(req.session!.userId, 'closed').run(this.db.query);
+        const sessionId = req.cookies['session.sig'];
         res.json(requestData);
       } catch (err) {
         console.log(err);

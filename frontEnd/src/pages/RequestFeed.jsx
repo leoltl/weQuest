@@ -15,7 +15,7 @@ const RequestFeed = () => {
     axios.get('/api/requests').then(res => setRequests(arr2Obj(res.data)));
 
     socket.on('get-requests', event => {
-      // console.log(event.data[0]);
+      console.log('EVENT', event.data[0]);
       const update = event.data[0];
       setRequests(prev => {
         return { ...prev, [update.id]: update };
