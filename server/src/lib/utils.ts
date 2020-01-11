@@ -58,6 +58,7 @@ export function decode64(str: string): string {
 export function socketSessionIdParser(client: socketIO.Socket, next: (err?: any) => void) {
   const cookies = parseCookies(client.handshake.headers.cookie);
 
+  // no socket capability if sessionId cannot be found
   if (!cookies['session.sig']) return next(Error('Cannot retrieve the session Id'));
 
   // attach 'sessionId' key to client object
@@ -69,7 +70,7 @@ export function socketSessionIdParser(client: socketIO.Socket, next: (err?: any)
 export function sessionIdParser(req: Request, res: Response, next: NextFunction) {
   const cookies = parseCookies(req.headers.cookie);
 
-  if (!cookies['session.sig']) return next(Error('Cannot retrieve the session Id'));
+  // if (!cookies['session.sig']) return next(Error('Cannot retrieve the session Id'));
 
   // attach 'sessionId' key to req object
   req.sessionId = cookies['session.sig'];
