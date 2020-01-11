@@ -25,12 +25,19 @@ export default class BidController {
     this.router.route('/')
       .get(async (req, res) => {
         try {
-          // const output = await this.getAllByUser(req.session!.userId);
-          const isActive: boolean = req.query.completed || true;
-          console.log('params', isActive);
+          // req.query is a string. convert a string to boolean so it passes validator with correct type
+          const completed: boolean = (req.query.completed === 'true');
+          const isActive: boolean = !completed;
 
           const bids = await this.model.findByUserSafe(req.session!.userId, isActive).run(this.db.query);
+          // const bids = await this.model.findByUserSafe(req.session!.userId, isActive).run(this.db.query);
+          // const currentBidsInfo = await Promise.all(bids.map((bid: { currentBidId: number; }) => {
+          //   console.log(bid.currentBidId);
+          //   return this.model.findSafe(bid.currentBidId).run(this.db.query);
+          // }
+          // ));
 
+          // console.log(currentBidsInfo);
           // subscribe to updates for all retrieved bids
           const sessionId = req.cookies['session.sig'];
           bids.forEach((bid: Partial<BidInterface>) => {
@@ -41,6 +48,7 @@ export default class BidController {
           res.json(bids);
 
         } catch (err) {
+          console.log(err);
           res.status(404).json({ error: 'Failed to retrieve items for user' });
         }
       })
