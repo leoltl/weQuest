@@ -16,7 +16,7 @@ const RequestFeed = () => {
       console.log('socket connected', socket.connected);
       socket.emit('hi');
     });
-    socket.on('news', msg => console.log(msg));
+    socket.on('update', msg => console.log(msg));
 
     axios.get('/api/requests').then(res => setRequests(res.data));
   });
