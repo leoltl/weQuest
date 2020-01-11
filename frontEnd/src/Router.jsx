@@ -1,12 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
+import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
 import { apps, flash, list, add } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
 import Tab1 from './pages/Tab1';
 import NewRequest from './pages/NewRequest';
 import LoginScreen from './pages/LoginScreen';
-import Details from './pages/Details';
 import RequestFeed from './pages/RequestFeed';
 import Profile from './pages/Profile';
 import ActivityFeed from './pages/ActivityFeed';
@@ -47,8 +46,7 @@ export default function Router(props) {
           <IonTabButton tab='tab1' href='/tab1'>
             <IonIcon icon={flash} />
             <IonLabel>Tab One</IonLabel>
-          </IonTabButton>{' '}
-          */}
+          </IonTabButton>
           <IonTabButton tab='requestFeed' href='/requests'>
             <IonIcon icon={list} />
             <IonLabel>Request Feed</IonLabel>

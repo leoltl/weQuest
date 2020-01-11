@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonItem, IonLabel, IonInput, IonList, IonDatetime, IonTextarea } from '@ionic/react';
+import { IonItem, IonLabel, IonList, IonDatetime, IonTextarea } from '@ionic/react';
 
 const RequestFieldGroup = ({ formSetters, formValues }) => {
   const { setItem, setBudget, setStartDate, setEndDate, setNotes } = formSetters;

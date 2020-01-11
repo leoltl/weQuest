@@ -1,16 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import {
-  IonSegment,
   IonContent,
-  IonSegmentButton,
-  IonLabel,
   IonPage,
   IonHeader,
-  IonToolbar,
-  IonButtons,
-  IonBackButton,
 } from '@ionic/react';
-import { AuthContext } from '../contexts/authContext';
 import ProfileAvatar from '../components/User/ProfileAvatar';
 
 export default function Profile(props) {

@@ -22,12 +22,12 @@ const RequestListItem = props => {
               padding: 0,
             }}
           >
-            {props.currentBid && currencyFormatter(props.currentBid) || 'Free'}
+            {props.currentBid && (currencyFormatter(props.currentBid) || 'Free')}
           </IonCardContent>
         </div>
         <IonCardContent className="request-card__user">
           <div className="request-card__left">
-            <img alt="profile image" src={`https://i.pravatar.cc/50?u=${props.requestDetails.name}`}></img>
+            <img alt="profile" src={`https://i.pravatar.cc/50?u=${props.requestDetails.name}`}></img>
             <span className="request-card__user-rating">{props.requestDetails.name}</span>
           </div>
           <div className="request-card__right">

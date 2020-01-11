@@ -8,31 +8,38 @@
 import express, { Router, Request, Response } from 'express';
 // import RequestService from '../models/RequestService';
 // import { Request as UserRequest, Requests } from '../interfaces/requests';
-import { Request as UserRequest } from '../models/request';
+import UserRequest from '../models/request';
 import { accessControl } from '../lib/utils';
 
 import Bid from '../models/bid';
 import DB from '../lib/db';
+import Socket from '../lib/socket';
 
 export default class RequestController {
-  public path: String = '/api/requests';
+  public path: string = '/api/requests';
   public router: Router = express.Router();
   public model = new UserRequest();
 
-  constructor(public db: DB) {
+  constructor(public db: DB, public socket: Socket) {
     this.init();
   }
 
   private init() {
-    /* GET /api/reqeusts */
+    /* GET /api/requests */
     this.router.get('/', async (req: Request, res: Response) => {
       try {
         const requestData = await this.model
           .findAllActiveRequest()
           .run(this.db.query);
+
+        const sessionId = req.cookies['session.sig'];
+        requestData.forEach((request: Record<string, any>) => {
+          this.socket.subscribe(sessionId, 'get-requests', String(request.id));
+        });
+
         res.json(requestData);
       } catch (err) {
-        res.status(400).send({ error: 'Failed to retrieve requests'});
+        res.status(400).send({ error: 'Failed to retrieve requests' });
       }
     });
 
@@ -43,7 +50,7 @@ export default class RequestController {
           .run(this.db.query);
         res.json(requestData);
       } catch (err) {
-        res.status(400).send({ error: 'Failed to retrieve active requests'});
+        res.status(400).send({ error: 'Failed to retrieve active requests' });
       }
     });
 
@@ -56,7 +63,7 @@ export default class RequestController {
 
         res.json(requestData);
       } catch (err) {
-        res.status(400).send({ error: 'Failed to retrieve completed requests'});
+        res.status(400).send({ error: 'Failed to retrieve completed requests' });
       }
     });
 
@@ -67,7 +74,7 @@ export default class RequestController {
         const request = await this.model.findRequestById(id).run(this.db.query);
         res.json(request);
       } catch (err) {
-        res.status(400).send({ error: 'Failed to retrieve request'});
+        res.status(400).send({ error: 'Failed to retrieve request' });
       }
     });
 
@@ -114,7 +121,12 @@ export default class RequestController {
           req.body,
         );
         if (!request) throw Error('Cannot find/update request');
+
+        // send update through socket
+        this.socket.broadcastToQueue('get-requests', request, { eventKey: String(request.id) });
+
         res.status(200).send(request);
+
       } catch (err) {
         res.status(500).send({ error: 'Failed to update request.' });
       }
@@ -128,28 +140,27 @@ export default class RequestController {
           .findByRequestSafe(requestId, req.session!.userId)
           .run(this.db.query);
         res.json(result);
+
       } catch (err) {
         res.status(500).send({ error: 'Failed to retrieve bids for request' });
       }
     });
-
-    // /* DELETE requests/:id */
-    // this.router.delete('/:id', async (req: Request, res: Response) => {
-    //   try {
-    //     const id: number = parseInt(req.params.id, 10);
-    //     await RequestService.remove(id);
-    //     res.status(200);
-    //   } catch (err) {
-    //     res.status(500).send(err.message);
-    //   }
-    // });
   }
 
   private updateWinningBid(requestId: number, userId: number, input: any) {
-    return this.model
+    return this.db.transaction(async (query) => {
+
+      // update request status to closed when a winning bid is chosen
+      const request = await this.model
       .update({ ...input, status: 'closed' })
       .where({ userId, id: requestId })
       .limit(1)
-      .run(this.db.query);
+      .run(query);
+
+      // update all winning bids associated with the request column of is_Active to false
+      await new Bid().update({ isActive: false }).where({ requestId }).run(query);
+
+      return request;
+    });
   }
 }

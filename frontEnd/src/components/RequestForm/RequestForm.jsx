@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { IonContent, IonButton, IonText } from '@ionic/react';
+import { IonButton } from '@ionic/react';
 import axios from 'axios';
 import moment from 'moment';
 

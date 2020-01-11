@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { IonHeader, IonToolbar, IonContent, IonItem, IonLabel, IonInput, IonList, IonButton, IonRippleEffect } from '@ionic/react';
+import React, { useState, useContext } from 'react';
+import { IonContent, IonItem, IonLabel, IonInput, IonList, IonButton, IonRippleEffect } from '@ionic/react';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import GoogleLogin from 'react-google-login';
 import { AuthContext } from '../../contexts/authContext';
@@ -7,11 +7,10 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = props => {
-  // const [user, setUser] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formErrors, setFormErrors] = useState({});
-  const { user, setUser } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
   const history = useHistory();
 
   const responseFacebook = async response => {

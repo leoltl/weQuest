@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonModal, IonHeader, IonContent, IonToolbar, IonTitle, IonIcon, IonButton, IonButtons, IonLoading } from '@ionic/react';
+import { IonModal, IonHeader, IonContent, IonToolbar, IonTitle, IonIcon, IonButton, IonButtons } from '@ionic/react';
 import { arrowBack } from 'ionicons/icons';
 import Spinner from './Spinner';
 
