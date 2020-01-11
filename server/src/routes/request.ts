@@ -33,7 +33,7 @@ export default class RequestController {
         // const sessionId = req.cookies['session.sig'];
         const sessionId = req.sessionId!;
         requestData.forEach((request: Record<string, any>) => {
-          this.socket.subscribe(sessionId, 'get-requests', String(request.id));
+          this.socket.subscribe(sessionId, 'getRequests', String(request.id));
         });
 
         res.json(requestData);

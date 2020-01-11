@@ -24,7 +24,9 @@ export default class BidController {
     this.router.route('/')
       .get(async (req, res) => {
         try {
-          const isActive: boolean = req.query.completed || true;
+          // req.query is a string. convert a string to boolean so it passes validator with correct type
+          const completed: boolean = (req.query.completed === 'true');
+          const isActive: boolean = !completed;
 
           const bids = await this.model.findByUserSafe(req.session!.userId, isActive).run(this.db.query);
 
