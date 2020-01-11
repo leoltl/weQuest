@@ -218,7 +218,7 @@ export default class SQLQuery {
     joins: string[] = [],
   ): [string, string[], any, number] {
 
-    let [name, alias] = columnName instanceof Array ? columnName : [columnName, undefined];
+    const [name, alias] = columnName instanceof Array ? columnName : [columnName, undefined];
 
     // split name by '.' to access join tables
     const names = name.split('.');
