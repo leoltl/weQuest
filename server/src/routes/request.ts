@@ -121,8 +121,12 @@ export default class RequestController {
           req.body,
         );
         if (!request) throw Error('Cannot find/update request');
-        this.socket.emit('get-requests', request, String(request.id));
+
+        // send update through socket
+        this.socket.broadcastToQueue('get-requests', request, { eventKey: String(request.id) });
+
         res.status(200).send(request);
+
       } catch (err) {
         res.status(500).send({ error: 'Failed to update request.' });
       }
@@ -136,6 +140,7 @@ export default class RequestController {
           .findByRequestSafe(requestId, req.session!.userId)
           .run(this.db.query);
         res.json(result);
+
       } catch (err) {
         res.status(500).send({ error: 'Failed to retrieve bids for request' });
       }
