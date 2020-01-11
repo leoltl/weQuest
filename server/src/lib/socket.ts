@@ -12,6 +12,17 @@ export type SocketParams = {
   path?: string,
 };
 
+export type SocketEmitOptions = {
+  eventKey?: string,
+  sessionId?: string,
+  queue?: string,
+};
+
+export type SocketBroadcastOptions = {
+  eventKey?: string,
+  queue?: string,
+};
+
 export default class Socket {
 
   private io: socketIO.Server | null = null;
@@ -102,15 +113,15 @@ export default class Socket {
   }
 
   // unsubscribe from all if event is not supplied
-  public unsubscribe(sessionId: string, event?: string, eventKey?: string): void {
+  public unsubscribe(sessionId: string, event?: string, eventKey?: string): this {
 
     const client = this.clients[sessionId];
 
-    // client should always exit when functin called from unregisterSocket
+    // client should always exist when function called from unregisterSocket
     if (!client) throw Error('Socket client is not registered');
     const subscriptions = this.subscriptions.get(client);
     // exit if no subscriptions
-    if (!subscriptions) return;
+    if (!subscriptions) return this;
 
     // unsubscribe from individual event
     if (event) {
@@ -119,21 +130,18 @@ export default class Socket {
       // unsubscribe from eventKey only if supplied
       if (eventKey) {
         this.events[event][eventKey] && this.events[event][eventKey].delete(client);
-
         // remove from subscriptions
         subscriptions[event].delete(eventKey);
 
-        return;
-
+        return this;
       }
 
       // remove from event
       this.events[event].default && this.events[event].default.delete(client);
-
       // remove from subscriptions
       delete subscriptions[event];
 
-      return;
+      return this;
     }
 
     // unsubscribe client from all subscriptions
@@ -149,29 +157,52 @@ export default class Socket {
     // delete client key in subscriptions
     this.subscriptions.delete(client);
 
+    return this;
+
   }
 
-  broadcast(event: string, data: any, eventKey = 'default') {
-    this.emit(event, data, eventKey);
-  }
+  emit(event: string, data: any, options: SocketEmitOptions = {}): this {
+    // set default options parameters
+    const eventKey = options.eventKey || 'default';
+    const sessionId = options.sessionId;
+    const queue = options.queue;
 
-  emit(event: string, data: any, eventKey = 'default', sessionId?: string) {
     // get subscribers for event
     const clients = this.events[event] && this.events[event][eventKey];
 
     // exit if event was never initialized i.e. has no subscribers
-    if (!clients) return;
+    if (!clients) return this;
 
     // single client
     if (sessionId) {
       const client = this.clients[sessionId];
-      client && client.emit(event, { eventKey, data });
+      client && (queue !== undefined
+        && client.emit(queue || 'queue', { event, eventKey, data })
+        || client.emit(event, { eventKey, data })
+      );
+      return this;
     }
 
     // broadcast
     for (const client of clients) {
-      client.emit(event, { eventKey, data });
+      queue !== undefined
+        && client.emit(queue || 'queue', { event, eventKey, data })
+        || client.emit(event, { eventKey, data });
     }
+
+    return this;
+  }
+
+  broadcast(event: string, data: any, options: SocketBroadcastOptions): this {
+    this.emit(event, data, options);
+    return this;
+  }
+
+  broadcastToQueue(event: string, data: any, options: SocketBroadcastOptions): this {
+    // set default options parameters
+    const queue = options.queue || 'queue';
+    this.emit(event, data, options);
+    return this;
   }
 
 }
