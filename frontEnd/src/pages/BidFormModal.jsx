@@ -104,7 +104,7 @@ function bidReducer(state, { type, payload }) {
 }
 
 export default function BidFormModal({ showModal, setShowModal, request, updateRequestById }) {
-  console.log('rendering bid form');
+  // console.log('rendering bid form');
 
   const [showSpinner, setShowSpinner] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -134,7 +134,7 @@ export default function BidFormModal({ showModal, setShowModal, request, updateR
   const submitBid = e => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('submitting bid');
+    // console.log('submitting bid');
 
     if (!bidState.product) return setErrorMessage('You must select an item to bid with!');
     if (bidState.price >= request.priceCent) return setErrorMessage('Your price is too high relative to the latest bids!');

@@ -6,7 +6,7 @@ import ProductListItem from './ProductListItem';
 import './ProductList.scss';
 
 export default function ProductList({ products, product, setProduct, addProduct }) {
-  console.log('rendering product list');
+  // console.log('rendering product list');
 
   const [showProductForm, setShowProductForm] = useState(false);
 

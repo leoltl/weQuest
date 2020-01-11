@@ -36,7 +36,7 @@ export default class BidController {
           bids.forEach((bid: Partial<BidInterface>) => {
             this.socket.subscribe(sessionId, 'get-bids', String(bid.id));
           });
-          this.socket.broadcastToQueue('get-bids', { hello: 'world' }, { eventKey: '1' });
+          this.socket.broadcast('get-bids', { hello: 'world' }, { eventKey: '1' });
 
           res.json(bids);
 
@@ -84,7 +84,7 @@ export default class BidController {
 
           // send update through socket
           const updatedRequest = await new Request().findSafe(bid.requestId).run(this.db.query);
-          this.socket.broadcastToQueue('get-requests', updatedRequest, { eventKey: String(bid.requestId) });
+          this.socket.broadcast('get-requests', updatedRequest, { eventKey: String(bid.requestId) });
           res.json(bid);
 
         } catch (err) {

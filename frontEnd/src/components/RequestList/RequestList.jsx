@@ -11,13 +11,18 @@ const RequestList = ({ modal: Modal, ...props }) => {
   const { requests, setRequests } = props;
   const [showBidForm, setShowBidForm] = useState(false);
 
-  const updateRequestById = useCallback((id, payload) => {
-    setRequests(prev =>
-      prev.map(request => {
-        return request.id === id ? { ...request, ...payload } : request;
-      }),
-    );
-  }, [setRequests]);
+  // TODO: change implementation to accept objects
+
+  const updateRequestById = useCallback(
+    (id, payload) => {
+      setRequests(prev =>
+        Object.values(prev).map(request => {
+          return request.id === id ? { ...request, ...payload } : request;
+        }),
+      );
+    },
+    [setRequests],
+  );
 
   const getRequestById = useCallback(
     id => {

@@ -123,7 +123,7 @@ export default class RequestController {
         if (!request) throw Error('Cannot find/update request');
 
         // send update through socket
-        this.socket.broadcastToQueue('get-requests', request, { eventKey: String(request.id) });
+        this.socket.broadcast('get-requests', request, { eventKey: String(request.id) });
 
         res.status(200).send(request);
 
@@ -152,10 +152,10 @@ export default class RequestController {
 
       // update request status to closed when a winning bid is chosen
       const request = await this.model
-      .update({ ...input, status: 'closed' })
-      .where({ userId, id: requestId })
-      .limit(1)
-      .run(query);
+        .update({ ...input, status: 'closed' })
+        .where({ userId, id: requestId })
+        .limit(1)
+        .run(query);
 
       // update all winning bids associated with the request column of is_Active to false
       await new Bid().update({ isActive: false }).where({ requestId }).run(query);

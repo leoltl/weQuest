@@ -5,7 +5,6 @@ import Router from './Router';
 
 import AuthContextProvider from './contexts/authContext';
 
-
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -33,28 +32,28 @@ socket.on('connect', () => {
   console.log('socket connected', socket.connected);
   socket.emit('hi');
 });
-const socketData = {
-  'get-bids': [],
-  'get-requests': []
-}
-socket.on('get-bids', (data) => {
-  socketData['get-bids'].push(data.data);
-  console.log(socketData);
-});
-socket.on('get-requests', (data) => {
-  socketData['get-requests'].push(data.data);
-  console.log(socketData);
-});
+// const socketData = {
+//   'get-bids': [],
+//   'get-requests': [],
+// };
 
-socket.on('queue', ({ event, data }) => {
-  event && (socketData[event] = socketData[event] || []).push(data);
-  console.log(socketData);
-});
+// socket.on('get-bids', data => {
+//   socketData['get-bids'].push(data.data);
+//   console.log(socketData);
+// });
+// socket.on('get-requests', data => {
+//   socketData['get-requests'].push(data.data);
+//   console.log(socketData);
+// });
 
+// socket.on('queue', ({ event, data }) => {
+//   event && (socketData[event] = socketData[event] || []).push(data);
+//   console.log(socketData);
+// });
 
 const App = () => (
   <IonApp>
-    <AuthContextProvider>
+    <AuthContextProvider socket={socket}>
       <Router></Router>
     </AuthContextProvider>
   </IonApp>
