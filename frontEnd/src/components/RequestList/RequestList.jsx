@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useContext } from 'react';
 import { withRouter } from 'react-router';
-import { IonList } from '@ionic/react';
+import { IonList, IonRefresherContent, IonRefresher } from '@ionic/react';
 import RequestListItem from './RequestListItem';
 
 import './RequestList.scss';
@@ -69,6 +69,17 @@ const RequestList = ({ modal: Modal, ...props }) => {
           }}
         />
       )}
+
+      { props.onRefresh && 
+        <IonRefresher slot="fixed" onIonRefresh={props.onRefresh}>
+          <IonRefresherContent 
+            pullingIcon="arrow-dropdown"
+            pullingText="Pull to refresh"
+            refreshingSpinner="bubbles"
+            refreshingText="Refreshing..." />
+        </IonRefresher>
+      }
+
       <IonList>{renderedRequestItem}</IonList>
     </>
   );

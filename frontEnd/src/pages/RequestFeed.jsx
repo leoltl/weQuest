@@ -13,6 +13,12 @@ const RequestFeed = () => {
     axios.get('/api/requests').then(res => setRequests(res.data));
   });
 
+  const onRefresh = (event) => {
+    axios.get('/api/requests')
+      .then(res => setRequests(res.data))
+      .then(event.detail.complete())
+  }
+
   return (
     <IonPage>
       <IonHeader>
@@ -21,7 +27,14 @@ const RequestFeed = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <RequestList modal={BidFormModal} requests={requests} setRequests={setRequests} selectedId={selected} onClick={setSelected} buttonTitle='Bid Now' ></RequestList>
+        <RequestList 
+          modal={BidFormModal} 
+          requests={requests} 
+          setRequests={setRequests} 
+          selectedId={selected} 
+          onClick={setSelected} 
+          buttonTitle='Bid Now'
+          onRefresh={onRefresh} />
       </IonContent>
     </IonPage>
   );
