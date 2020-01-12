@@ -1,18 +1,17 @@
 import React, { useState, useCallback } from 'react';
 import { IonInput, IonButton, IonList, IonItem, IonAvatar, IonImg, IonLabel, IonTextarea } from '@ionic/react';
 import axios from 'axios';
-import { readFile } from '../lib/utils'
+import { readFile } from '../lib/utils';
 
 import Modal from '../components/Modal';
 import ErrorAlert from '../components/ErrorAlert';
 
-export default function ProductFormScreen({ showModal, setShowModal, onSuccess}) {
-
+export default function ProductFormScreen({ showModal, setShowModal, onSuccess }) {
   console.log('rendering new product form');
 
   const [showSpinner, setShowSpinner] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  
+
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [pictureUrl, setPictureUrl] = useState('');
@@ -23,7 +22,7 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess})
     setPictureUrl('');
   }, []);
 
-  const loadPicture = useCallback((e) => {
+  const loadPicture = useCallback(e => {
     e.preventDefault();
     setShowSpinner('Saving...');
 
@@ -31,14 +30,12 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess})
     if (!file) return setShowSpinner(false);
 
     readFile(file)
-    .then((img) => setPictureUrl(img))
-    .catch((err) => setErrorMessage(err.message))
-    .finally(() => setShowSpinner(false));
-
+      .then(img => setPictureUrl(img))
+      .catch(err => setErrorMessage(err.message))
+      .finally(() => setShowSpinner(false));
   }, []);
 
-  const submitProduct = (e) => {
-
+  const submitProduct = e => {
     e.preventDefault();
     e.stopPropagation();
     console.log('submitting product');
@@ -46,30 +43,29 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess})
     if (!name) return setErrorMessage('The name field cannot be blank!');
     if (!description) return setErrorMessage('The description field cannot be blank!');
     if (!pictureUrl) return setErrorMessage('You must attach a picture!');
-    
+
     setShowSpinner('Saving...');
 
     const product = {
       // id: 6,
       name,
       description,
-      pictureUrl
+      pictureUrl,
     };
     // TODO: replace resolve with axios call
     // new Promise((resolve) => {
     //   setTimeout(() => resolve({ data: product }), 3000);
     // })
-    axios.post('/api/items', product)
-    .then(({ data: product }) => {
-      setShowModal(false);
-      resetProduct();
-      onSuccess(product);
-    })
-    .catch((err) => setErrorMessage(err.message))
-    .finally(() => setShowSpinner(false));
-
+    axios
+      .post('/api/items', product)
+      .then(({ data: product }) => {
+        setShowModal(false);
+        resetProduct();
+        onSuccess(product);
+      })
+      .catch(err => setErrorMessage(err.message))
+      .finally(() => setShowSpinner(false));
   };
-  
 
   return (
     <Modal {...{ showModal, setShowModal, showSpinner, title: 'Add New Item' }}>
@@ -77,22 +73,48 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess})
       <form onSubmit={submitProduct}>
         <IonList>
           <IonItem>
-            <IonLabel position='floating' style={{ marginBottom: 40 }}>Upload a Picture</IonLabel>
-            {pictureUrl && <IonAvatar>
-              <IonImg src={pictureUrl} alt='New Item' title='New Item' />
-            </IonAvatar>}
-            <IonButton onClick={(e) => e.currentTarget.querySelector('input').click()}>
+            <IonLabel position='floating' style={{ marginBottom: 40 }}>
+              Upload a Picture
+            </IonLabel>
+            {pictureUrl && (
+              <IonAvatar>
+                <IonImg src={pictureUrl} alt='New Item' title='New Item' />
+              </IonAvatar>
+            )}
+            <IonButton onClick={e => e.currentTarget.querySelector('input').click()}>
               {pictureUrl ? 'Select New Picture' : 'Upload Picture'}
-              <IonInput type='file' name='pictureUrl' accept='image/png, image/jpeg, image/gif' onIonChange={loadPicture} style={{ display: 'none' }} />
+              <IonInput
+                type='file'
+                name='pictureUrl'
+                accept='image/png, image/jpeg, image/gif'
+                onIonChange={loadPicture}
+                style={{ display: 'none' }}
+              />
             </IonButton>
           </IonItem>
           <IonItem>
             <IonLabel position='floating'>Name</IonLabel>
-            <IonInput type='text' name='name' spellcheck value={name} onIonChange={(e) => setName(e.currentTarget.value)} debounce={100} required />
+            <IonInput
+              type='text'
+              name='name'
+              spellcheck
+              value={name}
+              onIonChange={e => setName(e.currentTarget.value)}
+              debounce={100}
+              required
+            />
           </IonItem>
           <IonItem>
             <IonLabel position='floating'>Description</IonLabel>
-            <IonTextarea name='description' value={description} rows={4} spellcheck onIonChange={(e) => setDescription(e.currentTarget.value)} debounce={100} required></IonTextarea>
+            <IonTextarea
+              name='description'
+              value={description}
+              rows={4}
+              spellcheck
+              onIonChange={e => setDescription(e.currentTarget.value)}
+              debounce={100}
+              required
+            ></IonTextarea>
           </IonItem>
         </IonList>
         <IonButton type='submit'>Add</IonButton>

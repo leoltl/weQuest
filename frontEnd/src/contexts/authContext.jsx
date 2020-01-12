@@ -37,6 +37,7 @@ export const AuthContext = createContext();
 
 const AuthContextProvider = props => {
   const [user, setUser] = useState({});
+  const [socket, setSocket] = useState(props.socket);
   const hardChangeAuth = () => {
     setUser(prevState => (prevState ? null : 'Leo'));
   };
@@ -46,6 +47,7 @@ const AuthContextProvider = props => {
         user,
         setUser,
         hardChangeAuth,
+        socket,
       }}
     >
       {props.children}

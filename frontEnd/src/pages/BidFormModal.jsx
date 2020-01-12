@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import Modal from '../components/Modal';
 import ErrorAlert from '../components/ErrorAlert';
-import ProductList from "../components/ProductList/ProductList";
+import ProductList from '../components/ProductList/ProductList';
 
 // dummy data
 // const dummyProducts = [
@@ -54,43 +54,42 @@ const bidActions = {
   ADD_PRODUCT: 2,
   SET_PRICE: 3,
   SET_NOTES: 4,
-  RESET: 5
+  RESET: 5,
 };
 
 function bidReducer(state, { type, payload }) {
-
-  switch(type) {
+  switch (type) {
     case bidActions.PRODUCT_DATA:
       return {
         ...state,
         products: payload.products,
       };
-    
+
     case bidActions.SET_PRODUCT:
       return {
         ...state,
-        product: payload.product
+        product: payload.product,
       };
-        
+
     case bidActions.ADD_PRODUCT:
       return {
         ...state,
         products: state.products.concat(payload.product),
-        product: payload.product.id
+        product: payload.product.id,
       };
-          
+
     case bidActions.SET_PRICE:
       return {
         ...state,
-        price: payload.price
+        price: payload.price,
       };
 
     case bidActions.SET_NOTES:
       return {
         ...state,
-        notes: payload.notes
+        notes: payload.notes,
       };
-    
+
     case bidActions.RESET:
       return {
         ...state,
@@ -101,14 +100,11 @@ function bidReducer(state, { type, payload }) {
 
     default:
       throw Error(`Tried to reduce with unsupported action of type ${type}.`);
-
   }
-
 }
 
 export default function BidFormModal({ showModal, setShowModal, request, updateRequestById }) {
-
-  console.log('rendering bid form');
+  // console.log('rendering bid form');
 
   const [showSpinner, setShowSpinner] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -116,50 +112,53 @@ export default function BidFormModal({ showModal, setShowModal, request, updateR
   // state reducer
   const [bidState, bidDispatch] = useReducer(bidReducer, bidInitialState);
 
-  const setProduct = useCallback((product) => {
+  const setProduct = useCallback(product => {
     bidDispatch({ type: bidActions.SET_PRODUCT, payload: { product: parseInt(product) || null } });
   }, []);
 
-  const addProduct = useCallback((product) => {
+  const addProduct = useCallback(product => {
     bidDispatch({ type: bidActions.ADD_PRODUCT, payload: { product } });
   }, []);
 
-  const setPrice = useCallback((price) => {
-    bidDispatch({ type: bidActions.SET_PRICE, payload: { price: Math.min(parseInt(price), request.priceCent * 100) } });
-  }, [request]);
+  const setPrice = useCallback(
+    price => {
+      bidDispatch({ type: bidActions.SET_PRICE, payload: { price: Math.min(parseInt(price), request.priceCent * 100) } });
+    },
+    [request],
+  );
 
-  const setNotes = useCallback((notes) => {
+  const setNotes = useCallback(notes => {
     bidDispatch({ type: bidActions.SET_NOTES, payload: { notes } });
   }, []);
 
-  const submitBid = (e) => {
+  const submitBid = e => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('submitting bid');
+    // console.log('submitting bid');
 
     if (!bidState.product) return setErrorMessage('You must select an item to bid with!');
     if (bidState.price >= request.priceCent) return setErrorMessage('Your price is too high relative to the latest bids!');
-    
+
     setShowSpinner('Saving...');
 
     const bid = {
       requestId: request.id,
       itemId: bidState.product,
       priceCent: bidState.price,
-      notes: bidState.notes
+      notes: bidState.notes,
     };
     // TODO: replace resolve with axios call
     // new Promise((resolve) => {
     //   setTimeout(() => resolve({ data: bid }), 3000);
     // })
-    axios.post('/api/bids', bid)
-    .then(({ data: { requestId, priceCent } }) => {
-      setShowModal(false);
-      updateRequestById(requestId, { priceCent });
-    })
-    .catch((err) => setErrorMessage(err.message))
-    .finally(() => setShowSpinner(false));
-
+    axios
+      .post('/api/bids', bid)
+      .then(({ data: { requestId, priceCent } }) => {
+        setShowModal(false);
+        updateRequestById(requestId, { priceCent });
+      })
+      .catch(err => setErrorMessage(err.message))
+      .finally(() => setShowSpinner(false));
   };
 
   // reset form if request id or priceCent change
@@ -169,48 +168,63 @@ export default function BidFormModal({ showModal, setShowModal, request, updateR
 
   // load product data
   useEffect(() => {
-
     console.log('load initial bid form data');
     setShowSpinner(true);
-    
+
     // TODO: replace resolve with axios call
     // new Promise((resolve) => {
     //   setTimeout(() => resolve({ data: dummyProducts }), 3000);
     // })
-    axios.get('/api/items')
-    .then(({ data: products }) => {
-      bidDispatch({ type: bidActions.PRODUCT_DATA, payload: { products } });
-    })
-    .catch((err) => setErrorMessage(err.message))
-    .finally(() => setShowSpinner(false));
-
+    axios
+      .get('/api/items')
+      .then(({ data: products }) => {
+        bidDispatch({ type: bidActions.PRODUCT_DATA, payload: { products } });
+      })
+      .catch(err => setErrorMessage(err.message))
+      .finally(() => setShowSpinner(false));
   }, []);
 
   return (
-    <Modal {...{ showModal, setShowModal, showSpinner, title: `Bid on ${ request.title}` }}>
+    <Modal {...{ showModal, setShowModal, showSpinner, title: `Bid on ${request.title}` }}>
       {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
       <form onSubmit={submitBid}>
-        {/* <h3>Pick a Product</h3> */}
-        <IonList>
+        <IonList className='bid-form-modal__list-container'>
           {/* Label and product list should be under one and the same item component. Need to fix formatting */}
-          <IonItem>
-            <IonLabel position='stacked' style={{ marginBottom: 20 }}>Pick a Product</IonLabel>
+          <IonItem lines='none'>
+            <IonLabel className='bid-form-modal__item-title'>Pick a Product</IonLabel>
           </IonItem>
-          <IonItem>
-            <ProductList { ...{ products: bidState.products, product: bidState.product, setProduct, addProduct } } />
-          </IonItem>
-          {/* <h3>Name Your Price</h3> */}
+          <ProductList {...{ products: bidState.products, product: bidState.product, setProduct, addProduct }} />
           <IonItem>
             <IonLabel position='floating'>Name Your Price</IonLabel>
-            <IonInput type='number' name='price' max={Math.max((request.priceCent - 100) / 100, 0)} min={0} value={bidState.price / 100} step={0.5} inputmode='decimal' onIonChange={(e) => setPrice(e.currentTarget.value * 100)} debounce={100} required></IonInput>
+            <IonInput
+              type='number'
+              name='price'
+              max={Math.max((request.priceCent - 100) / 100, 0)}
+              min={0}
+              value={bidState.price / 100}
+              step={0.5}
+              inputmode='decimal'
+              onIonChange={e => setPrice(e.currentTarget.value * 100)}
+              debounce={100}
+              required
+            ></IonInput>
           </IonItem>
           {/* <h3>Notes</h3> */}
           <IonItem>
-            <IonLabel position='floating'>Notes</IonLabel>
-            <IonTextarea name='notes' value={bidState.notes} rows={4} spellcheck onIonChange={(e) => setNotes(e.currentTarget.value)} debounce={100}></IonTextarea>
+            <IonLabel position='stacked'>Notes</IonLabel>
+            <IonTextarea
+              name='notes'
+              value={bidState.notes}
+              spellcheck
+              onIonChange={e => setNotes(e.currentTarget.value)}
+              debounce={100}
+              autoGrow
+            ></IonTextarea>
           </IonItem>
         </IonList>
-        <IonButton type='submit'>Bid</IonButton>
+        <IonButton expand={'block'} type='submit'>
+          Bid Now
+        </IonButton>
       </form>
     </Modal>
   );

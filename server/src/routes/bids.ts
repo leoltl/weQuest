@@ -49,7 +49,7 @@ export default class BidController {
 
           // send updates to request through socket
           const updatedRequest = await new Request().findSafe(bid.requestId!).limit(1).run(this.db.query);
-          this.socket.broadcast('getRequests', updatedRequest, { eventKey: String(bid.requestId) });
+          this.socket.broadcast('get-requests', updatedRequest, { eventKey: String(bid.requestId) });
 
           // send updates to past bid through socket
           const pastBid = await this.model.
