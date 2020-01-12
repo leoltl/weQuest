@@ -11,19 +11,18 @@ const RequestList = ({ modal: Modal, ...props }) => {
   const { requests, setRequests } = props;
   const [showBidForm, setShowBidForm] = useState(false);
 
-  // console.log('RENDERLIST', isLoggedIn);
+  // TODO: change implementation to accept objects
 
-  // useEffect(() => {
-  //   axios.get('/api/requests').then(res => setRequests(res.data));
-  // }, []);
-
-  const updateRequestById = useCallback((id, payload) => {
-    setRequests(prev =>
-      prev.map(request => {
-        return request.id === id ? { ...request, ...payload } : request;
-      }),
-    );
-  }, [setRequests]);
+  const updateRequestById = useCallback(
+    (id, payload) => {
+      setRequests(prev =>
+        Object.values(prev).map(request => {
+          return request.id === id ? { ...request, ...payload } : request;
+        }),
+      );
+    },
+    [setRequests],
+  );
 
   const getRequestById = useCallback(
     id => {

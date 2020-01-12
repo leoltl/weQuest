@@ -24,7 +24,9 @@ export default class BidController {
     this.router.route('/')
       .get(async (req, res) => {
         try {
-          const isActive: boolean = req.query.completed || true;
+          // req.query is a string. convert a string to boolean so it passes validator with correct type
+          const completed: boolean = (req.query.completed === 'true');
+          const isActive: boolean = !completed;
 
           const bids = await this.model.findByUserSafe(req.session!.userId, isActive).run(this.db.query);
 
@@ -47,7 +49,7 @@ export default class BidController {
 
           // send updates to request through socket
           const updatedRequest = await new Request().findSafe(bid.requestId!).limit(1).run(this.db.query);
-          this.socket.broadcast('getRequests', updatedRequest, { eventKey: String(bid.requestId) });
+          this.socket.broadcast('get-requests', updatedRequest, { eventKey: String(bid.requestId) });
 
           // send updates to past bid through socket
           const pastBid = await this.model.

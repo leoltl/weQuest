@@ -33,7 +33,7 @@ export default class RequestController {
         // const sessionId = req.cookies['session.sig'];
         const sessionId = req.sessionId!;
         requestData.forEach((request: Record<string, any>) => {
-          this.socket.subscribe(sessionId, 'get-requests', String(request.id));
+          this.socket.subscribe(sessionId, 'getRequests', String(request.id));
         });
 
         res.json(requestData);
@@ -45,12 +45,15 @@ export default class RequestController {
     this.router.get('/active', async (req: Request, res: Response) => {
       try {
         const requestData = await this.model.findSafe(req.session!.userId, 'active').run(this.db.query);
-        res.json(requestData);
+
 
         // subscribe to updates for all retrieved request
         requestData.forEach((request: any) => {
-          this.socket.subscribe(req.sessionId!, 'getRequests', String(request.id));
+          this.socket.subscribe(req.sessionId!, 'get-requests', String(request.id));
         });
+
+
+        res.json(requestData);
 
       } catch (err) {
         console.log(err);
@@ -62,10 +65,12 @@ export default class RequestController {
       try {
         const requestData = await this.model.findSafe(req.session!.userId, 'closed').run(this.db.query);
 
+
         // subscribe to updates for all retrieved request
         requestData.forEach((request: any) => {
-          this.socket.subscribe(req.sessionId!, 'getRequests', String(request.id));
+          this.socket.subscribe(req.sessionId!, 'get-requests', String(request.id));
         });
+
         res.json(requestData);
 
       } catch (err) {
@@ -80,7 +85,7 @@ export default class RequestController {
       try {
         const request = await this.model.findRequestById(id).run(this.db.query);
 
-        this.socket.subscribe(req.sessionId!, 'getRequests', String(request.id));
+        this.socket.subscribe(req.sessionId!, 'get-requests', String(request.id));
 
         res.json(request);
 
@@ -99,7 +104,8 @@ export default class RequestController {
         const request = req.body.payload;
         const borrowStart: String = new Date(request.borrowStart).toISOString();
         const borrowEnd: String = new Date(request.borrowEnd).toISOString();
-        const requestData = { ...request, borrowStart, borrowEnd, userId: req.session!.userId, isActive: true,
+        const requestData = {
+          ...request, borrowStart, borrowEnd, userId: req.session!.userId, isActive: true,
           auctionStart: new Date().toISOString(), auctionEnd: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
         };
         await this.model.create({ ...requestData, userId }).run(this.db.query);
@@ -118,7 +124,7 @@ export default class RequestController {
         if (!request) throw Error('Cannot find/update request');
 
         // send update through socket
-        this.socket.broadcast('getRequests', request, { eventKey: String(request.id) });
+        this.socket.broadcast('get-requests', request, { eventKey: String(request.id) });
 
         res.status(200).send(request);
 
