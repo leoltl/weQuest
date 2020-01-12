@@ -76,10 +76,12 @@ const Login = props => {
               <IonInput name='password' type='password' value={password} onIonChange={e => setPassword(e.target.value)} />
             </IonItem>
           </IonList>
-          <IonButton expand={'block'} fill='outline' type='submit'>
-            <IonRippleEffect></IonRippleEffect>
-            Login
-          </IonButton>
+          <IonItem lines='none'>
+            <IonButton expand='block' fill='outline' type='submit'>
+              <IonRippleEffect></IonRippleEffect>
+              Login
+            </IonButton>
+          </IonItem>
           <IonItem lines='none'>
             <FacebookLogin
               appId='625636154855382'
@@ -92,6 +94,8 @@ const Login = props => {
                 </button>
               )}
             />
+          </IonItem>
+          <IonItem lines='none'>
             <GoogleLogin
               clientId='90834222802-0s3k5otim13fak7fbdhaambgh1vjb3vt.apps.googleusercontent.com'
               buttonText='LOGIN WITH GOOGLE'
