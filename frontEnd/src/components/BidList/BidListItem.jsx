@@ -6,10 +6,11 @@ import { currencyFormatter } from '../../lib/utils'
 const BidListItem = props => {
   return (
     <IonCard onClick={props.selectCard} >
-      {(props.priceCent === props.requestDetails.currentBidPrice) && <IonBadge color="secondary" style={{borderRadius: 0, borderBottomRightRadius: '8px', paddingRight: '6px'}}> Currently winning</IonBadge>}
+      {(props.priceCent === props.requestDetails.currentBidPrice) && <IonBadge color="secondary" style={{borderRadius: 0, borderBottomRightRadius: '8px', paddingRight: '6px', paddingBottom: '5px'}}> Currently winning</IonBadge>}
       <IonCardHeader style={{paddingTop: '0.1rem'}}>
         <div className="request-card__header">
           <IonCardSubtitle
+            mode="md"
             style={{
               fontSize: '1.15rem',
               padding: 0,

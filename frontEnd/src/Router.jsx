@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
 import { apps, flash, list, add } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
@@ -38,8 +38,8 @@ export default function Router(props) {
           <Route path='/request/new' component={NewRequest} exact={true} />
           <Route path='/requests' component={RequestFeed} />
           <Route path='/login' component={LoginScreen} />
-          <Route path='/activity' component={ActivityFeed} />
           <Route path='/' render={() => <Redirect to='/tab1' />} exact={true} />
+          <ProtectedRoute path='/activity' component={ActivityFeed} />
           <ProtectedRoute path='/profile' component={Profile} exact={true} />
         </IonRouterOutlet>
         <IonTabBar slot='bottom'>
