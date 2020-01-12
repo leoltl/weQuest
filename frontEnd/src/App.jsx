@@ -51,8 +51,6 @@ socket.on('connect', () => {
 //   console.log(socketData);
 // });
 
-
-
 const App = () => (
   <IonApp>
     <AuthContextProvider socket={socket}>

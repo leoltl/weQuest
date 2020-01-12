@@ -5,8 +5,6 @@ import RequestList from '../RequestList/RequestList';
 import axios from 'axios';
 import { AuthContext } from '../../contexts/authContext';
 import { arr2Obj } from '../../lib/utils';
-import { isArray } from 'util';
-import { request } from 'http';
 
 const Requests = props => {
   const [activeRequests, setActiveRequests] = useState({});
@@ -18,6 +16,7 @@ const Requests = props => {
     axios.get('/api/requests/active').then(res => setActiveRequests(arr2Obj(res.data)));
     axios.get('/api/requests/completed').then(res => setCompletedRequests(arr2Obj(res.data)));
 
+    // socket connection
     socket.on('get-requests', event => {
       console.log('EVENT', event);
       const update = event.data;
