@@ -45,12 +45,15 @@ export default class RequestController {
     this.router.get('/active', async (req: Request, res: Response) => {
       try {
         const requestData = await this.model.findSafe(req.session!.userId, 'active').run(this.db.query);
-        res.json(requestData);
+
 
         // subscribe to updates for all retrieved request
         requestData.forEach((request: any) => {
           this.socket.subscribe(req.sessionId!, 'get-requests', String(request.id));
         });
+
+
+        res.json(requestData);
 
       } catch (err) {
         console.log(err);
@@ -62,10 +65,12 @@ export default class RequestController {
       try {
         const requestData = await this.model.findSafe(req.session!.userId, 'closed').run(this.db.query);
 
+
         // subscribe to updates for all retrieved request
         requestData.forEach((request: any) => {
           this.socket.subscribe(req.sessionId!, 'get-requests', String(request.id));
         });
+
         res.json(requestData);
 
       } catch (err) {
@@ -80,7 +85,7 @@ export default class RequestController {
       try {
         const request = await this.model.findRequestById(id).run(this.db.query);
 
-        this.socket.subscribe(req.sessionId!, 'getRequests', String(request.id));
+        this.socket.subscribe(req.sessionId!, 'get-requests', String(request.id));
 
         res.json(request);
 

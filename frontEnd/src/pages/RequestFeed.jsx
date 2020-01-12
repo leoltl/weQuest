@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { IonHeader, IonToolbar, IonPage, IonTitle, IonContent, useIonViewDidEnter } from '@ionic/react';
+import { IonHeader, IonToolbar, IonPage, IonTitle, IonContent, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
 import axios from 'axios';
 import RequestList from '../components/RequestList/RequestList';
 import BidFormModal from './BidFormModal';
@@ -15,13 +15,18 @@ const RequestFeed = () => {
     axios.get('/api/requests').then(res => setRequests(arr2Obj(res.data)));
 
     socket.on('get-requests', event => {
-      console.log('EVENT', event);
+      // console.log('EVENT', event);
       const update = event.data;
       setRequests(prev => {
         return { ...prev, [update.id]: update };
       });
     });
   });
+
+  useIonViewDidLeave(() => {
+    socket.emit('disconnect');
+  })
+
 
   return (
     <IonPage>
