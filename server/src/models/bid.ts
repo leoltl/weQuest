@@ -81,9 +81,20 @@ export default class Bid extends Model {
 
   public findByUserSafe(userId: number, isActive?: boolean, includeItem = true): SQL {
     return includeItem
-      ? this.select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId', 'isActive')
-        .where(isActive && { isActive, 'items.userId': userId } || { 'items.userId': userId })
-        .order([['id', 'DESC']])
+      ? this.sql(
+        `SELECT
+        bids.id, bids.price_cent, bids.notes,
+        items.name, items.description, items.picture_url,
+        requests.current_bid_id, requests.title AS request_title, requests.description AS request_description,
+        current_bid.price_cent AS current_bid_price
+        FROM bids
+        JOIN items ON bids.item_id = items.id
+        JOIN requests ON bids.request_id = requests.id
+        JOIN bids AS current_bid ON requests.current_bid_id = current_bid.id
+        WHERE items.user_id = $1 AND bids.is_active = $2
+        `,
+        [userId, isActive],
+        )
       : this.select('id', 'priceCent', 'notes')
         .where({ userId })
         .order([['id', 'DESC']]);

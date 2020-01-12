@@ -33,7 +33,7 @@ export default class RequestController {
         // const sessionId = req.cookies['session.sig'];
         const sessionId = req.sessionId!;
         requestData.forEach((request: Record<string, any>) => {
-          this.socket.subscribe(sessionId, 'getRequests', String(request.id));
+          this.socket.subscribe(sessionId, 'get-requests', String(request.id));
         });
 
         res.json(requestData);
@@ -44,14 +44,12 @@ export default class RequestController {
 
     this.router.get('/active', async (req: Request, res: Response) => {
       try {
-        const requestData = await this.model.findSafe(req.session!.userId, 'active').run(this.db.query);
-
+        const requestData = await this.model.findSafeByUserId(req.session!.userId, 'active').run(this.db.query);
 
         // subscribe to updates for all retrieved request
         requestData.forEach((request: any) => {
           this.socket.subscribe(req.sessionId!, 'get-requests', String(request.id));
         });
-
 
         res.json(requestData);
 
@@ -63,8 +61,7 @@ export default class RequestController {
 
     this.router.get('/completed', async (req: Request, res: Response) => {
       try {
-        const requestData = await this.model.findSafe(req.session!.userId, 'closed').run(this.db.query);
-
+        const requestData = await this.model.findSafeByUserId(req.session!.userId, 'closed').run(this.db.query);
 
         // subscribe to updates for all retrieved request
         requestData.forEach((request: any) => {

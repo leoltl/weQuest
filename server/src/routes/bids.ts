@@ -32,7 +32,7 @@ export default class BidController {
 
           // subscribe to updates for all retrieved bids
           bids.forEach((bid: Partial<BidInterface>) => {
-            this.socket.subscribe(req.sessionId!, 'getBids', String(bid.id));
+            this.socket.subscribe(req.sessionId!, 'get-bids', String(bid.id));
           });
 
           res.json(bids);
@@ -58,7 +58,7 @@ export default class BidController {
             .order([['id', 'DESC']])
             .limit(1)
             .run(this.db.query);
-          this.socket.broadcast('getBids', pastBid, { eventKey: String(bid.id) });
+          this.socket.broadcast('get-bids', pastBid, { eventKey: String(bid.id) });
 
           // respond with safe bid
           res.json(bid);
