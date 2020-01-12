@@ -24,14 +24,16 @@ const RequestFeed = () => {
   });
 
   useIonViewDidLeave(() => {
-    socket.emit('disconnect');
-  })
+    // disconnect from socket
+    socket.off('get-requests');
+  });
 
-  const onRefresh = (event) => {
-    axios.get('/api/requests')
+  const onRefresh = event => {
+    axios
+      .get('/api/requests')
       .then(res => setRequests(res.data))
-      .then(event.detail.complete())
-  }
+      .then(event.detail.complete());
+  };
 
   return (
     <IonPage>
@@ -41,15 +43,16 @@ const RequestFeed = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <RequestList 
-          modal={BidFormModal} 
-          setRequests={setRequests} 
-          selectedId={selected} 
-          onClick={setSelected} 
+        <RequestList
+          modal={BidFormModal}
+          setRequests={setRequests}
+          selectedId={selected}
+          onClick={setSelected}
           buttonTitle='Bid Now'
           // refractor to work with objs instead of passing down array
           requests={Object.values(requests)}
-          onRefresh={onRefresh} />
+          onRefresh={onRefresh}
+        />
       </IonContent>
     </IonPage>
   );

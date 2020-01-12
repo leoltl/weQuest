@@ -5,7 +5,7 @@
  * these routes are mounted onto /users
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
-import express, { Router, Request, Response } from 'express';
+import express, { Router, Request, Response, request } from 'express';
 // import RequestService from '../models/RequestService';
 // import { Request as UserRequest, Requests } from '../interfaces/requests';
 import UserRequest from '../models/request';
@@ -14,6 +14,7 @@ import { accessControl } from '../lib/utils';
 import Bid from '../models/bid';
 import DB from '../lib/db';
 import Socket from '../lib/socket';
+import { Query } from 'pg';
 
 export default class RequestController {
   public path: string = '/api/requests';
@@ -118,12 +119,14 @@ export default class RequestController {
       try {
         const userId = req.session!.userId;
         const request = await this.updateWinningBid(requestId, userId, req.body);
+        const updatedRequest = await this.findById(request.id);
+
         if (!request) throw Error('Cannot find/update request');
 
         // send update through socket
-        this.socket.broadcast('get-requests', request, { eventKey: String(request.id) });
+        this.socket.broadcast('get-requests', updatedRequest, { eventKey: String(request.id) });
 
-        res.status(200).send(request);
+        res.status(200).send(updatedRequest);
 
       } catch (err) {
         console.log(err);
@@ -155,5 +158,9 @@ export default class RequestController {
 
       return request;
     });
+  }
+
+  private findById(requestId: number) {
+    return this.model.findSafe(requestId).run(this.db.query)
   }
 }

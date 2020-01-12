@@ -35,17 +35,19 @@ const Register = props => {
     setEmail('');
     setPassword('');
     setPasswordConfirmation('');
-  }
+  };
 
   const submit = async e => {
     validateForm(e);
     try {
-      await axios.post('/api/users', {
-        user: { name: name, email: email, password: password },
-      }).then(res => {
-        setUser(res.data);
-        clearForm();
-      });
+      await axios
+        .post('/api/users', {
+          user: { name: name, email: email, password: password },
+        })
+        .then(res => {
+          setUser(res.data);
+          clearForm();
+        });
       history.push('/requests');
     } catch (e) {
       setFormErrors(e);
@@ -85,9 +87,11 @@ const Register = props => {
               />
             </IonItem>
           </IonList>
-          <IonButton expand='block' fill='outline' type='submit'>
-            Register
-          </IonButton>
+          <IonItem lines='none'>
+            <IonButton expand='block' fill='outline' type='submit'>
+              Register
+            </IonButton>
+          </IonItem>
         </form>
       </IonContent>
     </>
