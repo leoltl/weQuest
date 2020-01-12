@@ -42,6 +42,7 @@ const RequestList = ({ modal: Modal, ...props }) => {
   };
 
   const renderedRequestItem = requests.map(listItem => {
+    console.log('ITEM', listItem);
     return (
       <RequestListItem
         key={listItem.id}
@@ -69,15 +70,16 @@ const RequestList = ({ modal: Modal, ...props }) => {
         />
       )}
 
-      { props.onRefresh && 
-        <IonRefresher slot="fixed" onIonRefresh={props.onRefresh}>
-          <IonRefresherContent 
-            pullingIcon="arrow-dropdown"
-            pullingText="Pull to refresh"
-            refreshingSpinner="bubbles"
-            refreshingText="Refreshing..." />
+      {props.onRefresh && (
+        <IonRefresher slot='fixed' onIonRefresh={props.onRefresh}>
+          <IonRefresherContent
+            pullingIcon='arrow-dropdown'
+            pullingText='Pull to refresh'
+            refreshingSpinner='bubbles'
+            refreshingText='Refreshing...'
+          />
         </IonRefresher>
-      }
+      )}
 
       <IonList>{renderedRequestItem}</IonList>
     </>
