@@ -21,7 +21,7 @@ const Login = props => {
   };
 
   const responseGoogle = async response => {
-    console.log('Google', response.w3);
+    // console.log('Google', response.w3);
     const userData = {
       user: {
         name: response.w3.ig,
@@ -33,19 +33,17 @@ const Login = props => {
     setUser(response);
   };
 
-
   const clearForm = () => {
     setEmail('');
     setPassword('');
-  }
+  };
 
   const submit = async e => {
     try {
-      await axios.post('/api/users/login', { email, password })
-        .then(response => {
-          setUser(response);
-          clearForm();
-        })
+      await axios.post('/api/users/login', { email, password }).then(response => {
+        setUser(response);
+        clearForm();
+      });
       //redirectOnSuccess comes from Request Form
       if (history.location.state.redirectOnSuccess) {
         history.push(history.location.state.redirectOnSuccess);

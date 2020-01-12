@@ -101,7 +101,8 @@ export default class RequestController {
         const request = req.body.payload;
         const borrowStart: String = new Date(request.borrowStart).toISOString();
         const borrowEnd: String = new Date(request.borrowEnd).toISOString();
-        const requestData = { ...request, borrowStart, borrowEnd, userId: req.session!.userId, isActive: true,
+        const requestData = {
+          ...request, borrowStart, borrowEnd, userId: req.session!.userId, isActive: true,
           auctionStart: new Date().toISOString(), auctionEnd: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
         };
         await this.model.create({ ...requestData, userId }).run(this.db.query);

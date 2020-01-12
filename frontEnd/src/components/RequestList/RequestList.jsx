@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useContext } from 'react';
 import { withRouter } from 'react-router';
-import { IonList } from '@ionic/react';
+import { IonList, IonRefresherContent, IonRefresher } from '@ionic/react';
 import RequestListItem from './RequestListItem';
 
 import './RequestList.scss';
@@ -11,19 +11,18 @@ const RequestList = ({ modal: Modal, ...props }) => {
   const { requests, setRequests } = props;
   const [showBidForm, setShowBidForm] = useState(false);
 
-  // console.log('RENDERLIST', isLoggedIn);
+  // TODO: change implementation to accept objects
 
-  // useEffect(() => {
-  //   axios.get('/api/requests').then(res => setRequests(res.data));
-  // }, []);
-
-  const updateRequestById = useCallback((id, payload) => {
-    setRequests(prev =>
-      prev.map(request => {
-        return request.id === id ? { ...request, ...payload } : request;
-      }),
-    );
-  }, [setRequests]);
+  const updateRequestById = useCallback(
+    (id, payload) => {
+      setRequests(prev =>
+        Object.values(prev).map(request => {
+          return request.id === id ? { ...request, ...payload } : request;
+        }),
+      );
+    },
+    [setRequests],
+  );
 
   const getRequestById = useCallback(
     id => {
@@ -69,6 +68,17 @@ const RequestList = ({ modal: Modal, ...props }) => {
           }}
         />
       )}
+
+      { props.onRefresh && 
+        <IonRefresher slot="fixed" onIonRefresh={props.onRefresh}>
+          <IonRefresherContent 
+            pullingIcon="arrow-dropdown"
+            pullingText="Pull to refresh"
+            refreshingSpinner="bubbles"
+            refreshingText="Refreshing..." />
+        </IonRefresher>
+      }
+
       <IonList>{renderedRequestItem}</IonList>
     </>
   );
