@@ -1,0 +1,18 @@
+.bid-form-modal {
+  &__list-container {
+    padding-top: 2.5%;
+  }
+  
+  &__item-title {
+    margin-bottom: 5%;
+    font-size: 1rem;
+  }
+
+  &__btn {
+    display: block;
+    margin: 1.25rem 10%;
+    padding: 0 !important;
+    font-size: 1rem;
+    width: 80%;
+  }
+}

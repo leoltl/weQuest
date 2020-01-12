@@ -1,0 +1,32 @@
+.product-form {
+  &__img {
+    display: block;
+    height: 200px;
+    object-fit: cover;
+    overflow: hidden;
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+
+  &__img-label {
+    margin: 1.75rem 0 1.25rem !important;
+  }
+
+  &__img-btn {
+    display: block;
+    margin: 0 0 0.625rem;
+    padding: 0 !important;
+    font-size: 1rem;
+    width: 100%;
+    --border-radius: 0 0 0.5rem 0.5rem !important;
+    --padding-top: 1rem;
+    --padding-bottom: 1.25rem;
+  }
+
+  &__btn {
+    display: block;
+    margin: 1.25rem 10%;
+    padding: 0 !important;
+    font-size: 1rem;
+    width: 80%;
+  }
+}

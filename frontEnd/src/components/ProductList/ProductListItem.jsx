@@ -3,15 +3,15 @@ import { IonAvatar, IonIcon, IonImg, IonSegmentButton, IonLabel } from '@ionic/r
 
 export default function ProductListItem({ id, name, pictureUrl, isSelected, isIcon = false }) {
   return (
-    <IonSegmentButton value={id} style={{ border: 'none' }} checked={isSelected}>
+    <IonSegmentButton className={'product-list__item'} value={id} style={{ border: 'none' }} checked={isSelected}>
       <IonAvatar>
         {isIcon ? (
-          <IonIcon className='product-list-icon' icon={pictureUrl} />
+          <IonIcon className='product-list__icon' icon={pictureUrl} />
         ) : (
-          <IonImg className='product-list-img' src={pictureUrl} alt={name} title={name} />
+          <IonImg className='product-list__img' src={pictureUrl} alt={name} title={name} />
         )}
       </IonAvatar>
-      <IonLabel style={{ marginTop: 12 }} className='product-list-label'>
+      <IonLabel style={{ marginTop: 12 }} className='product-list__label'>
         {name}
       </IonLabel>
     </IonSegmentButton>

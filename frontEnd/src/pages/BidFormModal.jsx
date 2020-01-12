@@ -5,6 +5,7 @@ import axios from 'axios';
 import Modal from '../components/Modal';
 import ErrorAlert from '../components/ErrorAlert';
 import ProductList from '../components/ProductList/ProductList';
+import './BidFormModal.scss';
 
 // dummy data
 // const dummyProducts = [
@@ -195,7 +196,7 @@ export default function BidFormModal({ showModal, setShowModal, request, updateR
           </IonItem>
           <ProductList {...{ products: bidState.products, product: bidState.product, setProduct, addProduct }} />
           <IonItem>
-            <IonLabel position='floating'>Name Your Price</IonLabel>
+            <IonLabel position='floating'>Name Your Price ($)</IonLabel>
             <IonInput
               type='number'
               name='price'
@@ -222,7 +223,7 @@ export default function BidFormModal({ showModal, setShowModal, request, updateR
             ></IonTextarea>
           </IonItem>
         </IonList>
-        <IonButton expand={'block'} type='submit'>
+        <IonButton className={'bid-form-modal__btn'} expand={'block'} type='submit'>
           Bid Now
         </IonButton>
       </form>
