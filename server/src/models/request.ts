@@ -105,11 +105,18 @@ export default class Request extends Model {
     );
   }
 
+  public findByQuery(query: string): SQL {
+    return this.sql(
+      'SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id FROM requests LEFT JOIN users ON requests.user_id = users.id LEFT JOIN bids on requests.current_bid_id = bids.id WHERE requests.title ILIKE $1 OR requests.title ILIKE $2 OR requests.title ILIKE $3', [`${query}%`, `%${query}`, `%${query}%`],
+    );
+  }
+
   public findRequestById(id: number): SQL {
     return this.find(id);
   }
 
   public findAllActiveRequest(): SQL {
+    // not working as intended ? > can still see completed request on request feed
     return this.findSafe(undefined, 'active');
   }
 
