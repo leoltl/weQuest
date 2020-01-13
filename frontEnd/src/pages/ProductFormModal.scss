@@ -1,5 +1,9 @@
 .product-form {
-  &__img {
+  &__img-item {
+    --inner-padding-end: 0;
+  }
+
+  &__img-img {
     display: block;
     height: 200px;
     object-fit: cover;
@@ -8,6 +12,7 @@
   }
 
   &__img-label {
+    transform: none !important;
     margin: 1.75rem 0 1.25rem !important;
   }
 
