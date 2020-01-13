@@ -10,7 +10,7 @@ function ProfileAvatar(props) {
 
   const signOut = async e => {
     setUser(null);
-    axios.get('/api/users/logout');
+    await axios.get('/api/users/logout');
     props.history.push('/requests');
   };
 

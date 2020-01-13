@@ -5,16 +5,15 @@
  * these routes are mounted onto /users
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
-import express, { Router, Request, Response, request } from 'express';
+import express, { Router, Request, Response } from 'express';
 // import RequestService from '../models/RequestService';
 // import { Request as UserRequest, Requests } from '../interfaces/requests';
-import UserRequest from '../models/request';
+import UserRequest, { RequestInterface } from '../models/request';
 import { accessControl } from '../lib/utils';
 
 import Bid from '../models/bid';
 import DB from '../lib/db';
 import Socket from '../lib/socket';
-import { Query } from 'pg';
 
 export default class RequestController {
   public path: string = '/api/requests';
@@ -31,27 +30,27 @@ export default class RequestController {
     // SEARCH AND REQUEST FEED
     this.router.get('/', async (req: Request, res: Response) => {
       try {
+        const sessionId = req.sessionId!;
+        let requests = [];
+
         // SEARCH TAB
         if (req.query.query) {
-          // console.log(req.query.query);
-          const reqData = await this.model.findByQuery(req.query.query).run(this.db.query) || 0;
-
-          return res.json(reqData);
-        }
+          requests = await this.model.findSafeByQuery(req.query.query, req.session!.userId).run(this.db.query);
 
         // REQUESTS FEED TAB
-        // fetch all active requests where user is not current user
-        const requestData = await this.model
-          .findAllActiveRequest(req.session!.userId ? [req.session!.userId] : undefined)
-          .run(this.db.query);
+        } else {
+          // fetch all active requests where user is not current user
+          requests = await this.model
+            .findAllActiveRequest(req.session!.userId ? [req.session!.userId] : undefined)
+            .run(this.db.query);
+        }
 
-        // const sessionId = req.cookies['session.sig'];
-        const sessionId = req.sessionId!;
-        requestData.forEach((request: Record<string, any>) => {
+        requests.forEach((request: Record<string, any>) => {
           this.socket.subscribe(sessionId, 'get-requests', String(request.id));
         });
 
-        res.json(requestData);
+        res.json(requests);
+
       } catch (err) {
         console.log('ERROR', err);
         res.status(400).send({ error: 'Failed to retrieve requests' });
@@ -61,14 +60,14 @@ export default class RequestController {
     // ACTIVITY FEED TAB - ACTIVE REQUESTS
     this.router.get('/active', async (req: Request, res: Response) => {
       try {
-        const requestData = await this.model.findSafeByUserId(req.session!.userId, 'active').run(this.db.query);
+        const requests = await this.model.findSafeByUserId(req.session!.userId, 'active').run(this.db.query);
 
         // subscribe to updates for all retrieved request
-        requestData.forEach((request: any) => {
+        requests.forEach((request: Record<string, any>) => {
           this.socket.subscribe(req.sessionId!, 'get-requests', String(request.id));
         });
 
-        res.json(requestData);
+        res.json(requests);
 
       } catch (err) {
         console.log(err);
@@ -79,14 +78,14 @@ export default class RequestController {
     // ACTIVITY FEED TAB - COMPLETED REQUESTS
     this.router.get('/completed', async (req: Request, res: Response) => {
       try {
-        const requestData = await this.model.findSafeByUserId(req.session!.userId, 'closed').run(this.db.query);
+        const requests = await this.model.findSafeByUserId(req.session!.userId, 'closed').run(this.db.query);
 
         // subscribe to updates for all retrieved request
-        requestData.forEach((request: any) => {
+        requests.forEach((request: Record<string, any>) => {
           this.socket.subscribe(req.sessionId!, 'get-requests', String(request.id));
         });
 
-        res.json(requestData);
+        res.json(requests);
 
       } catch (err) {
         console.log(err);
@@ -100,6 +99,7 @@ export default class RequestController {
       try {
         const request = await this.model.findRequestById(id).run(this.db.query);
 
+        // subscribe to updates
         this.socket.subscribe(req.sessionId!, 'get-requests', String(request.id));
 
         res.json(request);
@@ -125,6 +125,7 @@ export default class RequestController {
         };
         await this.model.create({ ...requestData, userId }).run(this.db.query);
         res.sendStatus(201);
+
       } catch (err) {
         res.status(500).send({ error: 'Failed to create new request.' });
       }
