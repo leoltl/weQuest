@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { IonButton, IonGrid, IonList, IonItem, IonRow, IonIcon, IonLabel } from '@ionic/react';
 import { pin, mail } from 'ionicons/icons';
 import { withRouter } from 'react-router';
-import { IonButton, IonList, IonItem } from '@ionic/react';
 import { AuthContext } from '../../contexts/authContext';
 import axios from 'axios';
 
@@ -11,7 +10,7 @@ function ProfileAvatar(props) {
 
   const signOut = async e => {
     setUser(null);
-    axios.get('/api/users/logout');
+    await axios.get('/api/users/logout');
     props.history.push('/requests');
   };
 

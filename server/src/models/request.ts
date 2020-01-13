@@ -116,14 +116,15 @@ export default class Request extends Model {
     );
   }
 
-  public findByQuery(query: string): SQL {
+  public findSafeByQuery(query: string, userId: number): SQL {
     return this.sql(
       `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, requests.request_status, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
       FROM requests
       LEFT JOIN users ON requests.user_id = users.id
       LEFT JOIN bids on requests.current_bid_id = bids.id
-      WHERE requests.title ILIKE $1 OR requests.title ILIKE $2 OR requests.title ILIKE $3`,
-      [`${query}%`, `%${query}`, `%${query}%`],
+      WHERE (requests.title ILIKE $1 OR requests.title ILIKE $2 OR requests.title ILIKE $3)
+      AND request.request_status = 'active' AND request.user_id <> $4`,
+      [`${query}%`, `%${query}`, `%${query}%`, userId],
     );
   }
 
