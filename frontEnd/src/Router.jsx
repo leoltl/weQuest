@@ -8,7 +8,7 @@ import NewRequest from './pages/NewRequest';
 import LoginScreen from './pages/LoginScreen';
 import RequestFeed from './pages/RequestFeed';
 import Profile from './pages/Profile';
-import ActivityFeed from './pages/ActivityFeed';
+import ActivityFeed from './pages/ActivityFeedRouter';
 import ProtectedRoute from './Routes/ProtectedRoute';
 import { AuthContext } from './contexts/authContext';
 import Spinner from './components/Spinner';
