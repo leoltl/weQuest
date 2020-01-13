@@ -1,8 +1,8 @@
 import React from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import './NewRequest.scss';
 import RequestForm from '../components/RequestForm/RequestForm.jsx';
 import Header from '../components/Header';
+import './NewRequest.scss';
 
 export default function NewRequest() {
   return (
