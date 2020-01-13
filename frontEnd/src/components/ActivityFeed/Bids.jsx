@@ -20,19 +20,23 @@ const Bids = props => {
     socket.on('get-bids', event => {
       console.log('BID EVENT', event);
       const update = event.data;
-      // setActiveBids(prev => {
-      //   const { [update.id]: undefined, ...rest } = prev;
-      //   console.log('REST', rest);
-      //   return rest;
-      // });
-      // setCompletedBids(prev => {
-      //   return { ...prev, [update.id]: update };
-      // });
+      setActiveBids(prev => {
+        // if requestStatus changes remove it from requests
+        if (prev[update.id].isActive !== update.isActive) {
+          const { [update.id]: undefined, ...rest } = prev;
+          console.log('REST', rest);
+          return rest;
+        }
+        return { ...prev, [update.id]: update };
+      });
+      setCompletedBids(prev => {
+        return { ...prev, [update.id]: update };
+      });
     });
 
-    socket.on('get-requests', event => {
-      console.log('REQEVENT', event);
-    });
+    return () => {
+      socket.off('get-bids');
+    };
   }, []);
 
   return (

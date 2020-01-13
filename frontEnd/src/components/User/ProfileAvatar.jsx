@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { IonButton, IonGrid, IonList, IonItem, IonRow, IonIcon, IonLabel } from '@ionic/react';
+import { IonButton, IonGrid, IonList, IonItem, IonRow, IonIcon, IonLabel, IonImg } from '@ionic/react';
 import { pin, mail } from 'ionicons/icons';
 import { withRouter } from 'react-router';
 import { AuthContext } from '../../contexts/authContext';
@@ -19,7 +19,7 @@ function ProfileAvatar(props) {
   const userInfo = user => (
     <>
       <IonRow className='profile-page__img-container'>
-        <img alt='profile' src={`https://i.pravatar.cc/150?u=${user.name}`}></img>
+        <IonImg className='profile-page__img-container-img' alt='profile' src={`https://i.pravatar.cc/150?u=${user.name}`}></IonImg>
       </IonRow>
       <IonRow className='profile-page__details-container'>
         <IonList className='profile-page__details-container-list'>
