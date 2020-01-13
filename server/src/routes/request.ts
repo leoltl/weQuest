@@ -29,6 +29,12 @@ export default class RequestController {
     /* GET /api/requests */
     this.router.get('/', async (req: Request, res: Response) => {
       try {
+        if (req.query.query) {
+          // console.log(req.query.query);
+          const reqData = await this.model.findByQuery(req.query.query).run(this.db.query) || 0;
+
+          return res.json(reqData);
+        }
         const requestData = await this.model.findAllActiveRequest().run(this.db.query);
 
         // const sessionId = req.cookies['session.sig'];
@@ -39,6 +45,7 @@ export default class RequestController {
 
         res.json(requestData);
       } catch (err) {
+        console.log('ERROR', err)
         res.status(400).send({ error: 'Failed to retrieve requests' });
       }
     });

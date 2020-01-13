@@ -24,9 +24,7 @@ export function currencyFormatter(input) {
 
 export function arr2Obj(array) {
   return array.reduce((obj, item) => {
-    return {
-      ...obj,
-      [item['id']]: item,
-    };
+    obj[item['id']] = item;
+    return obj;
   }, {});
 }

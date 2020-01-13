@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
-import { apps, flash, list, add } from 'ionicons/icons';
+import { apps, search, list, add } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
 import Tab1 from './pages/Tab1';
 import NewRequest from './pages/NewRequest';
@@ -13,6 +13,7 @@ import ProtectedRoute from './Routes/ProtectedRoute';
 import { AuthContext } from './contexts/authContext';
 import Spinner from './components/Spinner';
 import axios from 'axios';
+import SearchPage from './pages/SearchPage';
 
 export default function Router(props) {
   const [initialRender, setinitialRender] = useState(true);
@@ -34,7 +35,7 @@ export default function Router(props) {
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-          <Route path='/tab1' component={Tab1} exact={true} />
+          <Route path='/search' component={SearchPage} exact={true} />
           <Route path='/request/new' component={NewRequest} exact={true} />
           <Route path='/activity' component={ActivityFeed} />
           <Route path='/requests' component={RequestFeed} />
@@ -43,8 +44,8 @@ export default function Router(props) {
           <ProtectedRoute path='/profile' component={Profile} exact={true} />
         </IonRouterOutlet>
         <IonTabBar slot='bottom'>
-          <IonTabButton tab='tab1' href='/tab1'>
-            <IonIcon icon={flash} />
+          <IonTabButton tab='search' href='/search'>
+            <IonIcon icon={search} />
             <IonLabel>Tab One</IonLabel>
           </IonTabButton>
           <IonTabButton tab='requestFeed' href='/requests'>

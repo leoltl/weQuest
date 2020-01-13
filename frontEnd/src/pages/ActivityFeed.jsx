@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import Requests from '../components/ActivityFeed/Requests';
 import Bids from '../components/ActivityFeed/Bids';
 import {
@@ -12,6 +12,8 @@ import {
   IonTitle
 } from '@ionic/react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import { AuthContext } from '../contexts/authContext';
+
 
 import './ActivityFeed.scss';
 
@@ -21,11 +23,16 @@ export default function ActivityFeed(props) {
   const history = useHistory();
   const match = useRouteMatch('/activity/:tab');
   const tab = match && match.params.tab === 'bids' ? 'bids' : 'requests';
-
+  const {socket} = useContext(AuthContext);
+  
   const handleTabClick = useCallback((e) => { 
     e.preventDefault();
     history.push(`/activity/${e.currentTarget.value}`);
   }, [history]);
+
+  useIonViewDidLeave(() => {
+    socket.off('get-requests');
+  })
   
 
   return (
