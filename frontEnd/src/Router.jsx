@@ -8,7 +8,7 @@ import NewRequest from './pages/NewRequest';
 import LoginScreen from './pages/LoginScreen';
 import RequestFeed from './pages/RequestFeed';
 import Profile from './pages/Profile';
-import ActivityFeed from './pages/ActivityFeedRouter';
+import ActivityFeed from './pages/ActivityFeed';
 import ProtectedRoute from './Routes/ProtectedRoute';
 import { AuthContext } from './contexts/authContext';
 import Spinner from './components/Spinner';
@@ -37,13 +37,14 @@ export default function Router(props) {
         <IonRouterOutlet>
           <Route path='/search' component={SearchPage} exact={true} />
           <Route path='/request/new' component={NewRequest} exact={true} />
-          <Route path='/activity' component={ActivityFeed} />
+          {/* <Route path='/activity/:tab' component={ActivityFeed} /> */}
           <Route path='/requests' component={RequestFeed} />
           <Route path='/login' component={LoginScreen} />
-          <Route path='/' render={() => <Redirect to='/tab1' />} exact={true} />
-          <ProtectedRoute path='/profile' component={Profile} exact={true} />
+          <Route path='/' render={() => <Redirect to='/requests' />} exact={true} />
+          <ProtectedRoute path='/activity/:tab' component={ActivityFeed} />
+          <ProtectedRoute path='/profile' component={Profile} />
         </IonRouterOutlet>
-        <IonTabBar slot='bottom'>
+        <IonTabBar slot='bottom' md="ios">
           <IonTabButton tab='search' href='/search'>
             <IonIcon icon={search} />
             <IonLabel>Tab One</IonLabel>
@@ -56,7 +57,7 @@ export default function Router(props) {
             <IonIcon icon={add} />
             <IonLabel>New Request</IonLabel>
           </IonTabButton>
-          <IonTabButton tab='activityFeed' href='/activity'>
+          <IonTabButton tab='activityFeed' href='/activity/requests'>
             <IonIcon icon={list} />
             <IonLabel>Activity</IonLabel>
           </IonTabButton>

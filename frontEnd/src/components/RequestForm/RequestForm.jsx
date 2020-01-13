@@ -69,8 +69,14 @@ const RequestForm = props => {
   };
 
   const isValid = data => {
-    console.log(data);
     return data.title && data.budgetCent && data.borrowStart && data.borrowEnd && data.borrowStart <= data.borrowEnd;
+  };
+
+  const onCancel = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    resetFields();
+    props.history.goBack();
   };
 
   return (
@@ -91,14 +97,12 @@ const RequestForm = props => {
           }}
           formValues={{ budget, item, startDate, endDate, notes }}
         />
-        <IonList>
-          <IonButton className='new-request__button' expand='block' type='submit'>
-            {user ? 'Request It' : 'Login to request'}
-          </IonButton>
-          <IonButton onClick={() => resetFields()} expand='block' fill='clear' type='button'>
-            Cancel
-          </IonButton>
-        </IonList>
+        <IonButton expand='block' type='submit'>
+          {user ? 'Request It' : 'Login to request'}
+        </IonButton>
+        <IonButton expand='block' fill='clear' type='button' onClick={onCancel}>
+          Cancel
+        </IonButton>
       </form>
     </>
   );

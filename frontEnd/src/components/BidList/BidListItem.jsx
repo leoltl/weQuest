@@ -3,43 +3,35 @@ import { IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonButton, Ion
 import moment from 'moment';
 import { currencyFormatter } from '../../lib/utils'
 
+import './BidListItem.scss'
+
 const BidListItem = props => {
+  const isWinning = props.priceCent === props.requestDetails.currentBidPrice
   return (
     <IonCard onClick={props.selectCard} >
-      {(props.priceCent === props.requestDetails.currentBidPrice) && <IonBadge color="secondary" style={{borderRadius: 0, borderBottomRightRadius: '8px', paddingRight: '6px', paddingBottom: '5px'}}> Currently winning</IonBadge>}
-      <IonCardHeader style={{paddingTop: '0.1rem'}}>
-        <div className="request-card__header">
-          <IonCardSubtitle
-            mode="md"
-            style={{
-              fontSize: '1.15rem',
-              padding: 0,
-            }}
-          >
+      {isWinning && (
+      <IonBadge className="activity-bid-card__badge" color="secondary"> 
+         Currently winning
+      </IonBadge>)}
+      <IonCardHeader className="activity-bid-card__content">
+        <div className={`generic-card__header activity-bid-card__header ${isWinning ? "activity-bid-card__header--winning" : ""}`}>
+          <IonCardSubtitle className="generic-card__title activity-bid-card__title" mode="md">
             {props.requestDetails.requestTitle}
           </IonCardSubtitle>
-          <IonCardContent style={{fontSize: '1rem', textAlign: 'right', margin: 0, padding: 0}}>
-            <span style={{
-              fontSize: '0.85rem',
-              padding: 0,
-            }} >Your Bid:</span>
+          <IonCardContent className="activity-bid-card__your-bid">
+            <span className="activity-bid-card__indicator" >Your Bid:</span>
             <br />
             {props.priceCent && (currencyFormatter(props.priceCent) || 'Free')}
           </IonCardContent>
         </div>
-        <IonCardContent className="request-card__user">
-          <div className="request-card__left">
+        <IonCardContent className="generic-card__user activity-bid-card__user">
+          <div className="generic-card__left activity-bid-card__left">
             <img alt="item" src={props.requestDetails.pictureUrl}></img>
             <div className="request-card__right" >
-              <span className="request-card__user-rating">{props.requestDetails.name}</span>
+              <span className="request-card__user-name">{props.requestDetails.name}</span>
             </div>
-            
           </div>
-          <div className="request-card__right" style={{
-              fontSize: '0.75rem',
-              padding: 0,
-              textAlign: 'right',
-            }}>
+          <div className="activity-bid-card__right">
             Lowest Bid:
             <br />
             {currencyFormatter(props.requestDetails.currentBidPrice)} 
