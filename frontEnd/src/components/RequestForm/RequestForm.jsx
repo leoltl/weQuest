@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { IonButton } from '@ionic/react';
+import { IonButton, IonList } from '@ionic/react';
 import axios from 'axios';
 import moment from 'moment';
 
@@ -72,12 +72,12 @@ const RequestForm = props => {
     return data.title && data.budgetCent && data.borrowStart && data.borrowEnd && data.borrowStart <= data.borrowEnd;
   };
 
-  const onCancel = (e) => {
+  const onCancel = e => {
     e.preventDefault();
     e.stopPropagation();
     resetFields();
     props.history.goBack();
-  }
+  };
 
   return (
     <>

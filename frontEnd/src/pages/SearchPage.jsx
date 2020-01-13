@@ -5,6 +5,7 @@ import axios from 'axios';
 import { AuthContext } from '../contexts/authContext';
 import { arr2Obj } from '../lib/utils';
 import BidFormModal from './BidFormModal';
+import Header from '../components/Header';
 
 export default function SearchPage(props) {
   const [query, setQuery] = useState('');
@@ -19,7 +20,7 @@ export default function SearchPage(props) {
 
   return (
     <IonPage id='search-page'>
-      <IonHeader></IonHeader>
+      <Header title='Search'></Header>
       <IonContent>
         <IonSearchbar debounce={500} onIonChange={e => setQuery(e.target.value)}></IonSearchbar>
         <RequestList
