@@ -13,6 +13,7 @@ import {
 import './LoginScreen.scss';
 
 const LoginScreen = props => {
+  console.log('login rendered')
   const [segment, setSegment] = useState('login');
 
   // const getCurrentState = async e => {

@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, withRouter } from 'react-router-dom';
 import { AuthContext } from '../contexts/authContext';
 
-const ProtectedRoute = ({ component: Component, ...rest }) => {
+const ProtectedRoute = ({ component: Component, history, ...rest }) => {
   const { user } = useContext(AuthContext);
-
-  return <Route {...rest} render={props => (user ? <Component {...props} /> : <Redirect to="/login" />)} />;
+  console.log('PROTECT', user);
+  return <Route { ...rest} render={props => (user !== null ? <Component {...props} /> : <Redirect to="/login" />)} />;
 };
 
-export default ProtectedRoute;
+export default withRouter(ProtectedRoute);

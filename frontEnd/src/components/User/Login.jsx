@@ -13,11 +13,21 @@ const Login = props => {
   const { setUser } = useContext(AuthContext);
   const history = useHistory();
 
+  const redirectOnSuccess = () => {
+      //redirectOnSuccess comes from Request Form
+      if (history.location.state.redirectOnSuccess) {
+        history.push(history.location.state.redirectOnSuccess);
+      } else {
+        history.push('/requests');
+      }
+  }
+
   const responseFacebook = async response => {
     // console.log('Facebook', response.name);
     const userData = { user: { name: response.name, email: response.email, password: '123' } };
     await axios.post('/api/users', userData, response => console.log('id:', response));
     setUser(response);
+    redirectOnSuccess();
   };
 
   const responseGoogle = async response => {
@@ -31,6 +41,7 @@ const Login = props => {
     };
     await axios.post('/api/users', userData, response => console.log('id:', response));
     setUser(response);
+    redirectOnSuccess()
   };
 
   const clearForm = () => {
@@ -43,13 +54,8 @@ const Login = props => {
       await axios.post('/api/users/login', { email, password }).then(response => {
         setUser(response);
         clearForm();
+        redirectOnSuccess();
       });
-      //redirectOnSuccess comes from Request Form
-      if (history.location.state.redirectOnSuccess) {
-        history.push(history.location.state.redirectOnSuccess);
-      } else {
-        history.push('/requests');
-      }
     } catch (e) {
       console.log(e);
       setFormErrors(e);
@@ -89,7 +95,10 @@ const Login = props => {
               callback={responseFacebook}
               onFailure={responseFacebook}
               render={renderProps => (
-                <button className='login-button login-button--facebook' onClick={renderProps.onClick}>
+                <button className='login-button login-button--facebook' onClick={ e => {
+                  e.preventDefault();
+                  renderProps.onClick()
+                }}>
                   Login with Facebook
                 </button>
               )}
@@ -102,7 +111,10 @@ const Login = props => {
               onSuccess={responseGoogle}
               onFailure={responseGoogle}
               render={renderProps => (
-                <button className='login-button login-button--google' onClick={renderProps.onClick} disabled={renderProps.disabled}>
+                <button className='login-button login-button--google' onClick={ e => {
+                  e.preventDefault();
+                  renderProps.onClick()
+                }} disabled={renderProps.disabled}>
                   Login with Google
                 </button>
               )}

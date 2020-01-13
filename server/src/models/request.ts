@@ -84,7 +84,7 @@ export default class Request extends Model {
         ? `WHERE requests.id = $1 ${status && ' AND requests.request_status = $2' || ''}
           ORDER BY requests.id DESC
           LIMIT 20`
-        : (status && ' AND requests.request_status = $1' || '')}`,
+        : (status && ' WHERE requests.request_status = $1' || '')}`,
       id !== undefined
         ? status && [id, status] || [id]
         : status && [status] || undefined,
