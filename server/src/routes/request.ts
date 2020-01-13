@@ -32,7 +32,6 @@ export default class RequestController {
         if (req.query.query) {
           // console.log(req.query.query);
           const reqData = await this.model.findByQuery(req.query.query).run(this.db.query) || 0;
-          console.log('hi',reqData);
 
           return res.json(reqData);
         }
