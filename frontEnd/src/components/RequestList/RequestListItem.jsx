@@ -3,32 +3,24 @@ import { IonCard, IonCardHeader, IonCardSubtitle, IonCardContent, IonButton } fr
 import moment from 'moment';
 import { currencyFormatter } from '../../lib/utils'
 
+import './RequestListItem.scss';
+
 const RequestListItem = props => {
   return (
     <IonCard onClick={props.selectCard}>
       <IonCardHeader>
-        <div className="request-card__header">
-          <IonCardSubtitle
-            style={{
-              fontSize: '1.15rem',
-              padding: 0,
-            }}
-          >
+        <div className="generic-card__header request-card__header">
+          <IonCardSubtitle className="request-card__request-title">
             {props.requestDetails.title}
           </IonCardSubtitle>
-          <IonCardContent
-            style={{
-              fontSize: '1.3rem',
-              padding: 0,
-            }}
-          >
+          <IonCardContent className="request-card__request-current-price">
             {props.currentBid && (currencyFormatter(props.currentBid) || 'Free')}
           </IonCardContent>
         </div>
-        <IonCardContent className="request-card__user">
-          <div className="request-card__left">
+        <IonCardContent className="generic-card__user request-card__user">
+          <div className="generic-card__left request-card__left">
             <img alt="profile" src={`https://i.pravatar.cc/50?u=${props.requestDetails.name}`}></img>
-            <span className="request-card__user-rating">{props.requestDetails.name}</span>
+            <span className="request-card__user-name">{props.requestDetails.name}</span>
           </div>
           <div className="request-card__right">
             <span className="request-card__auction-end">Ends {moment(props.requestDetails.auctionEnd).fromNow()}</span>
@@ -38,7 +30,7 @@ const RequestListItem = props => {
       {props.isSelected && (
         <>
           <IonCardContent>{props.requestDetails.description}</IonCardContent>
-          <IonButton className="ion-margin" expand="block" onClick={props.onBidClick}>
+          <IonButton className="ion-margin generic-card__button" expand="block" onClick={props.onBidClick}>
             {props.buttonTitle}
           </IonButton>
         </>

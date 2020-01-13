@@ -75,6 +75,7 @@ const RequestForm = props => {
   const onCancel = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    resetFields();
     props.history.goBack();
   }
 

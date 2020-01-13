@@ -23,7 +23,6 @@ export default function ActivityFeed(props) {
   
   const history = useHistory();
   const match = useRouteMatch('/activity/:tab');
-  console.log(match)
   const tab = match && match.params.tab === 'bids' ? 'bids' : 'requests';
   const {socket} = useContext(AuthContext);
   
