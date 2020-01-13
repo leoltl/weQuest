@@ -1,0 +1,45 @@
+.activity-bid-card {
+  &__header{
+    padding-top: 0.5rem;
+  }
+
+  &__header--winning {
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  &__content {
+    padding-top: 0;
+  }
+
+  &__badge {
+    border-radius: 0;
+    border-bottom-right-radius: 8px;
+    padding-right: 6px;
+    padding-bottom: 6px;
+  }
+
+  &__right {
+    font-size: 0.75rem;
+    padding: 0;
+    text-align: right;
+  }
+
+  &__title {
+    font-size: 1.2rem;
+    padding: 0;
+  }
+
+  &__your-bid {
+    font-size: 1.1rem;
+    text-align: right;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__indicator {
+    font-size: 0.75rem;
+    padding: 0;
+  }
+}
+

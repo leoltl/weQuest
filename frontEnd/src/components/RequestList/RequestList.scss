@@ -1,24 +1,26 @@
-.request-card__header,
-.request-card__user {
-  margin: 0;
-  padding: 0;
-  margin-top: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  img {
-    margin-right: 1.2rem;
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
+.generic-card {
+  &__header, &__user {
+    margin: 0;
+    padding: 0;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    img {
+      margin-right: 1.2rem;
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+    }
+  }
+  &__left {
+    display: flex;
+    align-items: center;
   }
 }
 
-.request-card__left {
-  display: flex;
-  align-items: center;
-}
-
-.request-card__auction-end {
-  font-size: 0.75em;
+.request-card {
+  &__auction-end {
+    font-size: 0.75em;
+  }
 }

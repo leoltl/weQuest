@@ -1,0 +1,18 @@
+.request-card {
+  
+  &__request-current-price {
+    font-size: 1.2rem;
+    padding: 0;
+  }
+}
+
+.generic-card {
+  &__request-title {
+    font-size: 1.15rem;
+    padding: 0;
+  }
+  
+  &__button {
+    text-transform: capitalize;
+  }
+}
