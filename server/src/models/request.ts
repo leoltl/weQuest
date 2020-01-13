@@ -75,19 +75,29 @@ export default class Request extends Model {
     );
   }
 
-  public findSafe(id?: number, status?: RequestStatus): SQL {
+  public findSafe(id?: number, status?: RequestStatus, excludeUsers?: number[]): SQL {
     const query = this.sql(
-      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
-      FROM requests LEFT JOIN users ON requests.user_id = users.id
+      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, requests.request_status, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
+      FROM requests
+      JOIN users ON requests.user_id = users.id
       LEFT JOIN bids on requests.current_bid_id = bids.id
       ${id !== undefined
-        ? `WHERE requests.id = $1 ${status && ' AND requests.request_status = $2' || ''}
+        ? `WHERE requests.id = $1
+          ${status
+            && ` AND requests.request_status = $2${excludeUsers !== undefined && ' AND requests.user_id <> ANY($3)' || ''}`
+            || excludeUsers !== undefined && ' AND requests.user_id <> ANY($2)' || ''}
           ORDER BY requests.id DESC
           LIMIT 20`
-        : (status && ' WHERE requests.request_status = $1' || '')}`,
+        : status
+          && ` WHERE requests.request_status = $1${excludeUsers !== undefined && ' AND requests.user_id <> ANY($2)' || ''}`
+          || excludeUsers !== undefined && ' WHERE requests.user_id <> ANY($1)' || ''}`,
       id !== undefined
-        ? status && [id, status] || [id]
-        : status && [status] || undefined,
+        ? status
+          && (excludeUsers !== undefined && [id, status, excludeUsers] || [id, status])
+          || (excludeUsers !== undefined && [id, excludeUsers] || [id])
+        : status
+          && (excludeUsers !== undefined && [status, excludeUsers] || [status])
+          || (excludeUsers !== undefined && [excludeUsers] || undefined),
     );
 
     return id !== undefined ? query.limit(1) : query;
@@ -95,8 +105,9 @@ export default class Request extends Model {
 
   public findSafeByUserId(userId: number, status?: RequestStatus): SQL {
     return this.sql(
-      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
-      FROM requests LEFT JOIN users ON requests.user_id = users.id
+      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, requests.request_status, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
+      FROM requests
+      JOIN users ON requests.user_id = users.id
       LEFT JOIN bids on requests.current_bid_id = bids.id
       WHERE requests.user_id = $1 ${status && ' AND requests.request_status = $2' || ''}
       ORDER BY requests.id DESC
@@ -107,7 +118,12 @@ export default class Request extends Model {
 
   public findByQuery(query: string): SQL {
     return this.sql(
-      'SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id FROM requests LEFT JOIN users ON requests.user_id = users.id LEFT JOIN bids on requests.current_bid_id = bids.id WHERE requests.title ILIKE $1 OR requests.title ILIKE $2 OR requests.title ILIKE $3', [`${query}%`, `%${query}`, `%${query}%`],
+      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, requests.request_status, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
+      FROM requests
+      LEFT JOIN users ON requests.user_id = users.id
+      LEFT JOIN bids on requests.current_bid_id = bids.id
+      WHERE requests.title ILIKE $1 OR requests.title ILIKE $2 OR requests.title ILIKE $3`,
+      [`${query}%`, `%${query}`, `%${query}%`],
     );
   }
 
@@ -115,9 +131,9 @@ export default class Request extends Model {
     return this.find(id);
   }
 
-  public findAllActiveRequest(): SQL {
+  public findAllActiveRequest(excludeUsers?: number[]): SQL {
     // not working as intended ? > can still see completed request on request feed
-    return this.findSafe(undefined, 'active');
+    return this.findSafe(undefined, 'active', excludeUsers);
   }
 
   public findBidsByRequestId(id: number): SQL {

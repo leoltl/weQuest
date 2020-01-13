@@ -47,7 +47,7 @@ const Requests = props => {
         setRequests={setActiveRequests}
         selectedId={selected}
         onClick={setSelected}
-        buttonTitle='Winning Bids'
+        buttonTitle='Select Winning Bid'
       ></RequestList>
       <IonListHeader>Completed Requests</IonListHeader>
       <RequestList

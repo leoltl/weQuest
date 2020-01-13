@@ -8,7 +8,7 @@ export default function NewRequest() {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle></IonTitle>
+          <IonTitle>Make a Request</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className='new-request-container'>
