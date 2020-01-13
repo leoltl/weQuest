@@ -31,6 +31,10 @@ const Requests = props => {
         return { ...prev, [update.id]: update };
       });
     });
+
+    return () => {
+      socket.off('get-requests')
+    }
   }, []);
 
   return (
