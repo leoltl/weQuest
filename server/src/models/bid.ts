@@ -59,7 +59,7 @@ export default class Bid extends Model {
         .limit(1);
   }
 
-  public findSafe(id: number, includeItem = true): SQL {
+  public findSafe(id: number, isActive?: boolean, includeItem = true): SQL {
     return includeItem
       ? this.select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId', 'isActive')
         .where({ id })
@@ -92,9 +92,10 @@ export default class Bid extends Model {
         JOIN requests ON bids.request_id = requests.id
         JOIN bids AS current_bid ON requests.current_bid_id = current_bid.id
         WHERE items.user_id = $1 AND bids.is_active = $2
+        ORDER BY bids.id DESC
         `,
         [userId, isActive],
-        )
+       )
       : this.select('id', 'priceCent', 'notes')
         .where({ userId })
         .order([['id', 'DESC']]);
@@ -114,5 +115,23 @@ export default class Bid extends Model {
     return this.select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId', 'isActive', ['requests.users.name', 'username'], 'priceCent')
       .where({ requestId, 'requests.userId': userId })
       .order([['id', 'DESC']]);
+  }
+
+  public findByActivityRequestSafe(requestId: number): SQL {
+    return this.sql(
+      `SELECT
+      bids.id, bids.price_cent, bids.notes,
+      items.name, items.description, items.picture_url,
+      requests.current_bid_id, requests.title AS request_title, requests.description AS request_description,
+      current_bid.price_cent AS current_bid_price
+      FROM bids
+      JOIN items ON bids.item_id = items.id
+      JOIN requests ON bids.request_id = requests.id
+      JOIN bids AS current_bid ON requests.current_bid_id = current_bid.id
+      WHERE bids.request_id = $1
+      ORDER BY bids.id DESC
+      `,
+      [requestId],
+    );
   }
 }

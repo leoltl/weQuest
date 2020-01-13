@@ -45,7 +45,11 @@ export default function BidModal({ showModal, setShowModal, request, updateReque
   return (
     <Modal {...{ showModal, setShowModal, showSpinner, title: `Bids for ${request.title}` }}>
       {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
-      <BidModalList {...{ selectWinner, bids }} />
+      <BidModalList {...{
+        selectWinner: request.requestStatus === 'active' ? selectWinner : undefined,
+        winningBidId: request.requestStatus === 'closed' ? request.currentBidId : undefined,
+        bids
+      }} />
     </Modal>
   );
 }
