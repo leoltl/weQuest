@@ -1,5 +1,10 @@
+<<<<<<< HEAD
+import React, { useState, useContext } from 'react';
+import { IonHeader, IonToolbar, IonPage, IonTitle, IonContent, useIonViewDidEnter, useIonViewDidLeave, useIonViewWillLeave } from '@ionic/react';
+=======
 import React, { useState, useContext, useCallback } from 'react';
 import { IonHeader, IonToolbar, IonPage, IonTitle, IonContent, useIonViewDidEnter, useIonViewWillLeave } from '@ionic/react';
+>>>>>>> master
 import axios from 'axios';
 import RequestList from '../components/RequestList/RequestList';
 import BidFormModal from './BidFormModal';
@@ -37,6 +42,7 @@ const RequestFeed = () => {
     // document.removeEventListener('mousedown', handleClickOutside);
 
     // disconnect from socket
+    console.log('unmount listener request feed')
     socket.off('get-requests');
   });
 
