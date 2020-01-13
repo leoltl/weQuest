@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonAvatar, IonImg, IonBadge, IonButton } from '@ionic/react';
-import './BidListModalItem.scss';
+import './BidModalListItem.scss';
 import { currencyFormatter } from '../../lib/utils';
 
 export default function BidListItem({ isExpanded, expand, selectWinner, id, name, pictureUrl, priceCent, notes, description, username }) {
@@ -35,12 +35,12 @@ export default function BidListItem({ isExpanded, expand, selectWinner, id, name
       </IonCardHeader>
       {isExpanded && (
         <IonCardContent>
-          <h2 class={'bid-card__heading'}>Item Description</h2>
+          <h2 className={'bid-card__heading'}>Item Description</h2>
           <p>{description}</p>
-          <h2 class={'bid-card__heading'}>Notes</h2>
+          <h2 className={'bid-card__heading'}>Notes</h2>
           <p>{notes}</p>
 
-          <h2 class={'bid-card__heading'}>About the Bidder</h2>
+          <h2 className={'bid-card__heading'}>About the Bidder</h2>
           <div className={'bid-card__user'}>
             <IonAvatar className={'bid-card__user-img'}>
               <IonImg

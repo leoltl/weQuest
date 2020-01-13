@@ -5,40 +5,7 @@ import axios from 'axios';
 import Modal from '../components/Modal';
 import ErrorAlert from '../components/ErrorAlert';
 import ProductList from '../components/ProductList/ProductList';
-
-// dummy data
-// const dummyProducts = [
-//   {
-//     id: 1,
-//     name: 'Barbecue',
-//     description: 'product description',
-//     pictureUrl: 'https://images.unsplash.com/photo-1500840922267-8ff91fbf85aa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80'
-//   },
-//   {
-//     id: 2,
-//     name: 'Drill',
-//     description: 'product description',
-//     pictureUrl: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1686&q=80'
-//   },
-//   {
-//     id: 3,
-//     name: 'Clown',
-//     description: 'product description',
-//     pictureUrl: 'https://images.unsplash.com/photo-1502488207239-dcf4114041cd?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80'
-//   },
-//   {
-//     id: 4,
-//     name: 'Keyboard',
-//     description: 'product description',
-//     pictureUrl: 'https://images.unsplash.com/photo-1545112719-ce81d7de0b71?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1622&q=80'
-//   },
-//   {
-//     id: 5,
-//     name: 'Camera',
-//     description: 'product description',
-//     pictureUrl: 'https://images.unsplash.com/photo-1519638831568-d9897f54ed69?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80'
-//   }
-// ];
+import './BidFormModal.scss';
 
 const bidInitialState = {
   products: [],
@@ -112,29 +79,25 @@ export default function BidFormModal({ showModal, setShowModal, request, updateR
   // state reducer
   const [bidState, bidDispatch] = useReducer(bidReducer, bidInitialState);
 
-  const setProduct = useCallback(product => {
+  const setProduct = useCallback((product) => {
     bidDispatch({ type: bidActions.SET_PRODUCT, payload: { product: parseInt(product) || null } });
   }, []);
 
-  const addProduct = useCallback(product => {
+  const addProduct = useCallback((product) => {
     bidDispatch({ type: bidActions.ADD_PRODUCT, payload: { product } });
   }, []);
 
-  const setPrice = useCallback(
-    price => {
-      bidDispatch({ type: bidActions.SET_PRICE, payload: { price: Math.min(parseInt(price), request.priceCent * 100) } });
-    },
-    [request],
-  );
+  const setPrice = useCallback((price) => {
+    bidDispatch({ type: bidActions.SET_PRICE, payload: { price: Math.min(parseInt(price), request.priceCent * 100) } });
+  }, [request]);
 
-  const setNotes = useCallback(notes => {
+  const setNotes = useCallback((notes) => {
     bidDispatch({ type: bidActions.SET_NOTES, payload: { notes } });
   }, []);
 
-  const submitBid = e => {
+  const submitBid = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // console.log('submitting bid');
 
     if (!bidState.product) return setErrorMessage('You must select an item to bid with!');
     if (bidState.price >= request.priceCent) return setErrorMessage('Your price is too high relative to the latest bids!');
@@ -147,10 +110,7 @@ export default function BidFormModal({ showModal, setShowModal, request, updateR
       priceCent: bidState.price,
       notes: bidState.notes,
     };
-    // TODO: replace resolve with axios call
-    // new Promise((resolve) => {
-    //   setTimeout(() => resolve({ data: bid }), 3000);
-    // })
+
     axios
       .post('/api/bids', bid)
       .then(({ data: { requestId, priceCent } }) => {
@@ -168,61 +128,61 @@ export default function BidFormModal({ showModal, setShowModal, request, updateR
 
   // load product data
   useEffect(() => {
-    console.log('load initial bid form data');
-    setShowSpinner(true);
+    if (showModal) {
+      setShowSpinner(true);
 
-    // TODO: replace resolve with axios call
-    // new Promise((resolve) => {
-    //   setTimeout(() => resolve({ data: dummyProducts }), 3000);
-    // })
-    axios
-      .get('/api/items')
-      .then(({ data: products }) => {
-        bidDispatch({ type: bidActions.PRODUCT_DATA, payload: { products } });
-      })
-      .catch(err => setErrorMessage(err.message))
-      .finally(() => setShowSpinner(false));
-  }, []);
+      axios
+        .get('/api/items')
+        .then(({ data: products }) => {
+          bidDispatch({ type: bidActions.PRODUCT_DATA, payload: { products } });
+        })
+        .catch(err => setErrorMessage(err.message))
+        .finally(() => setShowSpinner(false));
+      }
+  }, [showModal]);
 
   return (
     <Modal {...{ showModal, setShowModal, showSpinner, title: `Bid on ${request.title}` }}>
       {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
       <form onSubmit={submitBid}>
         <IonList className='bid-form-modal__list-container'>
-          {/* Label and product list should be under one and the same item component. Need to fix formatting */}
           <IonItem lines='none'>
             <IonLabel className='bid-form-modal__item-title'>Pick a Product</IonLabel>
           </IonItem>
-          <ProductList {...{ products: bidState.products, product: bidState.product, setProduct, addProduct }} />
+          <ProductList {...{
+            products: bidState.products,
+            product: bidState.product,
+            setProduct,
+            addProduct
+            }} />
           <IonItem>
-            <IonLabel position='floating'>Name Your Price</IonLabel>
-            <IonInput
-              type='number'
-              name='price'
-              max={Math.max((request.priceCent - 100) / 100, 0)}
-              min={0}
-              value={bidState.price / 100}
-              step={0.5}
-              inputmode='decimal'
-              onIonChange={e => setPrice(e.currentTarget.value * 100)}
-              debounce={100}
-              required
-            ></IonInput>
+            <IonLabel position='floating'>Name Your Price ($)</IonLabel>
+            <IonInput {...{
+              type: 'number',
+              name: 'price',
+              max: Math.max((request.priceCent - 100) / 100, 0),
+              min: 0,
+              value: bidState.price / 100,
+              step: 0.5,
+              inputmode: 'decimal',
+              onIonChange: e => setPrice(e.currentTarget.value * 100),
+              debounce: 100,
+              required: true
+            }} ></IonInput>
           </IonItem>
-          {/* <h3>Notes</h3> */}
           <IonItem>
             <IonLabel position='stacked'>Notes</IonLabel>
-            <IonTextarea
-              name='notes'
-              value={bidState.notes}
-              spellcheck
-              onIonChange={e => setNotes(e.currentTarget.value)}
-              debounce={100}
-              autoGrow
-            ></IonTextarea>
+            <IonTextarea {...{
+              name: 'notes',
+              value: bidState.notes,
+              spellcheck: true,
+              onIonChange: e => setNotes(e.currentTarget.value),
+              debounce: 100,
+              autoGrow: true
+            }}></IonTextarea>
           </IonItem>
         </IonList>
-        <IonButton expand={'block'} type='submit'>
+        <IonButton className={'bid-form-modal__btn'} expand={'block'} type='submit'>
           Bid Now
         </IonButton>
       </form>

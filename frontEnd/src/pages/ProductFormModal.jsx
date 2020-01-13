@@ -5,6 +5,7 @@ import { readFile } from '../lib/utils';
 
 import Modal from '../components/Modal';
 import ErrorAlert from '../components/ErrorAlert';
+import './ProductFormModal.scss';
 
 export default function ProductFormScreen({ showModal, setShowModal, onSuccess }) {
   console.log('rendering new product form');
@@ -72,16 +73,12 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess }
       {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
       <form onSubmit={submitProduct}>
         <IonList>
-          <IonItem>
-            <IonLabel position='floating' style={{ marginBottom: 40 }}>
+          <IonItem lines='none'>
+            <IonLabel className={'product-form__img-label'} position='stacked'>
               Upload a Picture
             </IonLabel>
-            {pictureUrl && (
-              <IonAvatar>
-                <IonImg src={pictureUrl} alt='New Item' title='New Item' />
-              </IonAvatar>
-            )}
-            <IonButton onClick={e => e.currentTarget.querySelector('input').click()}>
+            <IonImg className={'product-form__img'} src={pictureUrl || 'https://images.unsplash.com/photo-1504805572947-34fad45aed93?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80'} alt='New Item' title='New Item' />
+            <IonButton className={'product-form__img-btn'} onClick={e => e.currentTarget.querySelector('input').click()}>
               {pictureUrl ? 'Select New Picture' : 'Upload Picture'}
               <IonInput
                 type='file'
@@ -117,7 +114,7 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess }
             ></IonTextarea>
           </IonItem>
         </IonList>
-        <IonButton type='submit'>Add</IonButton>
+        <IonButton className={'product-form__btn'} expand={'block'} type='submit'>Add Item</IonButton>
       </form>
     </Modal>
   );

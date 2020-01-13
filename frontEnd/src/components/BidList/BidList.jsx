@@ -31,7 +31,6 @@ const BidList = ({ modal: Modal, ...props }) => {
   );
 
   const renderedRequestItem = bids.map(listItem => {
-    console.log('bids', listItem);
     return (
       <BidListItem
         key={listItem.id}

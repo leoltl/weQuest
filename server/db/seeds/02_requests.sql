@@ -13,10 +13,6 @@ insert into requests (user_id, title, auction_start, auction_end, borrow_start, 
 
 
 
-
-
-
-
 -- insert into requests (user_id, description, auction_start, auction_end, borrow_start, borrow_end, budget_cent, is_active) values (36, 'Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.', '2020-01-25 00:34:32', '2020-09-30 10:33:41', '2020-03-15 07:58:46', '2020-04-05 16:58:17', 5000 , false);
 -- insert into requests (user_id, description, auction_start, auction_end, borrow_start, borrow_end, budget_cent, is_active) values (22, 'Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.
 
