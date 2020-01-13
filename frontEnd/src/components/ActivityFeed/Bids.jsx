@@ -44,7 +44,7 @@ const Bids = props => {
         setBids={setActiveBids}
         selectedId={selected}
         onClick={setSelected}
-        buttonTitle='Re Bids'
+        buttonTitle='Bid Again'
       />
       <IonListHeader>Completed Bids</IonListHeader>
       <BidList

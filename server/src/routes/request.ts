@@ -26,16 +26,24 @@ export default class RequestController {
   }
 
   private init() {
+
     /* GET /api/requests */
+    // SEARCH AND REQUEST FEED
     this.router.get('/', async (req: Request, res: Response) => {
       try {
+        // SEARCH TAB
         if (req.query.query) {
           // console.log(req.query.query);
           const reqData = await this.model.findByQuery(req.query.query).run(this.db.query) || 0;
 
           return res.json(reqData);
         }
-        const requestData = await this.model.findAllActiveRequest().run(this.db.query);
+
+        // REQUESTS FEED TAB
+        // fetch all active requests where user is not current user
+        const requestData = await this.model
+          .findAllActiveRequest(req.session!.userId ? [req.session!.userId] : undefined)
+          .run(this.db.query);
 
         // const sessionId = req.cookies['session.sig'];
         const sessionId = req.sessionId!;
@@ -45,11 +53,12 @@ export default class RequestController {
 
         res.json(requestData);
       } catch (err) {
-        console.log('ERROR', err)
+        console.log('ERROR', err);
         res.status(400).send({ error: 'Failed to retrieve requests' });
       }
     });
 
+    // ACTIVITY FEED TAB - ACTIVE REQUESTS
     this.router.get('/active', async (req: Request, res: Response) => {
       try {
         const requestData = await this.model.findSafeByUserId(req.session!.userId, 'active').run(this.db.query);
@@ -67,6 +76,7 @@ export default class RequestController {
       }
     });
 
+    // ACTIVITY FEED TAB - COMPLETED REQUESTS
     this.router.get('/completed', async (req: Request, res: Response) => {
       try {
         const requestData = await this.model.findSafeByUserId(req.session!.userId, 'closed').run(this.db.query);
@@ -84,7 +94,7 @@ export default class RequestController {
       }
     });
 
-    /* GET reqeusts/:id */
+    /* GET requests/:id */
     this.router.get('/:id', async (req: Request, res: Response) => {
       const id: number = parseInt(req.params.id, 10);
       try {
@@ -121,17 +131,23 @@ export default class RequestController {
     });
 
     /* PUT requests/ */
+    // SELECT WINNING BID
     this.router.put('/:id', async (req: Request, res: Response) => {
       const requestId: number = parseInt(req.params.id, 10);
       try {
         const userId = req.session!.userId;
         const request = await this.updateWinningBid(requestId, userId, req.body);
-        const updatedRequest = await this.findById(request.id);
-
         if (!request) throw Error('Cannot find/update request');
 
-        // send update through socket
+        // get updated data for socket
+        const updatedRequest = await this.findById(request.id);
+        const updatedBids = await new Bid().findByActivityRequestSafe(request.id).run(this.db.query);
+
+        // send updates through socket
         this.socket.broadcast('get-requests', updatedRequest, { eventKey: String(request.id) });
+        updatedBids.map((bid: any) => {
+          this.socket.broadcast('get-bids', bid, { eventKey: String(bid.id) });
+        });
 
         res.status(200).send(updatedRequest);
 
@@ -142,6 +158,7 @@ export default class RequestController {
     });
 
     /* GET /api/requests/:id/bids */
+    // BID MODAL
     this.router.get('/:id/bids', async (req: Request, res: Response) => {
       try {
         const requestId = parseInt(req.params.id, 10);
@@ -158,7 +175,15 @@ export default class RequestController {
     return this.db.transaction(async (query) => {
 
       // update request status to closed when a winning bid is chosen
-      const request = await this.model.update({ ...input, requestStatus: 'closed' }).where({ userId, id: requestId }).limit(1).run(query);
+      const request = await this.model
+        .update({
+          ...input,
+          currentBidId: input.winningBidId,
+          requestStatus: 'closed',
+        })
+        .where({ userId, id: requestId })
+        .limit(1)
+        .run(query);
 
       // update all winning bids associated with the request column of is_Active to false
       await new Bid().update({ isActive: false }).where({ requestId }).run(query);
@@ -168,6 +193,6 @@ export default class RequestController {
   }
 
   private findById(requestId: number) {
-    return this.model.findSafe(requestId).run(this.db.query)
+    return this.model.findSafe(requestId).run(this.db.query);
   }
 }
