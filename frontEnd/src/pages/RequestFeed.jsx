@@ -3,6 +3,7 @@ import { IonHeader, IonToolbar, IonPage, IonTitle, IonContent, useIonViewDidEnte
 import axios from 'axios';
 import RequestList from '../components/RequestList/RequestList';
 import BidFormModal from './BidFormModal';
+import Header from '../components/Header';
 import { AuthContext } from '../contexts/authContext';
 import { arr2Obj } from '../lib/utils';
 
@@ -39,11 +40,7 @@ const RequestFeed = () => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>See all requests</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <Header title='Request Feed'></Header>
       <IonContent>
         <RequestList
           modal={BidFormModal}

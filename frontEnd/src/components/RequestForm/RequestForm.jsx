@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { IonButton } from '@ionic/react';
+import { IonButton, IonList } from '@ionic/react';
 import axios from 'axios';
 import moment from 'moment';
 
@@ -91,12 +91,14 @@ const RequestForm = props => {
           }}
           formValues={{ budget, item, startDate, endDate, notes }}
         />
-        <IonButton expand='block' type='submit'>
-          {user ? 'Request It' : 'Login to request'}
-        </IonButton>
-        <IonButton expand='block' fill='clear' type='button'>
-          Cancel
-        </IonButton>
+        <IonList>
+          <IonButton className='new-request__button' expand='block' type='submit'>
+            {user ? 'Request It' : 'Login to request'}
+          </IonButton>
+          <IonButton onClick={() => resetFields()} expand='block' fill='clear' type='button'>
+            Cancel
+          </IonButton>
+        </IonList>
       </form>
     </>
   );
