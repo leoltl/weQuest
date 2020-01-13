@@ -9,7 +9,8 @@ import {
   IonPage,
   IonHeader,
   IonToolbar,
-  IonTitle
+  IonTitle,
+  useIonViewDidLeave
 } from '@ionic/react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 
@@ -20,13 +21,17 @@ export default function ActivityFeed(props) {
   
   const history = useHistory();
   const match = useRouteMatch('/activity/:tab');
+  console.log(match)
   const tab = match && match.params.tab === 'bids' ? 'bids' : 'requests';
 
   const handleTabClick = useCallback((e) => { 
     e.preventDefault();
     history.push(`/activity/${e.currentTarget.value}`);
   }, [history]);
-  
+
+  useIonViewDidLeave(() => {
+    socket.off('get-requests');
+  });
 
   return (
     <IonPage id='activity-page'>

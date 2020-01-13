@@ -83,7 +83,7 @@ const Login = props => {
             </IonItem>
           </IonList>
           <IonItem lines='none'>
-            <IonButton expand='block' fill='outline' type='submit'>
+            <IonButton id="login__login-btn" expand='block' fill='outline' type='submit'>
               <IonRippleEffect></IonRippleEffect>
               Login
             </IonButton>
