@@ -83,7 +83,7 @@ export default class Bid extends Model {
     return includeItem
       ? this.sql(
         `SELECT
-        bids.id, bids.price_cent, bids.notes, bids.isActive,
+        bids.id, bids.price_cent, bids.notes, bids.is_active,
         items.name, items.description, items.picture_url,
         requests.current_bid_id, requests.title AS request_title, requests.description AS request_description,
         current_bid.price_cent AS current_bid_price
@@ -95,7 +95,7 @@ export default class Bid extends Model {
         ORDER BY bids.id DESC
         `,
         [userId, isActive],
-       )
+      )
       : this.select('id', 'priceCent', 'notes')
         .where({ userId })
         .order([['id', 'DESC']]);
@@ -120,7 +120,7 @@ export default class Bid extends Model {
   public findByActivityRequestSafe(requestId: number): SQL {
     return this.sql(
       `SELECT
-      bids.id, bids.price_cent, bids.notes, bids.isActive,
+      bids.id, bids.price_cent, bids.notes, bids.is_active,
       items.name, items.description, items.picture_url,
       requests.current_bid_id, requests.title AS request_title, requests.description AS request_description,
       current_bid.price_cent AS current_bid_price

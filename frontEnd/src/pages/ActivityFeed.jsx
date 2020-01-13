@@ -36,6 +36,7 @@ export default function ActivityFeed(props) {
 
   useIonViewDidLeave(() => {
     socket.off('get-requests');
+    socket.off('get-bids');
   });
 
   return (

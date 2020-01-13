@@ -37,10 +37,10 @@ const socketData = {
   'get-requests': [],
 };
 
-socket.on('get-bids', data => {
-  socketData['get-bids'].push(data.data);
-  console.log('APP',socketData);
-});
+// socket.on('get-bids', data => {
+//   socketData['get-bids'].push(data.data);
+//   console.log('APP',socketData);
+// });
 // socket.on('get-requests', data => {
 //   socketData['get-requests'].push(data.data);
 //   console.log(socketData);
