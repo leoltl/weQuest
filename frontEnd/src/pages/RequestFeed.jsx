@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { IonHeader, IonToolbar, IonPage, IonTitle, IonContent, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
+import React, { useState, useContext, useCallback } from 'react';
+import { IonHeader, IonToolbar, IonPage, IonTitle, IonContent, useIonViewDidEnter, useIonViewWillLeave } from '@ionic/react';
 import axios from 'axios';
 import RequestList from '../components/RequestList/RequestList';
 import BidFormModal from './BidFormModal';
@@ -17,6 +17,8 @@ const RequestFeed = () => {
       setRequests(arr2Obj(res.data));
     });
 
+    // document.addEventListener('mousedown', handleClickOutside);
+
     socket.on('get-requests', event => {
       console.log('EVENT', event);
       const update = event.data;
@@ -31,17 +33,23 @@ const RequestFeed = () => {
     });
   });
 
-  useIonViewDidLeave(() => {
+  useIonViewWillLeave(() => {
+    // document.removeEventListener('mousedown', handleClickOutside);
+
     // disconnect from socket
     socket.off('get-requests');
   });
 
-  const onRefresh = event => {
+  const onRefresh = useCallback(event => {
     axios
       .get('/api/requests')
       .then(res => setRequests(res.data))
       .then(event.detail.complete());
-  };
+  });
+
+  // const handleClickOutside = useCallback(event => {
+  //   setSelected(null);
+  // });
 
   return (
     <IonPage>
