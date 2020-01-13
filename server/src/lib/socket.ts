@@ -77,6 +77,9 @@ export default class Socket {
     const sessionId = client.sessionId!;
     this.clients[sessionId] = client;
     this.sessions.set(client, sessionId);
+
+    // subscribe all to 'notifications' event
+    this.subscribe(sessionId, 'notifications');
   }
 
   private unregisterSocket(client: socketIO.Socket) {
@@ -95,7 +98,7 @@ export default class Socket {
     const client = this.clients[sessionId];
     // if (!client) throw Error('Socket client is not registered');
     if (!client) {
-      console.error('ERROR: Trying to subscribe but socket client is not registered');
+      console.error('ERROR: Attempting to subscribe but socket client is not registered');
       return this;
     }
 
@@ -121,7 +124,7 @@ export default class Socket {
     // client should always exist when function called from unregisterSocket
     // if (!client) throw Error('Socket client is not registered');
     if (!client) {
-      console.error('ERROR: Trying to unsubscribe but socket client is not registered');
+      console.error('ERROR: Attempting to unsubscribe but socket client is not registered');
       return this;
     }
     const subscriptions = this.subscriptions.get(client);
@@ -130,7 +133,11 @@ export default class Socket {
 
     // unsubscribe from individual event
     if (event) {
-      this.events[event] = this.events[event] || {};
+      if (!this.events[event] || !subscriptions[event]) {
+        console.error('ERROR: Attempting to unsubscribe from an event that does not exist or that the user is not subscribed to');
+        return this;
+      }
+      // this.events[event] = this.events[event] || {};
 
       // unsubscribe from eventKey only if supplied
       if (eventKey) {
@@ -141,8 +148,13 @@ export default class Socket {
         return this;
       }
 
+      // if no eventKey, unsubscribe from all eventKeys
+      for (const eventKey of subscriptions[event]) {
+        this.unsubscribe(sessionId, event, eventKey);
+      }
+
       // remove from event
-      this.events[event].default && this.events[event].default.delete(client);
+      // this.events[event].default && this.events[event].default.delete(client);
       // remove from subscriptions
       delete subscriptions[event];
 
@@ -167,6 +179,8 @@ export default class Socket {
   }
 
   emit(event: string, data: any, options: SocketEmitOptions = {}): this {
+    console.log(`SOCKET EMITTING EVENT ${event}`, data);
+
     // set default options parameters
     const eventKey = options.eventKey || 'default';
     const sessionId = options.sessionId;
@@ -207,6 +221,11 @@ export default class Socket {
     // set default options parameters
     const queue = options.queue || 'queue';
     this.emit(event, data, { ...options, queue });
+    return this;
+  }
+
+  broadcastToNotifications(data: any): this {
+    this.emit('notifications', data);
     return this;
   }
 
