@@ -42,7 +42,6 @@ const RequestList = ({ modal: Modal, ...props }) => {
   };
 
   const renderedRequestItem = requests.map(listItem => {
-    console.log('ITEM', listItem);
     return (
       <RequestListItem
         key={listItem.id}

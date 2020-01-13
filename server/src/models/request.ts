@@ -105,11 +105,18 @@ export default class Request extends Model {
     );
   }
 
+  public findByQuery(query: string): SQL {
+    return this.sql(
+      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id FROM requests WHERE requests.title ILIKE '${query}%' OR requests.title ILIKE '%${query}' OR requests.title ILIKE '%${query}%'`, [query],
+    );
+  }
+
   public findRequestById(id: number): SQL {
     return this.find(id);
   }
 
   public findAllActiveRequest(): SQL {
+    // not working as intended ? > can still see completed request on request feed
     return this.findSafe(undefined, 'active');
   }
 
