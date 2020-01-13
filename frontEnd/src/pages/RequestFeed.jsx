@@ -20,8 +20,13 @@ const RequestFeed = () => {
     socket.on('get-requests', event => {
       console.log('EVENT', event);
       const update = event.data;
+
+      // only update requests if something is changed
       setRequests(prev => {
-        return { ...prev, [update.id]: update };
+        if (prev[update.id] !== update.priceCent) {
+          return { ...prev, [update.id]: update };
+        }
+        return { ...prev };
       });
     });
   });

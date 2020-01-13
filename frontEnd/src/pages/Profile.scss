@@ -11,10 +11,12 @@
     display: flex;
     justify-content: center;
     margin-bottom: 7.5%;
-    img {
+    &-img {
       border: black solid 2px;
       border-radius: 50%;
       width: 85%;
+      height: 85%;
+      overflow: hidden;
     }
   }
 

@@ -5,6 +5,7 @@ import RequestList from '../RequestList/RequestList';
 import axios from 'axios';
 import { AuthContext } from '../../contexts/authContext';
 import { arr2Obj } from '../../lib/utils';
+import { request } from 'http';
 
 const Requests = props => {
   const [activeRequests, setActiveRequests] = useState({});
@@ -23,9 +24,13 @@ const Requests = props => {
       const update = event.data;
 
       setActiveRequests(prev => {
-        const { [update.id]: undefined, ...rest } = prev;
-        console.log('REST', rest);
-        return rest;
+        // if requestStatus changes remove it from requests
+        if (prev[update.id].requestStatus !== update.requestStatus) {
+          const { [update.id]: undefined, ...rest } = prev;
+          console.log('REST', rest);
+          return rest;
+        }
+        return { ...prev, [update.id]: update };
       });
       setCompletedRequests(prev => {
         return { ...prev, [update.id]: update };
@@ -33,8 +38,8 @@ const Requests = props => {
     });
 
     return () => {
-      socket.off('get-requests')
-    }
+      socket.off('get-requests');
+    };
   }, []);
 
   return (
