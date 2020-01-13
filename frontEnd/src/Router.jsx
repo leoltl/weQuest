@@ -44,7 +44,7 @@ export default function Router(props) {
           <ProtectedRoute path='/activity/:tab' component={ActivityFeed} />
           <ProtectedRoute path='/profile' component={Profile} />
         </IonRouterOutlet>
-        <IonTabBar slot='bottom'>
+        <IonTabBar slot='bottom' md="ios">
           <IonTabButton tab='search' href='/search'>
             <IonIcon icon={search} />
             <IonLabel>Tab One</IonLabel>

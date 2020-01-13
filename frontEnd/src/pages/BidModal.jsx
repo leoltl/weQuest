@@ -36,7 +36,6 @@ export default function BidModal({ showModal, setShowModal, request, updateReque
         .get(`/api/requests/${request.id}/bids`)
         .then(({ data: bids }) => {
           setBids(bids);
-          setShowModal(false);
         })
         .catch(err => setErrorMessage(err.message))
         .finally(() => setShowSpinner(false));
