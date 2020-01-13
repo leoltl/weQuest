@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { IonHeader, IonToolbar, IonPage, IonTitle, IonContent, useIonViewDidEnter, useIonViewDidLeave } from '@ionic/react';
+import { IonHeader, IonToolbar, IonPage, IonTitle, IonContent, useIonViewDidEnter, useIonViewDidLeave, useIonViewWillLeave } from '@ionic/react';
 import axios from 'axios';
 import RequestList from '../components/RequestList/RequestList';
 import BidFormModal from './BidFormModal';
@@ -17,6 +17,7 @@ const RequestFeed = () => {
       setRequests(arr2Obj(res.data));
     });
 
+    console.log('mount listener request feed')
     socket.on('get-requests', event => {
       console.log('EVENT', event);
       const update = event.data;
@@ -26,8 +27,9 @@ const RequestFeed = () => {
     });
   });
 
-  useIonViewDidLeave(() => {
+  useIonViewWillLeave(() => {
     // disconnect from socket
+    console.log('unmount listener request feed')
     socket.off('get-requests');
   });
 
