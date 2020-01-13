@@ -36,10 +36,10 @@ export default function Router(props) {
         <IonRouterOutlet>
           <Route path='/tab1' component={Tab1} exact={true} />
           <Route path='/request/new' component={NewRequest} exact={true} />
+          <Route path='/activity' component={ActivityFeed} />
           <Route path='/requests' component={RequestFeed} />
           <Route path='/login' component={LoginScreen} />
           <Route path='/' render={() => <Redirect to='/tab1' />} exact={true} />
-          <ProtectedRoute path='/activity' component={ActivityFeed} />
           <ProtectedRoute path='/profile' component={Profile} exact={true} />
         </IonRouterOutlet>
         <IonTabBar slot='bottom'>
