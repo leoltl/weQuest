@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonAvatar, IonImg, IonBadge, IonButton } from '@ionic/react';
-import './BidListModalItem.scss';
+import './BidModalListItem.scss';
 import { currencyFormatter } from '../../lib/utils';
 
 export default function BidListItem({ isExpanded, expand, selectWinner, id, name, pictureUrl, priceCent, notes, description, username }) {

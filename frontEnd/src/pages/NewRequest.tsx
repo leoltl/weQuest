@@ -3,7 +3,7 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/rea
 import './NewRequest.scss';
 import RequestForm from '../components/RequestForm/RequestForm.jsx';
 
-const Tab2: React.FC = () => {
+export default function NewRequest() {
   return (
     <IonPage>
       <IonHeader>
@@ -16,6 +16,4 @@ const Tab2: React.FC = () => {
       </IonContent>
     </IonPage>
   );
-};
-
-export default Tab2;
+}
