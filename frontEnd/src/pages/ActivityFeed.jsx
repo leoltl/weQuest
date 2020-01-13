@@ -35,7 +35,7 @@ export default function ActivityFeed(props) {
   useIonViewDidLeave(() => {
     socket.off('get-requests');
   })
-  
+ 
 
   return (
     <IonPage id='activity-page'>
