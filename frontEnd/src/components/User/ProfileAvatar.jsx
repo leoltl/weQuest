@@ -1,15 +1,16 @@
 import React, { useContext } from 'react';
+import { withRouter } from 'react-router';
 import { IonButton, IonList, IonItem } from '@ionic/react';
 import { AuthContext } from '../../contexts/authContext';
 import axios from 'axios';
 
-export default function ProfileAvatar(props) {
+function ProfileAvatar(props) {
   const { user, setUser } = useContext(AuthContext);
 
   const signOut = async e => {
     setUser(null);
     axios.get('/api/users/logout');
-    // history.goBack();
+    props.history.push('/requests');
   };
 
   console.log("USER PROFILE ", user);
@@ -32,3 +33,5 @@ export default function ProfileAvatar(props) {
     </>
   );
 }
+
+export default withRouter(ProfileAvatar);
