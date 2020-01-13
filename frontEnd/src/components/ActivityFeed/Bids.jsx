@@ -18,7 +18,7 @@ const Bids = props => {
 
     // socket connection
     socket.on('get-bids', event => {
-      console.log('EVENT', event);
+      console.log('BID EVENT', event);
       const update = event.data;
       // setActiveBids(prev => {
       //   const { [update.id]: undefined, ...rest } = prev;

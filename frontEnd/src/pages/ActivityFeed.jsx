@@ -9,7 +9,8 @@ import {
   IonPage,
   IonHeader,
   IonToolbar,
-  IonTitle
+  IonTitle,
+  useIonViewDidLeave
 } from '@ionic/react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { AuthContext } from '../contexts/authContext';
