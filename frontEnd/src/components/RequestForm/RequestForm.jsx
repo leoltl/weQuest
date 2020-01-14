@@ -8,18 +8,22 @@ import { withRouter } from 'react-router';
 import { AuthContext } from '../../contexts/authContext';
 
 import RequestFieldGroup from './RequestFieldGroup';
+import Spinner from '../Spinner';
+import ErrorAlert from '../ErrorAlert';
 
 const RequestForm = props => {
   const { user } = useContext(AuthContext);
   const [item, setItem] = useState('');
   const [notes, setNotes] = useState('');
-  const [budget, setBudget] = useState(null);
+  const [budget, setBudget] = useState(0);
   const [startDate, setStartDate] = useState(moment().format());
   const [endDate, setEndDate] = useState(
     moment()
       .add(1, 'days')
       .format(),
   );
+  const [showSpinner, setShowSpinner] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const resetFields = () => {
     setItem('');
@@ -38,7 +42,17 @@ const RequestForm = props => {
     return parseInt(_budget, 10);
   };
 
+  const isValid = data => {
+    return data.title && data.budgetCent && data.borrowStart && data.borrowEnd && data.borrowStart <= data.borrowEnd;
+  };
+
   const submit = () => {
+    
+    if (!user) {
+      props.history.push({ pathname: '/login', state: { redirectOnSuccess: '/request/new', toastMessage: 'Please login to proceed.' } });
+      return;
+    }
+
     const data = {
       title: item,
       budgetCent: parseBudgetToCent(budget),
@@ -47,29 +61,16 @@ const RequestForm = props => {
       description: notes,
     };
 
-    if (!user) {
-      props.history.push({ pathname: '/login', state: { redirectOnSuccess: '/request/new', toastMessage: "Please login to proceed." } });
-      return;
-    }
+    if (!isValid(data)) return setErrorMessage('Invalid form.');
 
-    if (isValid(data)) {
-      axios.post('/api/requests', { payload: data }).then(res => {
-        if (res.status === 201) {
-          resetFields();
-          props.history.push('/requests');
-        } else {
-          // TODO: make error looks better
-          window.alert('server error');
-        }
-      });
-    } else {
-      // TODO: make error looks better
-      window.alert('invalid form');
-    }
-  };
-
-  const isValid = data => {
-    return data.title && data.budgetCent && data.borrowStart && data.borrowEnd && data.borrowStart <= data.borrowEnd;
+    setShowSpinner('Saving...');
+    axios.post('/api/requests', { payload: data })
+    .then((res) => {
+      resetFields();
+      props.history.push('/requests');
+    })
+    .catch(() => setErrorMessage('Error while saving'))
+    .finally(() => setShowSpinner(false));
   };
 
   const onCancel = e => {
@@ -81,6 +82,8 @@ const RequestForm = props => {
 
   return (
     <>
+      {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
+      <Spinner message={showSpinner} />
       <form
         onSubmit={e => {
           e.preventDefault();

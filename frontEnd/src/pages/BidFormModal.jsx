@@ -113,6 +113,9 @@ export default function BidFormModal({ showModal, setShowModal, request, updateR
 
     axios
       .post('/api/bids', bid)
+      .then(data => new Promise((resolve) => {
+        setTimeout(() => resolve(data), 3000);
+      }))
       .then(({ data: { requestId, priceCent } }) => {
         setShowModal(false);
         updateRequestById(requestId, { priceCent });

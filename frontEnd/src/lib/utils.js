@@ -22,6 +22,17 @@ export function currencyFormatter(input) {
   }).format(input / 100)}`;
 }
 
+/**
+ * Check that string represents an email
+ * Regex courtesy of the WHATWG - https://html.spec.whatwg.org/multipage/input.html#e-mail-state-(type=email)
+ * @param {string} str - Input string.
+ * @return boolean.
+ */
+export function isEmail(str) {
+  return /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(str);
+}
+
+
 export function arr2Obj(array) {
   return array.reduce((obj, item) => {
     obj[item['id']] = item;
