@@ -76,7 +76,6 @@ const RequestFeed = () => {
       return prev;
     });
   });
-
   return (
     <IonPage>
       <Header title='Request Feed'></Header>
