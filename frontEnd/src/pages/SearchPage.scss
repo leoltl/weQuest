@@ -1,0 +1,16 @@
+#search-page {
+  .search {
+    &__bar {
+      padding-top: 5%;
+      z-index: 99;
+    }
+  }
+
+  .request-feed__list-container {
+    // background: #ffffff;
+    &.list-ios {
+      margin-top: -5%;
+      margin-bottom: 0px;
+    }
+  }
+}

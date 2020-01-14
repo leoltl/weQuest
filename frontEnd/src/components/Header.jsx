@@ -4,11 +4,11 @@ import './Header.scss';
 
 export default function Header(props) {
   return (
-    <IonHeader>
-      <IonToolbar>
-        <IonTitle>{props.title}</IonTitle>
+    <IonHeader className='header__container'>
+      <IonToolbar className='header__toolbar' color={'primary'}>
+        <IonTitle className='header__toolbar-title'>{props.title}</IonTitle>
         <IonButtons slot='start'>
-          <IonText className='logo'>weQuest</IonText>
+          <IonText className='header__toolbar-logo'>weQuest</IonText>
         </IonButtons>
       </IonToolbar>
     </IonHeader>

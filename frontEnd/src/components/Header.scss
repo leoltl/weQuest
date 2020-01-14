@@ -1,7 +1,17 @@
-.logo {
-  margin-left: 15%;
-  font-family: inherit;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #3880ff;
+.header {
+  &__toolbar {
+    &-title {
+      color: #fff;
+      &.md {
+        text-align: right;
+      }
+    }
+    &-logo {
+      margin-left: 15%;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #fff;
+    }
+  }
 }

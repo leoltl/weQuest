@@ -14,12 +14,10 @@ const Bids = props => {
 
   useEffect(() => {
     props.setShowSpinner(true);
-    
-    const serverActiveBids = axios.get('/api/bids')
-      .then(res => setActiveBids(arr2Obj(res.data)));
 
-    const serverCompletedBids = axios.get('/api/bids/?completed=true')
-      .then(res => setCompletedBids(arr2Obj(res.data)));
+    const serverActiveBids = axios.get('/api/bids').then(res => setActiveBids(arr2Obj(res.data)));
+
+    const serverCompletedBids = axios.get('/api/bids/?completed=true').then(res => setCompletedBids(arr2Obj(res.data)));
 
     Promise.all([serverActiveBids, serverCompletedBids])
       .catch(err => props.setErrorMessage('Error while loading bids'))

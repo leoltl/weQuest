@@ -33,7 +33,6 @@ export default function Notification(props) {
         onDidDismiss={() => setShowToast(false)}
         message={notification}
         duration={2000}
-        translucent={true}
         position={'top'}
       />
     </CSSTransition>

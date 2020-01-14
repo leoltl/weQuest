@@ -1,15 +1,7 @@
 import React, { useState, useCallback, useContext } from 'react';
 import Requests from '../components/ActivityFeed/Requests';
 import Bids from '../components/ActivityFeed/Bids';
-import {
-  IonSegment,
-  IonContent,
-  IonSegmentButton,
-  IonLabel,
-  IonPage,
-  IonToolbar,
-  useIonViewDidLeave,
-} from '@ionic/react';
+import { IonSegment, IonContent, IonSegmentButton, IonLabel, IonPage, IonToolbar, useIonViewDidLeave } from '@ionic/react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { AuthContext } from '../contexts/authContext';
 import Header from '../components/Header';
@@ -19,7 +11,6 @@ import ErrorAlert from '../components/ErrorAlert';
 import './ActivityFeed.scss';
 
 export default function ActivityFeed(props) {
-
   const [showSpinner, setShowSpinner] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const history = useHistory();
@@ -46,9 +37,9 @@ export default function ActivityFeed(props) {
       <IonContent>
         {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
         <Spinner message={showSpinner} />
-        <IonToolbar className='activity-toolbar'>
+        <IonToolbar className='activity__toolbar'>
           {/* <IonSegment onIonChange={e => setTab(e.detail.value)}> */}
-          <IonSegment>
+          <IonSegment className='activity__segment' color={'primary'}>
             {/* <IonSegmentButton value='requests' checked={tab === 'requests'}> */}
             <IonSegmentButton value='requests' onClick={handleTabClick} checked={tab === 'requests'}>
               <IonLabel>Requests</IonLabel>
@@ -58,9 +49,7 @@ export default function ActivityFeed(props) {
               <IonLabel>Bids</IonLabel>
             </IonSegmentButton>
           </IonSegment>
-          {tab === 'requests'
-            ? <Requests {...{ setErrorMessage, setShowSpinner }} />
-            : <Bids {...{ setErrorMessage, setShowSpinner }} />}
+          {tab === 'requests' ? <Requests {...{ setErrorMessage, setShowSpinner }} /> : <Bids {...{ setErrorMessage, setShowSpinner }} />}
         </IonToolbar>
       </IonContent>
     </IonPage>

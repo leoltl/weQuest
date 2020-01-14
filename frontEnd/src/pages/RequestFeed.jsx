@@ -9,9 +9,10 @@ import ErrorAlert from '../components/ErrorAlert';
 import { AuthContext } from '../contexts/authContext';
 import { arr2Obj } from '../lib/utils';
 import Notification from '../components/Notification';
+import './RequestFeed.scss';
 // import useOnClickOutside from '../components/useOnClickOutside';
 
-const RequestFeed = () => {
+export default function RequestFeed(props) {
   const [requests, setRequests] = useState({});
   const [selectedId, setSelectedId] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
@@ -69,22 +70,22 @@ const RequestFeed = () => {
 
   const handleClickOutside = useCallback(event => {
     setSelectedId(prev => {
-      if (event.target.id === "request-list-outSide") {
-        return null
+      if (event.target.id === 'request-list-page') {
+        return null;
       }
       return prev;
     });
   });
-  
+
   return (
     <IonPage>
       <Header title='Request Feed'></Header>
-      <IonContent id="request-list-outSide">
+      <IonContent id='request-list-page'>
         <Notification />
         {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
         <Spinner message={showSpinner} />
         <RequestList
-          id="request-list-outSide"
+          id='request-list-page'
           modal={BidFormModal}
           setRequests={setRequests}
           selectedId={selectedId}
@@ -97,6 +98,4 @@ const RequestFeed = () => {
       </IonContent>
     </IonPage>
   );
-};
-
-export default RequestFeed;
+}

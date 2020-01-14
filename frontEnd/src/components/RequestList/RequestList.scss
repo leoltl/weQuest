@@ -1,5 +1,6 @@
 .generic-card {
-  &__header, &__user {
+  &__header,
+  &__user {
     margin: 0;
     padding: 0;
     margin-top: 0.5rem;
@@ -22,5 +23,15 @@
 .request-card {
   &__auction-end {
     font-size: 0.75em;
+  }
+}
+
+#activity-page {
+  .request-feed__list-container {
+    // background: #ffffff;
+    &.list-ios {
+      margin-top: -5%;
+      margin-bottom: 0px;
+    }
   }
 }

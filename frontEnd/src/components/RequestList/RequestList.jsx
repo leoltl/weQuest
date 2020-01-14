@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext, useEffect } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { withRouter } from 'react-router';
 import { IonList, IonRefresherContent, IonRefresher } from '@ionic/react';
 import RequestListItem from './RequestListItem';
@@ -82,7 +82,7 @@ const RequestList = ({ modal: Modal, ...props }) => {
         </IonRefresher>
       )}
 
-      <IonList id={props.id}>{renderedRequestItem}</IonList>
+      <IonList class='request-feed__list-container'>{renderedRequestItem}</IonList>
     </>
   );
 };
