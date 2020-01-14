@@ -162,7 +162,6 @@ export default class RequestController {
         const losingBids = await new Bid()
           .select(['items.users.id', 'userId'])
           .where({ requestId: request.id, id: [request.winningBidId, '<>'] })
-          .limit(1)
           .run(this.db.query);
         losingBids.forEach(({ userId }: { userId: number }) => {
           notifyUser(userId, `Unfortunately your bid for ${request.title} was not selected by the requester. We hope to see you soon on weQuest!`, this.socket);

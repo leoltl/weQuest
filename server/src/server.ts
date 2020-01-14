@@ -104,7 +104,7 @@ app.get('/api/login/:id', async (req, res) => {
   res.send(`Logged in as user: ${req.session!.userId}`);
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), { dotfiles: 'allow' }));
 
 // import http from 'http';
 // import socketio from 'socket.io';

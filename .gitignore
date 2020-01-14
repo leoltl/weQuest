@@ -5,3 +5,4 @@ frontEnd/build
 server/build
 package-lock.json
 .env
+.well-known
