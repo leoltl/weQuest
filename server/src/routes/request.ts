@@ -126,10 +126,6 @@ export default class RequestController {
         await this.model.create({ ...requestData, userId }).run(this.db.query);
         res.sendStatus(201);
 
-        // send notification
-        const sessionId = sessionIdStore.get(req.session!.userId);
-        sessionId && this.socket.emitNotification(sessionId, 'New request created') || console.log('Could not find sessionId for user');
-
       } catch (err) {
         res.status(500).send({ error: 'Failed to create new request.' });
       }
@@ -152,6 +148,30 @@ export default class RequestController {
         this.socket.broadcast('get-requests', updatedRequest, { eventKey: String(request.id) });
         updatedBids.map((bid: any) => {
           this.socket.broadcast('get-bids', bid, { eventKey: String(bid.id) });
+        });
+
+        // NOTIFICATIONS
+        // to requester
+        this.socket.emitNotification(sessionIdStore.get(request.userId), 'Bidder has been notified. Thank you for using weQuest!');
+
+        // to winner
+        const winningBid = await new Bid().select('items.users.id').where({ id: request.winningBidId }).limit(1).run(this.db.query);
+        this.socket.emitNotification(
+          sessionIdStore.get(winningBid.id),
+          `Congratulations! Your bid for ${request.title} has been accepted.`,
+        );
+
+        // to losers
+        const losingBids = await new Bid()
+          .select(['items.users.id', 'userId'])
+          .where({ requestId: request.id, id: [request.winningBidId, '<>'] })
+          .limit(1)
+          .run(this.db.query);
+        losingBids.forEach(({ userId }: { userId: number }) => {
+          this.socket.emitNotification(
+            sessionIdStore.get(userId),
+            `Unfortunately your bid for ${request.title} was not selected by the requester. We hope to see you soon on weQuest!`,
+          );
         });
 
         res.status(200).send(updatedRequest);
@@ -190,7 +210,7 @@ export default class RequestController {
         .limit(1)
         .run(query);
 
-      // update all winning bids associated with the request column of is_Active to false
+      // update all bids associated with the request column of is_Active to false
       await new Bid().update({ isActive: false }).where({ requestId }).run(query);
 
       return request;
