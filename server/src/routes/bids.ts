@@ -2,7 +2,7 @@
 import { Router } from 'express';
 import DB from '../lib/db';
 import Socket from '../lib/socket';
-import { accessControl } from '../lib/utils';
+import { accessControl, sessionIdStore } from '../lib/utils';
 import Request from '../models/request';
 import Bid, { BidInterface } from '../models/bid';
 import Item, { ItemInterface } from '../models/item';
@@ -59,6 +59,20 @@ export default class BidController {
             .limit(1)
             .run(this.db.query);
           this.socket.broadcast('get-bids', pastBid, { eventKey: String(bid.id) });
+
+          // send notification to requester
+          const requester = this.model.select('requests.users.id').where({ requestId: bid.requestId }).limit(1).run(this.db.query);
+          this.socket.emitNotification(
+            sessionIdStore.get(requester.id),
+            `A new bid has been placed on your request: ${updatedRequest.title}.`,
+          );
+
+          // send notification to past bid
+          const pastBidUser = this.model.select('items.users.id').where({ id: pastBid.id }).limit(1).run(this.db.query);
+          this.socket.emitNotification(
+            sessionIdStore.get(pastBidUser.id),
+            `Your bid for ${updatedRequest.title} has been overtaken. Not all hope is lost though. The requester might still accept it. When in doubt... bid again!`,
+          );
 
           // respond with safe bid
           res.json(bid);
