@@ -15,10 +15,14 @@ const RequestList = ({ modal: Modal, ...props }) => {
 
   const updateRequestById = useCallback(
     (id, payload) => {
-      setRequests(prev =>
-        Object.values(prev).map(request => {
-          return request.id === id ? { ...request, ...payload } : request;
-        }),
+      setRequests(
+        prev => {
+          return { ...prev, id: { ...prev[id], ...payload } };
+        },
+        // console.log("PREV", prev)
+        // Object.values(prev).map(request => {
+        //   return request.id === id ? { ...request, ...payload } : request;
+        // }),
       );
     },
     [setRequests],
