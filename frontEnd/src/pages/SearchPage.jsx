@@ -28,7 +28,8 @@ export default function SearchPage(props) {
         return { ...prev, [update.id]: update };
       });
     })
-  })
+  });
+  
   useIonViewWillLeave(() => {
     // disconnect from socket
     console.log('unmount listener search')
