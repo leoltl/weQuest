@@ -9,7 +9,7 @@ import express, { Router, Request, Response } from 'express';
 // import RequestService from '../models/RequestService';
 // import { Request as UserRequest, Requests } from '../interfaces/requests';
 import UserRequest, { RequestInterface } from '../models/request';
-import { accessControl, sessionIdStore } from '../lib/utils';
+import { accessControl, notifyUser } from '../lib/utils';
 
 import Bid from '../models/bid';
 import DB from '../lib/db';
@@ -126,10 +126,6 @@ export default class RequestController {
         await this.model.create({ ...requestData, userId }).run(this.db.query);
         res.sendStatus(201);
 
-        // send notification
-        const sessionId = sessionIdStore.get(req.session!.userId);
-        sessionId && this.socket.emitNotification(sessionId, 'New request created') || console.log('Could not find sessionId for user');
-
       } catch (err) {
         res.status(500).send({ error: 'Failed to create new request.' });
       }
@@ -152,6 +148,23 @@ export default class RequestController {
         this.socket.broadcast('get-requests', updatedRequest, { eventKey: String(request.id) });
         updatedBids.map((bid: any) => {
           this.socket.broadcast('get-bids', bid, { eventKey: String(bid.id) });
+        });
+
+        // NOTIFICATIONS
+        // to requester
+        notifyUser(request.userId, 'Bidder has been notified. Thank you for using weQuest!', this.socket);
+
+        // to winner
+        const winningBid = await new Bid().select('items.users.id').where({ id: request.winningBidId }).limit(1).run(this.db.query);
+        notifyUser(winningBid.id, `Congratulations! Your bid for ${request.title} has been accepted.`, this.socket);
+
+        // to losers
+        const losingBids = await new Bid()
+          .select(['items.users.id', 'userId'])
+          .where({ requestId: request.id, id: [request.winningBidId, '<>'] })
+          .run(this.db.query);
+        losingBids.forEach(({ userId }: { userId: number }) => {
+          notifyUser(userId, `Unfortunately your bid for ${request.title} was not selected by the requester. We hope to see you soon on weQuest!`, this.socket);
         });
 
         res.status(200).send(updatedRequest);
@@ -190,7 +203,7 @@ export default class RequestController {
         .limit(1)
         .run(query);
 
-      // update all winning bids associated with the request column of is_Active to false
+      // update all bids associated with the request column of is_Active to false
       await new Bid().update({ isActive: false }).where({ requestId }).run(query);
 
       return request;

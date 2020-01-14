@@ -183,7 +183,7 @@ export default class Socket {
   }
 
   public emit(event: string, data: any, options: SocketEmitOptions = {}): this {
-    console.log(`SOCKET EMITTING EVENT ${event}`, data);
+    console.log(`SOCKET EMITTING EVENT ${event}${options.sessionId ? `TO ${options.sessionId}` : ''}`, data);
 
     // set default options parameters
     const eventKey = options.eventKey || 'default';

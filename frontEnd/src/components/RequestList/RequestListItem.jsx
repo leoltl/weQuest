@@ -33,7 +33,7 @@ const RequestListItem = props => {
       {props.isSelected && (
         <>
           <IonCardContent>{props.requestDetails.description}</IonCardContent>
-          <IonButton className='ion-margin generic-card__button' expand='block' onClick={props.onBidClick}>
+          <IonButton id={props.requestDetails.id} className='ion-margin generic-card__button' expand='block' onClick={props.onBidClick}>
             {props.buttonTitle}
           </IonButton>
         </>
