@@ -1,9 +1,11 @@
 import React, { useState, useContext, useCallback } from 'react';
-import { IonHeader, IonToolbar, IonPage, IonTitle, IonContent, useIonViewDidEnter, useIonViewWillLeave } from '@ionic/react';
+import { IonPage, IonContent, useIonViewDidEnter, useIonViewWillLeave } from '@ionic/react';
 import axios from 'axios';
 import RequestList from '../components/RequestList/RequestList';
 import BidFormModal from './BidFormModal';
 import Header from '../components/Header';
+import Spinner from '../components/Spinner';
+import ErrorAlert from '../components/ErrorAlert';
 import { AuthContext } from '../contexts/authContext';
 import { arr2Obj } from '../lib/utils';
 import { request } from 'https';
@@ -11,12 +13,19 @@ import { request } from 'https';
 const RequestFeed = () => {
   const [requests, setRequests] = useState({});
   const [selected, setSelected] = useState(null);
+  const [showSpinner, setShowSpinner] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const { socket } = useContext(AuthContext);
 
   useIonViewDidEnter(() => {
-    axios.get('/api/requests').then(res => {
-      setRequests(arr2Obj(res.data));
-    });
+    setShowSpinner(true);
+
+    axios.get('/api/requests')
+      .then(res => {
+        setRequests(arr2Obj(res.data));
+      })
+      .catch(err => setErrorMessage('Error while loading the feed'))
+      .finally(() => setShowSpinner(false));
 
     // document.addEventListener('mousedown', handleClickOutside);
 
@@ -54,10 +63,13 @@ const RequestFeed = () => {
   });
 
   const onRefresh = useCallback(event => {
+    setShowSpinner(true);
     axios
       .get('/api/requests')
       .then(res => setRequests(res.data))
-      .then(event.detail.complete());
+      .then(event.detail.complete())
+      .catch(err => setErrorMessage('Error while loading bids'))
+      .finally(() => setShowSpinner(false))
   });
 
   // const handleClickOutside = useCallback(event => {
@@ -68,6 +80,8 @@ const RequestFeed = () => {
     <IonPage>
       <Header title='Request Feed'></Header>
       <IonContent>
+        {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
+        <Spinner message={showSpinner} />
         <RequestList
           modal={BidFormModal}
           setRequests={setRequests}

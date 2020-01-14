@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { IonListHeader, useIonViewDidLeave } from '@ionic/react';
+import { IonListHeader } from '@ionic/react';
 import BidModal from '../../pages/BidModal';
 import RequestList from '../RequestList/RequestList';
 import axios from 'axios';
 import { AuthContext } from '../../contexts/authContext';
 import { arr2Obj } from '../../lib/utils';
-import { request } from 'http';
 
 const Requests = props => {
   const [activeRequests, setActiveRequests] = useState({});
@@ -15,8 +14,17 @@ const Requests = props => {
 
   // TODO change implementation as it only makes axios call when you switch tabs
   useEffect(() => {
-    axios.get('/api/requests/active').then(res => setActiveRequests(arr2Obj(res.data)));
-    axios.get('/api/requests/completed').then(res => setCompletedRequests(arr2Obj(res.data)));
+    props.setShowSpinner(true);
+
+    const serverActiveRequests = axios.get('/api/requests/active')
+      .then(res => setActiveRequests(arr2Obj(res.data)));
+
+    const serverCompletedRequests = axios.get('/api/requests/completed')
+      .then(res => setCompletedRequests(arr2Obj(res.data)));
+
+    Promise.all([serverActiveRequests, serverCompletedRequests])
+      .catch(err => props.setErrorMessage('Error while loading requests'))
+      .finally(() => props.setShowSpinner(false));
 
     // socket connection
     socket.on('get-requests', event => {
@@ -53,6 +61,8 @@ const Requests = props => {
         selectedId={selected}
         onClick={setSelected}
         buttonTitle='Select Winning Bid'
+        setErrorMessage={props.setErrorMessage}
+        setShowSpinner={props.setShowSpinner}
       ></RequestList>
       <IonListHeader>Completed Requests</IonListHeader>
       <RequestList
@@ -63,6 +73,8 @@ const Requests = props => {
         selectedId={selected}
         onClick={setSelected}
         buttonTitle='Bid History'
+        setErrorMessage={props.setErrorMessage}
+        setShowSpinner={props.setShowSpinner}
       ></RequestList>
     </>
   );

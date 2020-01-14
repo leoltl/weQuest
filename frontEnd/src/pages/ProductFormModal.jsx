@@ -53,15 +53,9 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess }
       description,
       pictureUrl,
     };
-    // TODO: replace resolve with axios call
-    // new Promise((resolve) => {
-    //   setTimeout(() => resolve({ data: product }), 3000);
-    // })
+
     axios
       .post('/api/items', product)
-      .then(data => new Promise((resolve) => {
-        setTimeout(() => resolve(data), 3000);
-      }))
       .then(({ data: product }) => {
         setShowModal(false);
         resetProduct();
