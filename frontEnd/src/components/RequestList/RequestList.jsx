@@ -82,7 +82,7 @@ const RequestList = ({ modal: Modal, ...props }) => {
         </IonRefresher>
       )}
 
-      <IonList>{renderedRequestItem}</IonList>
+      <IonList id={props.id}>{renderedRequestItem}</IonList>
     </>
   );
 };

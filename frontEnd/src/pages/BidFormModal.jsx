@@ -70,7 +70,7 @@ function bidReducer(state, { type, payload }) {
   }
 }
 
-export default function BidFormModal({ showModal, setShowModal, request, updateRequestById }) {
+export default function BidFormModal({ showModal, setShowModal, request }) {
   // console.log('rendering bid form');
 
   const [showSpinner, setShowSpinner] = useState(false);
@@ -115,7 +115,6 @@ export default function BidFormModal({ showModal, setShowModal, request, updateR
       .post('/api/bids', bid)
       .then(({ data: { requestId, priceCent } }) => {
         setShowModal(false);
-        updateRequestById(requestId, { priceCent });
       })
       .catch(err => setErrorMessage(err.message))
       .finally(() => setShowSpinner(false));
