@@ -10,6 +10,41 @@ insert into requests (user_id, title, auction_start, auction_end, borrow_start, 
 insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, description) values 
 (1, 'Completed Request', '2020-01-10 10:09:43', '2020-01-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 2500, 'completed request');
 
+insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, is_active, description) values 
+(1, 'Suit', '2020-03-10 10:09:43', '2020-03-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 43000, true, 'Need one for my next trip.');
+
+insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, is_active, description) values 
+(2, 'Old Lady', '2020-02-10 10:09:43', '2020-04-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 16000, true, '');
+
+insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, is_active, description) values 
+(1, 'Some Court', '2020-02-10 10:09:43', '2020-02-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 52200, true, 'Not willing to travel, delivery only. Thanks');
+
+insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, description) values 
+(1, 'Hammer', '2020-03-10 10:09:43', '2020-03-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 6500, 'completed request');
+
+insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, is_active, description) values 
+(2, 'Suit', '2020-03-10 10:09:43', '2020-03-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 43000, true, 'Need one for my next trip.');
+
+insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, is_active, description) values 
+(2, 'Old Lady', '2020-02-10 10:09:43', '2020-04-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 16000, true, '');
+
+insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, is_active, description) values 
+(2, 'Some Court', '2020-02-10 10:09:43', '2020-02-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 52200, true, 'Not willing to travel, delivery only. Thanks');
+
+insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, description) values 
+(2, 'Hammer', '2020-03-10 10:09:43', '2020-03-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 6500, 'completed request');
+
+insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, is_active, description) values 
+(2, 'Space suit', '2020-01-10 10:09:43', '2020-01-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 3000, true, 'Need one for my next trip.');
+
+insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, is_active, description) values 
+(2, 'Grandma', '2020-01-10 10:09:43', '2020-01-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 10000, true, '');
+
+insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, is_active, description) values 
+(2, 'Basketball Court', '2020-01-10 10:09:43', '2020-01-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 25000, true, 'Not willing to travel, delivery only. Thanks');
+
+insert into requests (user_id, title, auction_start, auction_end, borrow_start, borrow_end, budget_cent, description) values 
+(2, 'Completed Request', '2020-01-10 10:09:43', '2020-01-16 20:09:43', '2020-01-18 10:09:43', '2020-01-20 20:09:43', 2500, 'completed request');
 
 
 

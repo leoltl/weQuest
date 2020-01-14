@@ -1,8 +1,7 @@
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback, useContext, useEffect } from 'react';
 import { withRouter } from 'react-router';
 import { IonList, IonRefresherContent, IonRefresher } from '@ionic/react';
 import RequestListItem from './RequestListItem';
-
 import './RequestList.scss';
 import { AuthContext } from '../../contexts/authContext';
 
@@ -12,7 +11,6 @@ const RequestList = ({ modal: Modal, ...props }) => {
   const [showBidForm, setShowBidForm] = useState(false);
 
   // TODO: change implementation to accept objects
-
   const updateRequestById = useCallback(
     (id, payload) => {
       setRequests(

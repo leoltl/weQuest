@@ -28,6 +28,37 @@ insert into items (user_id, name, description, picture_url) values
 insert into items (user_id, name, description, picture_url) values 
 (2, 'Space Mug', 'Perfect space compatible mug', 'https://media.endclothing.com/media/catalog/product/2/0/20-12-2019_medicom_vcdspacesuit_orange_4530956213248_si_1.jpg');
 
+insert into items (user_id, name, description, picture_url) values 
+(1, 'Space Suit', 'Mint condition', 'https://upload.wikimedia.org/wikipedia/commons/e/e3/Aldrin_Apollo_11_cropped.jpg');
+
+insert into items (user_id, name, description, picture_url) values 
+(1, 'Space Suit', 'Best one in town!', 'https://media.endclothing.com/media/catalog/product/2/0/20-12-2019_medicom_vcdspacesuit_orange_4530956213248_si_1.jpg');
+
+insert into items (user_id, name, description, picture_url) values 
+(1, 'Grandma', 'Most friendly grandma you have ever met', 'https://i.ytimg.com/vi/tL3c7ewdGIo/maxresdefault.jpg');
+
+insert into items (user_id, name, description, picture_url) values 
+(1, 'Basketball Court', 'Portable basketball court kit deliver right to your doorstep.', 'https://images-na.ssl-images-amazon.com/images/I/91zoZ57saEL._AC_SL1500_.jpg');
+
+insert into items (user_id, name, description, picture_url) values 
+(1, 'Space Mug', 'Perfect space compatible mug', 'https://media.endclothing.com/media/catalog/product/2/0/20-12-2019_medicom_vcdspacesuit_orange_4530956213248_si_1.jpg');
+
+insert into items (user_id, name, description, picture_url) values 
+(1, 'Space Suit', 'Mint condition', 'https://upload.wikimedia.org/wikipedia/commons/e/e3/Aldrin_Apollo_11_cropped.jpg');
+
+insert into items (user_id, name, description, picture_url) values 
+(1, 'Space Suit', 'Best one in town!', 'https://media.endclothing.com/media/catalog/product/2/0/20-12-2019_medicom_vcdspacesuit_orange_4530956213248_si_1.jpg');
+
+insert into items (user_id, name, description, picture_url) values 
+(1, 'Grandma', 'Most friendly grandma you have ever met', 'https://i.ytimg.com/vi/tL3c7ewdGIo/maxresdefault.jpg');
+
+insert into items (user_id, name, description, picture_url) values 
+(1, 'Basketball Court', 'Portable basketball court kit deliver right to your doorstep.', 'https://images-na.ssl-images-amazon.com/images/I/91zoZ57saEL._AC_SL1500_.jpg');
+
+insert into items (user_id, name, description, picture_url) values 
+(1, 'Space Mug', 'Perfect space compatible mug', 'https://media.endclothing.com/media/catalog/product/2/0/20-12-2019_medicom_vcdspacesuit_orange_4530956213248_si_1.jpg');
+
+
 
 
 -- insert into items (user_id, name, description, picture_url) values (22, 'Wine - Rubyport', 'Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio.
