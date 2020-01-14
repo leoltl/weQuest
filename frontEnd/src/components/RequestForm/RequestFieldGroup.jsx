@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonItem, IonLabel, IonList, IonDatetime, IonTextarea } from '@ionic/react';
+import { IonItem, IonLabel, IonList, IonDatetime, IonTextarea, IonInput } from '@ionic/react';
 
 const RequestFieldGroup = ({ formSetters, formValues }) => {
   const { setItem, setBudget, setStartDate, setEndDate, setNotes } = formSetters;
@@ -11,13 +11,13 @@ const RequestFieldGroup = ({ formSetters, formValues }) => {
           What are you looking for today?
           <ion-text color='danger'>*</ion-text>
         </IonLabel>
-        <IonTextarea name='item' type='item' value={item} onIonChange={e => setItem(e.target.value)} />
+        <IonTextarea name='item' type='text' value={item} onIonChange={e => setItem(e.target.value)} />
       </IonItem>
       <IonItem className='my-list--input'>
         <IonLabel position='floating'>
           What is your budget?<ion-text color='danger'>*</ion-text>
         </IonLabel>
-        <IonTextarea name='budget' type='budget' value={budget} onIonChange={e => setBudget(e.target.value)} />
+        <IonInput name='budget' type='number' inputmode='decimal' value={budget} onIonChange={e => setBudget(e.target.value)} />
       </IonItem>
       <IonItem className='my-list--input'>
         <IonLabel position='floating'>Start Date</IonLabel>

@@ -6,6 +6,8 @@ import { AuthContext } from '../../contexts/authContext';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
+import { isEmail } from '../../lib/utils';
+
 const Login = props => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,25 +25,47 @@ const Login = props => {
   }
 
   const responseFacebook = async response => {
-    // console.log('Facebook', response.name);
-    const userData = { user: { name: response.name, email: response.email, password: '123' } };
-    await axios.post('/api/users', userData, response => console.log('id:', response));
-    setUser(response);
-    redirectOnSuccess();
+    try {
+      props.setShowSpinner(true);
+      // console.log('Facebook', response.name);
+      const userData = { user: { name: response.name, email: response.email, password: '123' } };
+      const serverResponse = await axios.post('/api/users', userData);
+      console.log('id:', serverResponse);
+
+      setUser(response);
+      redirectOnSuccess();
+
+    } catch(err) {
+      props.setErrorMessage('Error while logging in');
+
+    } finally {
+      props.setShowSpinner(false);
+    }
   };
 
   const responseGoogle = async response => {
-    // console.log('Google', response.w3);
-    const userData = {
-      user: {
-        name: response.w3.ig,
-        email: response.w3.U3,
-        password: '123',
-      },
-    };
-    await axios.post('/api/users', userData, response => console.log('id:', response));
-    setUser(response);
-    redirectOnSuccess()
+    try {
+      props.setShowSpinner(true);
+      // console.log('Google', response.w3);
+      const userData = {
+        user: {
+          name: response.w3.ig,
+          email: response.w3.U3,
+          password: '123',
+        },
+      };
+      const serverResponse = await axios.post('/api/users', userData);
+      console.log('id:', serverResponse);
+
+      setUser(response);
+      redirectOnSuccess()
+  
+    } catch(err) {
+      props.setErrorMessage('Error while logging in');
+
+    } finally {
+      props.setShowSpinner(false);
+    }
   };
 
   const clearForm = () => {
@@ -50,15 +74,24 @@ const Login = props => {
   };
 
   const submit = async e => {
+
+    if (!email) return props.setErrorMessage('Email cannot be blank');
+    if (!isEmail(email)) return props.setErrorMessage('Email is invalid');
+    if (!password) return props.setErrorMessage('Password cannot be blank');
+
     try {
-      await axios.post('/api/users/login', { email, password }).then(response => {
-        setUser(response);
-        clearForm();
-        redirectOnSuccess();
-      });
-    } catch (e) {
-      console.log(e);
-      setFormErrors(e);
+      props.setShowSpinner(true);
+
+      const serverResponse = await axios.post('/api/users/login', { email, password })
+      setUser(serverResponse);
+      clearForm();
+      redirectOnSuccess();
+
+    } catch (err) {
+      props.setErrorMessage('Error while logging in');
+
+    } finally {
+      props.setShowSpinner(false);
     }
   };
 
@@ -75,11 +108,11 @@ const Login = props => {
           <IonList>
             <IonItem>
               <IonLabel position='floating'>Email</IonLabel>
-              <IonInput name='email' type='email' value={email} autocomplete='on' clearInput onIonChange={e => setEmail(e.target.value)} />
+              <IonInput name='email' type='email' value={email} autocomplete='on' clearInput onIonChange={e => setEmail(e.target.value)} required />
             </IonItem>
             <IonItem>
               <IonLabel position='floating'>Password</IonLabel>
-              <IonInput name='password' type='password' value={password} onIonChange={e => setPassword(e.target.value)} />
+              <IonInput name='password' type='password' value={password} onIonChange={e => setPassword(e.target.value)} required />
             </IonItem>
           </IonList>
           <IonItem lines='none'>
@@ -120,9 +153,6 @@ const Login = props => {
               )}
             />
           </IonItem>
-          <IonButton expand='block' fill='clear' type='submit'>
-            Forgot your password?
-          </IonButton>
         </form>
       </IonContent>
     </>
