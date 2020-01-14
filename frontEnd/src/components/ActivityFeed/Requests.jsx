@@ -41,7 +41,10 @@ const Requests = props => {
         return { ...prev, [update.id]: update };
       });
       setCompletedRequests(prev => {
-        return { ...prev, [update.id]: update };
+        if (prev[update.id] && prev[update.id].requestStatus !== update.requestStatus) {
+          return { ...prev, [update.id]: update };
+        }
+        return prev
       });
     });
 
