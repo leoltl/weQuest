@@ -68,7 +68,6 @@ const RequestFeed = () => {
   });
 
   const handleClickOutside = useCallback(event => {
-    console.log(event.target)
     setSelectedId(prev => {
       if (event.target.id === "request-list-outSide") {
         return null
@@ -76,6 +75,7 @@ const RequestFeed = () => {
       return prev;
     });
   });
+  
   return (
     <IonPage>
       <Header title='Request Feed'></Header>
