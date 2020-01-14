@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { IonContent, IonItem, IonLabel, IonInput, IonList, IonButton, IonRippleEffect } from '@ionic/react';
+import { IonContent, IonItem, IonLabel, IonInput, IonList, IonButton, IonRippleEffect, IonToast, useIonViewDidLeave, useIonViewDidEnter } from '@ionic/react';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import GoogleLogin from 'react-google-login';
 import { AuthContext } from '../../contexts/authContext';
@@ -11,8 +11,24 @@ import { isEmail } from '../../lib/utils';
 const Login = props => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showToast, setShowToast] = useState(false);
   const { setUser } = useContext(AuthContext);
   const history = useHistory();
+
+  
+
+  useIonViewDidEnter(() => {
+    if (history.location.state && history.location.state.redirectOnSuccess && !showToast) {
+      setShowToast(true);
+    }
+  });
+
+  useIonViewDidLeave(() => {
+      setShowToast(false)
+    }
+  );
+
+  console.log(history.location.state, showToast);
 
   const redirectOnSuccess = () => {
       //redirectOnSuccess comes from Request Form
@@ -93,7 +109,6 @@ const Login = props => {
       props.setShowSpinner(false);
     }
   };
-
   return (
     <>
       <IonContent className={'login-container'}>
@@ -152,6 +167,14 @@ const Login = props => {
             />
           </IonItem>
         </form>
+        <IonToast
+          color="medium"
+          duration={3000}
+          isOpen={showToast}
+          showCloseButton={true}
+          message={history.location.state && history.location.state.toastMessage}
+          position="bottom"
+          onDidDismiss={() => setShowToast(false)}/>
       </IonContent>
     </>
   );

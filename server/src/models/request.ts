@@ -123,7 +123,7 @@ export default class Request extends Model {
       LEFT JOIN users ON requests.user_id = users.id
       LEFT JOIN bids on requests.current_bid_id = bids.id
       WHERE (requests.title ILIKE $1 OR requests.title ILIKE $2 OR requests.title ILIKE $3)
-      AND request.request_status = 'active' AND request.user_id <> $4`,
+      AND requests.request_status = 'active' AND requests.user_id <> $4`,
       [`${query}%`, `%${query}`, `%${query}%`, userId],
     );
   }

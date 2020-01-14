@@ -103,7 +103,7 @@ const Register = props => {
             </IonItem>
           </IonList>
           <IonItem lines='none'>
-            <IonButton expand='block' fill='outline' type='submit'>
+            <IonButton className='register-button' expand='block' fill='outline' type='submit'>
               Register
             </IonButton>
           </IonItem>

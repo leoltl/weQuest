@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { IonContent, IonPage, IonHeader, IonSearchbar } from '@ionic/react';
+import React, { useEffect, useState, useContext } from 'react';
+import { IonContent, IonPage, IonHeader, IonSearchbar, useIonViewDidEnter, useIonViewDidLeave, useIonViewWillLeave } from '@ionic/react';
 import RequestList from '../components/RequestList/RequestList';
 import axios from 'axios';
 import { AuthContext } from '../contexts/authContext';
@@ -11,12 +11,31 @@ export default function SearchPage(props) {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState(null);
   const [requests, setRequests] = useState({});
+  const { socket } = useContext(AuthContext);
 
   useEffect(() => {
     axios.get(`/api/requests/?query=${query}`).then(res => {
       setRequests(arr2Obj(res.data));
-    });
+    })
   }, [query]);
+
+  useIonViewDidEnter(() => {
+    console.log('mount listener search')
+    socket.on('get-requests', e => {
+      const update = e.data;
+      console.log('EVENT', e);
+      setRequests(prev => {
+        return { ...prev, [update.id]: update };
+      });
+    })
+  });
+  
+  useIonViewWillLeave(() => {
+    // disconnect from socket
+    console.log('unmount listener search')
+    socket.off('get-requests');
+  });
+
 
   return (
     <IonPage id='search-page'>

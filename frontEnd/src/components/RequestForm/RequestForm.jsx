@@ -49,7 +49,7 @@ const RequestForm = props => {
   const submit = () => {
     
     if (!user) {
-      props.history.push({ pathname: '/login', state: { redirectOnSuccess: '/request/new' } });
+      props.history.push({ pathname: '/login', state: { redirectOnSuccess: '/request/new', toastMessage: 'Please login to proceed.' } });
       return;
     }
 
@@ -100,7 +100,7 @@ const RequestForm = props => {
           }}
           formValues={{ budget, item, startDate, endDate, notes }}
         />
-        <IonButton expand='block' type='submit'>
+        <IonButton className='new-request__button' expand='block' type='submit'>
           {user ? 'Request It' : 'Login to request'}
         </IonButton>
         <IonButton expand='block' fill='clear' type='button' onClick={onCancel}>
