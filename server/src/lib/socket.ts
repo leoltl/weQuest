@@ -5,7 +5,7 @@
 // tslint:disable: import-name
 import socketIO from 'socket.io';
 import http from 'http';
-import { socketSessionIdParser } from './utils';
+import { socketSessionIdParser, sessionIdStore } from './utils';
 
 export type SocketParams = {
   server: http.Server,
@@ -73,17 +73,20 @@ export default class Socket {
   }
 
   private registerSocket(client: socketIO.Socket) {
+    console.log('Registering socket', client.sessionId);
+
     // add client to lookup maps
     const sessionId = client.sessionId!;
     this.clients[sessionId] = client;
     this.sessions.set(client, sessionId);
 
-    // subscribe all to 'notifications' event
+    // subscribe all to 'notifications' event (so notifications can be broadcast to all clients)
     this.subscribe(sessionId, 'notifications');
   }
 
   private unregisterSocket(client: socketIO.Socket) {
     const sessionId = client.sessionId!;
+    console.log('Unregistering socket', sessionId);
 
     // unsubscribe from all
     this.unsubscribe(sessionId);
@@ -99,6 +102,7 @@ export default class Socket {
     // if (!client) throw Error('Socket client is not registered');
     if (!client) {
       console.error('ERROR: Attempting to subscribe but socket client is not registered');
+      console.error('SessionId', sessionId);
       return this;
     }
 
@@ -178,19 +182,13 @@ export default class Socket {
 
   }
 
-  emit(event: string, data: any, options: SocketEmitOptions = {}): this {
+  public emit(event: string, data: any, options: SocketEmitOptions = {}): this {
     console.log(`SOCKET EMITTING EVENT ${event}`, data);
 
     // set default options parameters
     const eventKey = options.eventKey || 'default';
     const sessionId = options.sessionId;
     const queue = options.queue;
-
-    // get subscribers for event
-    const clients = this.events[event] && this.events[event][eventKey];
-
-    // exit if event was never initialized i.e. has no subscribers
-    if (!clients) return this;
 
     // single client
     if (sessionId) {
@@ -202,6 +200,12 @@ export default class Socket {
       return this;
     }
 
+    // get subscribers for event
+    const clients = this.events[event] && this.events[event][eventKey];
+
+    // exit if event was never initialized i.e. has no subscribers
+    if (!clients) return this;
+
     // broadcast
     for (const client of clients) {
       queue !== undefined
@@ -212,19 +216,25 @@ export default class Socket {
     return this;
   }
 
-  broadcast(event: string, data: any, options: SocketBroadcastOptions): this {
+  public emitNotification(sessionId: string, data: any): this {
+    this.emit('notifications', data, { sessionId });
+    return this;
+  }
+
+  public broadcast(event: string, data: any, options: SocketBroadcastOptions): this {
     this.emit(event, data, options);
     return this;
   }
 
-  broadcastToQueue(event: string, data: any, options: SocketBroadcastOptions): this {
+  public broadcastToQueue(event: string, data: any, options: SocketBroadcastOptions): this {
     // set default options parameters
     const queue = options.queue || 'queue';
     this.emit(event, data, { ...options, queue });
     return this;
   }
 
-  broadcastToNotifications(data: any): this {
+  // broadcast a 'notifications' event to all clients
+  public broadcastToNotifications(data: any): this {
     this.emit('notifications', data);
     return this;
   }
