@@ -34,7 +34,7 @@ export default function Router(props) {
   ) : (
     <IonReactRouter>
       <IonTabs>
-        <IonRouterOutlet>
+        <IonRouterOutlet animated={false}>
           <Route path='/search' component={SearchPage} exact={true} />
           <Route path='/request/new' component={NewRequest} exact={true} />
           {/* <Route path='/activity/:tab' component={ActivityFeed} /> */}

@@ -12,7 +12,7 @@ const RequestListItem = props => {
         <div className='generic-card__header request-card__header'>
           <IonCardSubtitle className='request-card__request-title'>{props.requestDetails.title}</IonCardSubtitle>
           <IonCardContent className='request-card__request-current-price'>
-            {props.currentBid && (currencyFormatter(props.currentBid) || 'Free')}
+            {(props.currentBid && currencyFormatter(props.currentBid)) || 'Free'}
           </IonCardContent>
         </div>
         <IonCardContent className='generic-card__user request-card__user'>
