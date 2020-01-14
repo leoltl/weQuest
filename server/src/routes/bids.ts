@@ -65,11 +65,11 @@ export default class BidController {
 
           notifyUser(requester.id, `A new bid has been placed on your request: ${updatedRequest.title}.`, this.socket);
 
-          // send notification to past bid
+          // send notification to past bid if from different bidder
           if (pastBid) {
             const pastBidUser = await this.model.select('items.users.id').where({ id: pastBid.id }).limit(1).run(this.db.query);
 
-            notifyUser(pastBidUser.id, `Your bid for ${updatedRequest.title} has been overtaken. Not all hope is lost though. The requester might still accept it. When in doubt... bid again!`, this.socket);
+            pastBidUser !== req.session!.userId && notifyUser(pastBidUser.id, `Your bid for ${updatedRequest.title} has been overtaken. Not all hope is lost though. The requester might still accept it. When in doubt... bid again!`, this.socket);
           }
 
           // respond with safe bid
