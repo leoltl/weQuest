@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';
 import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
-import { apps, search, list, add } from 'ionicons/icons';
+import { contact, search, list, addCircleOutline, home } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
 import Tab1 from './pages/Tab1';
 import NewRequest from './pages/NewRequest';
@@ -37,33 +37,27 @@ export default function Router(props) {
         <IonRouterOutlet>
           <Route path='/search' component={SearchPage} exact={true} />
           <Route path='/request/new' component={NewRequest} exact={true} />
-          {/* <Route path='/activity/:tab' component={ActivityFeed} /> */}
           <Route path='/requests' component={RequestFeed} />
           <Route path='/login' component={LoginScreen} />
           <Route path='/' render={() => <Redirect to='/requests' />} exact={true} />
           <ProtectedRoute path='/activity/:tab' component={ActivityFeed} />
           <ProtectedRoute path='/profile' component={Profile} />
         </IonRouterOutlet>
-        <IonTabBar slot='bottom' md='ios'>
-          <IonTabButton tab='search' href='/search'>
-            <IonIcon icon={search} />
-            <IonLabel>Tab One</IonLabel>
-          </IonTabButton>
+        <IonTabBar className="tab-bar" slot='bottom'>
           <IonTabButton tab='requestFeed' href='/requests'>
-            <IonIcon icon={list} />
-            <IonLabel>Request Feed</IonLabel>
+            <IonIcon alt='home feed' icon={home} />
+          </IonTabButton>
+          <IonTabButton tab='search' href='/search'>
+            <IonIcon alt='search' icon={search} />
           </IonTabButton>
           <IonTabButton tab='newRequest' href='/request/new'>
-            <IonIcon icon={add} />
-            <IonLabel>New Request</IonLabel>
+            <IonIcon alt='create new request' icon={addCircleOutline} />
           </IonTabButton>
           <IonTabButton tab='activityFeed' href='/activity/requests/'>
-            <IonIcon icon={list} />
-            <IonLabel>Activity</IonLabel>
+            <IonIcon alt='activity feed'icon={list} />
           </IonTabButton>
-          <IonTabButton tab='tab4' href='/profile'>
-            <IonIcon icon={apps} />
-            <IonLabel>Profile</IonLabel>
+          <IonTabButton tab='profile' href='/profile'>
+            <IonIcon alt='profile' icon={contact} />
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
