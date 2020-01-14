@@ -69,13 +69,13 @@ const Login = props => {
           password: '123',
         },
       };
+      
       const serverResponse = await axios.post('/api/users', userData)
       .then(data => new Promise((resolve) => {
       console.log('id:', serverResponse);
-
-      setUser(response);
-      redirectOnSuccess()
-  
+        setUser(response);
+        redirectOnSuccess();
+      }))
     } catch(err) {
       props.setErrorMessage('Error while logging in');
 

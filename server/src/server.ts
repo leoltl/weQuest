@@ -11,7 +11,6 @@ import UserController from './routes/users';
 import RequestController from './routes/request';
 import BidController from './routes/bids';
 import ItemController from './routes/items';
-import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
 import bodyParser from 'body-parser';
@@ -68,8 +67,12 @@ import express from 'express';
 
 const app = express();
 
+if (ENV === 'development') {
+  const morgan = require('morgan');
+  app.use(morgan('dev'))
+}
+
 app.use([
-  morgan('dev'),
   bodyParser.json({ limit: '10mb' }),
   bodyParser.urlencoded({ limit: '10mb', extended: true }),
   // cookieParser('Coolstuffgoesonhere'),
