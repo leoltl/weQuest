@@ -44,7 +44,7 @@ const Login = props => {
       props.setShowSpinner(true);
       // console.log('Facebook', response.name);
       const userData = { user: { name: response.name, email: response.email, password: '123' } };
-      const serverResponse = await axios.post('/api/users', userData);
+      const serverResponse = await axios.post('/api/users', userData)
       console.log('id:', serverResponse);
 
       setUser(response);
@@ -69,7 +69,8 @@ const Login = props => {
           password: '123',
         },
       };
-      const serverResponse = await axios.post('/api/users', userData);
+      const serverResponse = await axios.post('/api/users', userData)
+      .then(data => new Promise((resolve) => {
       console.log('id:', serverResponse);
 
       setUser(response);
@@ -98,6 +99,7 @@ const Login = props => {
       props.setShowSpinner(true);
 
       const serverResponse = await axios.post('/api/users/login', { email, password })
+
       setUser(serverResponse);
       clearForm();
       redirectOnSuccess();

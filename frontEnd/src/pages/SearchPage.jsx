@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { IonContent, IonPage, IonHeader, IonSearchbar, useIonViewDidEnter, useIonViewDidLeave, useIonViewWillLeave } from '@ionic/react';
+import { IonContent, IonPage, IonSearchbar, useIonViewDidEnter, useIonViewWillLeave } from '@ionic/react';
 import RequestList from '../components/RequestList/RequestList';
 import axios from 'axios';
 import { AuthContext } from '../contexts/authContext';

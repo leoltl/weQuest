@@ -64,13 +64,14 @@ const RequestForm = props => {
     if (!isValid(data)) return setErrorMessage('Invalid form.');
 
     setShowSpinner('Saving...');
-    axios.post('/api/requests', { payload: data })
-    .then((res) => {
-      resetFields();
-      props.history.push('/requests');
-    })
-    .catch(() => setErrorMessage('Error while saving'))
-    .finally(() => setShowSpinner(false));
+    axios
+      .post('/api/requests', { payload: data })
+      .then((res) => {
+        resetFields();
+        props.history.push('/requests');
+      })
+      .catch(() => setErrorMessage('Error while saving'))
+      .finally(() => setShowSpinner(false));
   };
 
   const onCancel = e => {
