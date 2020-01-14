@@ -2,16 +2,27 @@
   &__toolbar {
     &-title {
       color: #fff;
+      font-size: 0.85rem;
       &.md {
         text-align: right;
       }
+      &.ios {
+        font-weight: 400;
+        text-align: right;
+        transform: translateX(18%);
+      }
+    font-size: 1rem;
     }
     &-logo {
       margin-left: 15%;
       font-family: inherit;
-      font-size: 1rem;
+      font-size: 1.3rem;
       font-weight: bold;
       color: #fff;
     }
   }
+}
+
+.ios.header__toolbar {
+  padding: 0.5rem 0;
 }
