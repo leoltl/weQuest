@@ -14,7 +14,7 @@ function ProfileAvatar(props) {
     props.history.push('/requests');
   };
 
-  console.log('USER PROFILE ', user);
+  // console.log('USER PROFILE ', user);
 
   const userInfo = user => (
     <>
