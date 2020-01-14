@@ -12,14 +12,13 @@ import RequestController from './routes/request';
 import BidController from './routes/bids';
 import ItemController from './routes/items';
 import morgan from 'morgan';
-import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
 import bodyParser from 'body-parser';
 import { dbParams, storageParams } from './lib/config-vars';
 import DB from './lib/db';
 import Storage from './lib/storage';
 import Socket from './lib/socket';
-import { sessionIdParser } from './lib/utils'
+import { sessionIdParser, forceSession, storeSessionId } from './lib/utils';
 import path from 'path';
 
 // server config
@@ -72,13 +71,14 @@ app.use([
   morgan('dev'),
   bodyParser.json({ limit: '10mb' }),
   bodyParser.urlencoded({ limit: '10mb', extended: true }),
-  // cookieParser('Coolstuffgoesonhere'),
   cookieSession({
     name: 'session',
     keys: ['Coolstuffgoesonhere'],
     maxAge: 365 * 24 * 60 * 60 * 1000 /* 1 year */,
   }),
+  forceSession,
   sessionIdParser,
+  storeSessionId,
 ]);
 
 const server = http.createServer(app);
