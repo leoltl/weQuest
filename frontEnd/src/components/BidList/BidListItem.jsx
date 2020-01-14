@@ -38,19 +38,17 @@ const BidListItem = props => {
           </div>
         </IonCardContent>
       </IonCardHeader>
-      {props.isSelected ? (
+      {props.isSelected && (
         <>
           {( props.requestDetails.requestDescription && 
           <IonCardContent>
             Request Description: <br />
             {props.requestDetails.requestDescription}
           </IonCardContent>)}
-          <IonButton className="ion-margin" expand="block" onClick={props.onBidClick}>
+          {props.requestDetails.requestStatus === 'active' && <IonButton className="ion-margin" expand="block" onClick={props.onBidClick}>
             {props.buttonTitle}
-          </IonButton>
+          </IonButton>}
         </>
-      ) : (
-        ''
       )}
     </IonCard>
   );

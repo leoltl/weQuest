@@ -85,7 +85,7 @@ export default class Bid extends Model {
         `SELECT
         bids.id, bids.price_cent, bids.notes, bids.is_active,
         items.name, items.description, items.picture_url,
-        requests.current_bid_id, requests.title AS request_title, requests.description AS request_description,
+        requests.current_bid_id, requests.title AS request_title, requests.description AS request_description, requests.request_status,
         current_bid.price_cent AS current_bid_price
         FROM bids
         JOIN items ON bids.item_id = items.id
@@ -122,7 +122,7 @@ export default class Bid extends Model {
       `SELECT
       bids.id, bids.price_cent, bids.notes, bids.is_active,
       items.name, items.description, items.picture_url,
-      requests.current_bid_id, requests.title AS request_title, requests.description AS request_description,
+      requests.current_bid_id, requests.title AS request_title, requests.description AS request_description, requests.request_status,
       current_bid.price_cent AS current_bid_price
       FROM bids
       JOIN items ON bids.item_id = items.id
