@@ -80,7 +80,7 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess }
               <IonInput
                 type='file'
                 name='pictureUrl'
-                accept='image/png, image/jpeg, image/gif'
+                accept='image/png, image/jpeg, image/gif, image/heif, image/heic'
                 onIonChange={loadPicture}
                 style={{ display: 'none' }}
               />
