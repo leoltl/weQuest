@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { IonButton, IonList } from '@ionic/react';
+import { IonButton } from '@ionic/react';
 import axios from 'axios';
 import moment from 'moment';
 
@@ -47,7 +47,6 @@ const RequestForm = props => {
   };
 
   const submit = () => {
-    
     if (!user) {
       props.history.push({ pathname: '/login', state: { redirectOnSuccess: '/request/new', toastMessage: 'Please login to proceed.' } });
       return;
@@ -66,7 +65,7 @@ const RequestForm = props => {
     setShowSpinner('Saving...');
     axios
       .post('/api/requests', { payload: data })
-      .then((res) => {
+      .then(res => {
         resetFields();
         props.history.push('/requests');
       })

@@ -18,20 +18,20 @@ const Register = props => {
       return false;
     }
     if (email.length < 1) {
-     props.setErrorMessage('Email cannot be empty');
-     return false;
+      props.setErrorMessage('Email cannot be empty');
+      return false;
     }
     if (!isEmail(email)) {
-     props.setErrorMessage('Email is invalid');
-     return false;
+      props.setErrorMessage('Email is invalid');
+      return false;
     }
     if (password.length < 1) {
-     props.setErrorMessage('Password cannot be empty');
-     return false;
+      props.setErrorMessage('Password cannot be empty');
+      return false;
     }
     if (password !== passwordConfirmation) {
-     props.setErrorMessage('Passwords Do Not Match');
-     return false;
+      props.setErrorMessage('Passwords Do Not Match');
+      return false;
     }
 
     return true;
@@ -47,23 +47,19 @@ const Register = props => {
   };
 
   const submit = async () => {
-
     if (!validateForm()) return;
 
     try {
       props.setShowSpinner(true);
-      const serverResponse = await axios
-        .post('/api/users', {
-          user: { name, email, password },
-        })
+      const serverResponse = await axios.post('/api/users', {
+        user: { name, email, password },
+      });
 
       setUser(serverResponse.data);
       clearForm();
       history.push('/requests');
-
     } catch (err) {
       props.setErrorMessage('Error while signing up');
-
     } finally {
       props.setShowSpinner(false);
     }
@@ -81,11 +77,27 @@ const Register = props => {
           <IonList>
             <IonItem>
               <IonLabel position='floating'>Name</IonLabel>
-              <IonInput name='name' type='name' value={name} clearInput autcomplete='on' onIonChange={e => setName(e.target.value)} required />
+              <IonInput
+                name='name'
+                type='name'
+                value={name}
+                clearInput
+                autcomplete='on'
+                onIonChange={e => setName(e.target.value)}
+                required
+              />
             </IonItem>
             <IonItem>
               <IonLabel position='floating'>Email</IonLabel>
-              <IonInput name='email' type='email' value={email} clearInput autcomplete='on' onIonChange={e => setEmail(e.target.value)} required />
+              <IonInput
+                name='email'
+                type='email'
+                value={email}
+                clearInput
+                autcomplete='on'
+                onIonChange={e => setEmail(e.target.value)}
+                required
+              />
             </IonItem>
             <IonItem>
               <IonLabel position='floating'>Password</IonLabel>
@@ -103,7 +115,7 @@ const Register = props => {
             </IonItem>
           </IonList>
           <IonItem lines='none'>
-            <IonButton className='register-button' expand='block' fill='outline' type='submit'>
+            <IonButton className='register-button' expand='block' fill='solid' type='submit'>
               Register
             </IonButton>
           </IonItem>

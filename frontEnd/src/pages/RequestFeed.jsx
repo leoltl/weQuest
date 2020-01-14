@@ -9,11 +9,12 @@ import ErrorAlert from '../components/ErrorAlert';
 import { AuthContext } from '../contexts/authContext';
 import { arr2Obj } from '../lib/utils';
 import Notification from '../components/Notification';
+import './RequestFeed.scss';
 // import useOnClickOutside from '../components/useOnClickOutside';
 
-const RequestFeed = () => {
+export default function RequestFeed(props) {
   const [requests, setRequests] = useState({});
-  const [selected, setSelected] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const { socket } = useContext(AuthContext);
@@ -38,17 +39,12 @@ const RequestFeed = () => {
       // only update requests if something is changed
       // console.log('PREV REQUESTS', requests);
       setRequests(prev => {
-        // console.log('PREV', prev);
-        // console.log('PREV ITEM', prev[update.id]);
-        // console.log('INC', update);
         if (prev[update.id].priceCent !== update.priceCent) {
           return { ...prev, [update.id]: update };
         } else if (prev[update.id].requestStatus !== update.requestStatus) {
           const { [update.id]: undefined, ...rest } = prev;
-          console.log('REST', rest);
           return rest;
         }
-
         return { ...prev };
       });
     });
@@ -73,22 +69,27 @@ const RequestFeed = () => {
   });
 
   const handleClickOutside = useCallback(event => {
-    // console.log('PARENT EVENT', event);
-    // setSelected(null);
+    setSelectedId(prev => {
+      if (event.target.id === 'request-list-page') {
+        return null;
+      }
+      return prev;
+    });
   });
 
   return (
     <IonPage>
       <Header title='Request Feed'></Header>
-      <IonContent>
+      <IonContent id='request-list-page'>
         <Notification />
         {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
         <Spinner message={showSpinner} />
         <RequestList
+          id='request-list-page'
           modal={BidFormModal}
           setRequests={setRequests}
-          selectedId={selected}
-          onClick={setSelected}
+          selectedId={selectedId}
+          onClick={setSelectedId}
           buttonTitle='Bid Now'
           // refractor to work with objs instead of passing down array
           requests={Object.values(requests)}
@@ -97,6 +98,4 @@ const RequestFeed = () => {
       </IonContent>
     </IonPage>
   );
-};
-
-export default RequestFeed;
+}

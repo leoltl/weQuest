@@ -16,19 +16,16 @@ const BidList = ({ modal: Modal, ...props }) => {
   // }, []);
 
   const updateRequestById = useCallback((id, payload) => {
-    // setBids(prev =>
-    //   prev.map(request => {
-    //     return request.id === id ? { ...request, ...payload } : request;
-    //   }),
-    // );
-    setBids((prev) => {
+    setBids(prev => {
       return {
         ...prev,
-        id : {
-          ...prev[id],
-          ...payload
-        }
-      }
+        id: { ...prev[id], ...payload },
+      };
+      // setBids(prev =>
+      //   prev.map(request => {
+      //     return request.id === id ? { ...request, ...payload } : request;
+      //   }),
+      // );
     });
   }, []);
 

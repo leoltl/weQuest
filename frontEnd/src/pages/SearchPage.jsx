@@ -7,6 +7,8 @@ import { arr2Obj } from '../lib/utils';
 import BidFormModal from './BidFormModal';
 import Header from '../components/Header';
 
+import './SearchPage.scss';
+
 export default function SearchPage(props) {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState(null);
@@ -16,32 +18,31 @@ export default function SearchPage(props) {
   useEffect(() => {
     axios.get(`/api/requests/?query=${query}`).then(res => {
       setRequests(arr2Obj(res.data));
-    })
+    });
   }, [query]);
 
   useIonViewDidEnter(() => {
-    console.log('mount listener search')
+    console.log('mount listener search');
     socket.on('get-requests', e => {
       const update = e.data;
       console.log('EVENT', e);
       setRequests(prev => {
         return { ...prev, [update.id]: update };
       });
-    })
-  });
-  
-  useIonViewWillLeave(() => {
-    // disconnect from socket
-    console.log('unmount listener search')
-    socket.off('get-requests');
+    });
   });
 
+  useIonViewWillLeave(() => {
+    // disconnect from socket
+    console.log('unmount listener search');
+    socket.off('get-requests');
+  });
 
   return (
     <IonPage id='search-page'>
       <Header title='Search'></Header>
       <IonContent>
-        <IonSearchbar debounce={500} onIonChange={e => setQuery(e.target.value)}></IonSearchbar>
+        <IonSearchbar className='search__bar' debounce={500} onIonChange={e => setQuery(e.target.value)}></IonSearchbar>
         <RequestList
           modal={BidFormModal}
           setRequests={setRequests}

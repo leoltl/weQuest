@@ -4,6 +4,7 @@
 
   &__profile-container {
     height: 100%;
+    object-fit: fill;
   }
 
   &__img-container {
@@ -12,10 +13,10 @@
     justify-content: center;
     margin-bottom: 7.5%;
     &-img {
-      border: black solid 2px;
+      border: var(--ion-color-dark) solid 2px;
       border-radius: 50%;
-      width: 85%;
-      height: 85%;
+      width: 70vw;
+      height: 70vw;
       overflow: hidden;
     }
   }

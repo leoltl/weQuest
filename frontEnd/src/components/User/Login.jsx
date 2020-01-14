@@ -1,5 +1,16 @@
 import React, { useState, useContext } from 'react';
-import { IonContent, IonItem, IonLabel, IonInput, IonList, IonButton, IonRippleEffect, IonToast, useIonViewDidLeave, useIonViewDidEnter } from '@ionic/react';
+import {
+  IonContent,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonList,
+  IonButton,
+  IonRippleEffect,
+  IonToast,
+  useIonViewDidLeave,
+  useIonViewDidEnter,
+} from '@ionic/react';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import GoogleLogin from 'react-google-login';
 import { AuthContext } from '../../contexts/authContext';
@@ -15,8 +26,6 @@ const Login = props => {
   const { setUser } = useContext(AuthContext);
   const history = useHistory();
 
-  
-
   useIonViewDidEnter(() => {
     if (history.location.state && history.location.state.redirectOnSuccess && !showToast) {
       setShowToast(true);
@@ -24,35 +33,32 @@ const Login = props => {
   });
 
   useIonViewDidLeave(() => {
-      setShowToast(false)
-    }
-  );
+    setShowToast(false);
+  });
 
   console.log(history.location.state, showToast);
 
   const redirectOnSuccess = () => {
-      //redirectOnSuccess comes from Request Form
-      if (history.location.state.redirectOnSuccess) {
-        history.push(history.location.state.redirectOnSuccess);
-      } else {
-        history.push('/requests');
-      }
-  }
+    //redirectOnSuccess comes from Request Form
+    if (history.location.state.redirectOnSuccess) {
+      history.push(history.location.state.redirectOnSuccess);
+    } else {
+      history.push('/requests');
+    }
+  };
 
   const responseFacebook = async response => {
     try {
       props.setShowSpinner(true);
       // console.log('Facebook', response.name);
       const userData = { user: { name: response.name, email: response.email, password: '123' } };
-      const serverResponse = await axios.post('/api/users', userData)
+      const serverResponse = await axios.post('/api/users', userData);
       console.log('id:', serverResponse);
 
       setUser(response);
       redirectOnSuccess();
-
-    } catch(err) {
+    } catch (err) {
       props.setErrorMessage('Error while logging in');
-
     } finally {
       props.setShowSpinner(false);
     }
@@ -69,16 +75,17 @@ const Login = props => {
           password: '123',
         },
       };
-      
-      const serverResponse = await axios.post('/api/users', userData)
-      .then(data => new Promise((resolve) => {
-      console.log('id:', serverResponse);
-        setUser(response);
-        redirectOnSuccess();
-      }))
-    } catch(err) {
-      props.setErrorMessage('Error while logging in');
 
+      const serverResponse = await axios.post('/api/users', userData).then(
+        data =>
+          new Promise(resolve => {
+            console.log('id:', serverResponse);
+            setUser(response);
+            redirectOnSuccess();
+          }),
+      );
+    } catch (err) {
+      props.setErrorMessage('Error while logging in');
     } finally {
       props.setShowSpinner(false);
     }
@@ -90,7 +97,6 @@ const Login = props => {
   };
 
   const submit = async e => {
-
     if (!email) return props.setErrorMessage('Email cannot be blank');
     if (!isEmail(email)) return props.setErrorMessage('Email is invalid');
     if (!password) return props.setErrorMessage('Password cannot be blank');
@@ -98,15 +104,13 @@ const Login = props => {
     try {
       props.setShowSpinner(true);
 
-      const serverResponse = await axios.post('/api/users/login', { email, password })
+      const serverResponse = await axios.post('/api/users/login', { email, password });
 
       setUser(serverResponse);
       clearForm();
       redirectOnSuccess();
-
     } catch (err) {
       props.setErrorMessage('Error while logging in');
-
     } finally {
       props.setShowSpinner(false);
     }
@@ -123,7 +127,15 @@ const Login = props => {
           <IonList>
             <IonItem>
               <IonLabel position='floating'>Email</IonLabel>
-              <IonInput name='email' type='email' value={email} autocomplete='on' clearInput onIonChange={e => setEmail(e.target.value)} required />
+              <IonInput
+                name='email'
+                type='email'
+                value={email}
+                autocomplete='on'
+                clearInput
+                onIonChange={e => setEmail(e.target.value)}
+                required
+              />
             </IonItem>
             <IonItem>
               <IonLabel position='floating'>Password</IonLabel>
@@ -131,7 +143,7 @@ const Login = props => {
             </IonItem>
           </IonList>
           <IonItem lines='none'>
-            <IonButton id="login__login-btn" expand='block' fill='outline' type='submit'>
+            <IonButton color={'primary'} id='login__login-btn' expand='block' fill='solid' type='submit'>
               <IonRippleEffect />
               Login
             </IonButton>
@@ -143,10 +155,13 @@ const Login = props => {
               callback={responseFacebook}
               onFailure={() => props.setErrorMessage('Error while logging in')}
               render={renderProps => (
-                <button className='login-button login-button--facebook' onClick={ e => {
-                  e.preventDefault();
-                  renderProps.onClick()
-                }}>
+                <button
+                  className='login-button login-button--facebook'
+                  onClick={e => {
+                    e.preventDefault();
+                    renderProps.onClick();
+                  }}
+                >
                   Login with Facebook
                 </button>
               )}
@@ -159,10 +174,14 @@ const Login = props => {
               onSuccess={responseGoogle}
               onFailure={() => props.setErrorMessage('Error while logging in')}
               render={renderProps => (
-                <button className='login-button login-button--google' onClick={ e => {
-                  e.preventDefault();
-                  renderProps.onClick()
-                }} disabled={renderProps.disabled}>
+                <button
+                  className='login-button login-button--google'
+                  onClick={e => {
+                    e.preventDefault();
+                    renderProps.onClick();
+                  }}
+                  disabled={renderProps.disabled}
+                >
                   Login with Google
                 </button>
               )}
@@ -170,13 +189,14 @@ const Login = props => {
           </IonItem>
         </form>
         <IonToast
-          color="medium"
+          color='medium'
           duration={3000}
           isOpen={showToast}
           showCloseButton={true}
           message={history.location.state && history.location.state.toastMessage}
-          position="bottom"
-          onDidDismiss={() => setShowToast(false)}/>
+          position='bottom'
+          onDidDismiss={() => setShowToast(false)}
+        />
       </IonContent>
     </>
   );
