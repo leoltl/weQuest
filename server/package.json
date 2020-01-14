@@ -16,7 +16,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/cookie-parser": "^1.4.2",
     "@types/cookie-session": "^2.0.37",
     "@types/cors": "^2.8.6",
     "@types/pg": "^7.14.1",
@@ -25,7 +24,6 @@
     "bcrypt": "3.0.7",
     "body-parser": "^1.19.0",
     "camelcase-keys": "^6.1.1",
-    "cookie-parser": "^1.4.4",
     "cookie-session": "^1.3.3",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
