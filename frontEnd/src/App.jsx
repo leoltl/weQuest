@@ -30,7 +30,6 @@ const socket = io('/', { path: '/socket' });
 // const socket = io('/');
 socket.on('connect', () => {
   console.log('socket connected', socket.connected);
-  socket.emit('hi');
 });
 const socketData = {
   'get-bids': [],
@@ -54,7 +53,7 @@ const socketData = {
 const App = () => (
   <IonApp>
     <AuthContextProvider socket={socket}>
-      <Router></Router>
+      <Router />
     </AuthContextProvider>
   </IonApp>
 );

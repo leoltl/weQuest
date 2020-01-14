@@ -13,8 +13,17 @@ const Bids = props => {
   const { socket } = useContext(AuthContext);
 
   useEffect(() => {
-    axios.get('/api/bids').then(res => setActiveBids(arr2Obj(res.data)));
-    axios.get('/api/bids/?completed=true').then(res => setCompletedBids(arr2Obj(res.data)));
+    props.setShowSpinner(true);
+    
+    const serverActiveBids = axios.get('/api/bids')
+      .then(res => setActiveBids(arr2Obj(res.data)));
+
+    const serverCompletedBids = axios.get('/api/bids/?completed=true')
+      .then(res => setCompletedBids(arr2Obj(res.data)));
+
+    Promise.all([serverActiveBids, serverCompletedBids])
+      .catch(err => props.setErrorMessage('Error while loading bids'))
+      .finally(() => props.setShowSpinner(false));
 
     // socket connection
     socket.on('get-bids', event => {
@@ -49,6 +58,8 @@ const Bids = props => {
         selectedId={selected}
         onClick={setSelected}
         buttonTitle='Bid Again'
+        setErrorMessage={props.setErrorMessage}
+        setShowSpinner={props.setShowSpinner}
       />
       <IonListHeader>Completed Bids</IonListHeader>
       <BidList
@@ -57,6 +68,8 @@ const Bids = props => {
         setBids={setCompletedBids}
         selectedId={selected}
         onClick={setSelected}
+        setErrorMessage={props.setErrorMessage}
+        setShowSpinner={props.setShowSpinner}
       />
     </>
   );

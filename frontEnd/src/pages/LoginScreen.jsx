@@ -7,6 +7,7 @@ import {
   IonHeader,
   IonToolbar,
 } from '@ionic/react';
+import Header from '../components/Header';
 import Login from '../components/User/Login';
 import Register from '../components/User/Register';
 import Spinner from '../components/Spinner';
@@ -35,9 +36,7 @@ const LoginScreen = props => {
 
   return (
     <IonPage id='login-page'>
-      <IonHeader>
-        <IonToolbar></IonToolbar>
-      </IonHeader>
+      <Header title={segment === 'login' ? 'Login' : 'Register' } />
       <IonToolbar className='login-toolbar'>
         <IonSegment onIonChange={e => setSegment(e.detail.value)}>
           <IonSegmentButton value='login' checked={segment === 'login'}>

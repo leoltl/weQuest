@@ -4,7 +4,7 @@
 import { config } from 'dotenv';
 config();
 
-import App from './app';
+// import App from './app';
 import http from 'http';
 // import ReactController from './routes/react';
 import UserController from './routes/users';
@@ -67,8 +67,12 @@ import express from 'express';
 
 const app = express();
 
+if (ENV === 'development') {
+  // const morgan = require('morgan');
+  app.use(morgan('dev'));
+}
+
 app.use([
-  morgan('dev'),
   bodyParser.json({ limit: '10mb' }),
   bodyParser.urlencoded({ limit: '10mb', extended: true }),
   cookieSession({

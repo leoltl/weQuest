@@ -8,6 +8,8 @@ export default class ReactController {
     this.initRoutes();
   }
 
+  
+
   private initRoutes() {
     this.router.get('*', (req, res) => {
       res.sendFile('server/build/public/index.html');
