@@ -37,7 +37,7 @@ const RequestList = ({ modal: Modal, ...props }) => {
     if (isLoggedIn) {
       setShowBidForm(true);
     } else {
-      props.history.push({ pathname: '/login', state: { redirectOnSuccess: '/requests' } });
+      props.history.push({ pathname: '/login', state: { redirectOnSuccess: '/requests', toastMessage: 'Please login to proceed.' } });
     }
   };
 

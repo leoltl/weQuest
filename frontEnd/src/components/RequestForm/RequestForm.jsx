@@ -48,7 +48,7 @@ const RequestForm = props => {
     };
 
     if (!user) {
-      props.history.push({ pathname: '/login', state: { redirectOnSuccess: '/request/new' } });
+      props.history.push({ pathname: '/login', state: { redirectOnSuccess: '/request/new', toastMessage: "Please login to proceed." } });
       return;
     }
 
