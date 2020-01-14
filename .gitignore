@@ -1,5 +1,7 @@
 node_modules
-build
 .DS_Store
+frontEnd/build
+# remove server/build if in deploy branch
+server/build
 package-lock.json
 .env

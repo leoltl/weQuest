@@ -10,7 +10,7 @@ const RequestListItem = props => {
     <IonCard onClick={props.selectCard}>
       <IonCardHeader>
         <div className="generic-card__header request-card__header">
-          <IonCardSubtitle className="request-card__request-title">
+          <IonCardSubtitle className="generic-card__request-title">
             {props.requestDetails.title}
           </IonCardSubtitle>
           <IonCardContent className="request-card__request-current-price">

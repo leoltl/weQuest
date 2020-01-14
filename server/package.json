@@ -5,9 +5,11 @@
   "main": "build/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run build && node build/server.js",
+    "start-dev": "npm run build && node build/server.js",
+    "start": "node build/server.js",
     "local": "./node_modules/.bin/nodemon -L --config \"./nodemon.json\"/",
-    "build": "find ./build -type f ! -wholename \"./build/public*\" -delete && tsc",
+    "build-dev": "find ./build -type f ! -wholename \"./build/public*\" -delete && tsc",
+    "build": "tsc",
     "db:reset": "node bin/resetdb.js"
   },
   "keywords": [],
@@ -30,9 +32,11 @@
     "express": "^4.17.1",
     "file-type": "^12.4.2",
     "localtunnel": "^2.0.0",
+    "morgan": "^1.9.1",
     "pg": "^7.17.0",
     "pg-native": "^3.0.0",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "tslib": "^1.10.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
@@ -41,7 +45,6 @@
     "@types/morgan": "^1.7.37",
     "@types/node": "^12.12.21",
     "@types/pg": "^7.11.2",
-    "morgan": "^1.9.1",
     "nodemon": "^2.0.2",
     "ts-node": "^8.5.4",
     "tslint": "^5.20.1",
