@@ -1,8 +1,9 @@
 // tslint:disable: import-name
 import { Router } from 'express';
 import DB from '../lib/db';
+import { and, or } from '../lib/sql';
 import Socket from '../lib/socket';
-import { accessControl, sessionIdStore } from '../lib/utils';
+import { accessControl, sessionIdStore, notifyUser } from '../lib/utils';
 import Request from '../models/request';
 import Bid, { BidInterface } from '../models/bid';
 import Item, { ItemInterface } from '../models/item';
@@ -38,8 +39,7 @@ export default class BidController {
           res.json(bids);
 
         } catch (err) {
-          console.log(err);
-          res.status(404).json({ error: 'Failed to retrieve items for user' });
+          res.status(500).json({ error: 'Failed to retrieve items for user' });
         }
       })
       .post(async (req, res) => {
@@ -58,27 +58,25 @@ export default class BidController {
             .order([['id', 'DESC']])
             .limit(1)
             .run(this.db.query);
-          this.socket.broadcast('get-bids', pastBid, { eventKey: String(bid.id) });
+          pastBid && this.socket.broadcast('get-bids', pastBid, { eventKey: String(bid.id) });
 
           // send notification to requester
-          const requester = this.model.select('requests.users.id').where({ requestId: bid.requestId }).limit(1).run(this.db.query);
-          this.socket.emitNotification(
-            sessionIdStore.get(requester.id),
-            `A new bid has been placed on your request: ${updatedRequest.title}.`,
-          );
+          const requester = await this.model.select('requests.users.id').where({ requestId: bid.requestId }).limit(1).run(this.db.query);
+
+          notifyUser(requester.id, `A new bid has been placed on your request: ${updatedRequest.title}.`, this.socket);
 
           // send notification to past bid
-          const pastBidUser = this.model.select('items.users.id').where({ id: pastBid.id }).limit(1).run(this.db.query);
-          this.socket.emitNotification(
-            sessionIdStore.get(pastBidUser.id),
-            `Your bid for ${updatedRequest.title} has been overtaken. Not all hope is lost though. The requester might still accept it. When in doubt... bid again!`,
-          );
+          if (pastBid) {
+            const pastBidUser = await this.model.select('items.users.id').where({ id: pastBid.id }).limit(1).run(this.db.query);
+
+            notifyUser(pastBidUser.id, `Your bid for ${updatedRequest.title} has been overtaken. Not all hope is lost though. The requester might still accept it. When in doubt... bid again!`, this.socket);
+          }
 
           // respond with safe bid
           res.json(bid);
 
         } catch (err) {
-          res.status(404).json({ error: 'Failed to save item' });
+          res.status(500).json({ error: 'Failed to save item' });
         }
       });
   }
@@ -88,16 +86,17 @@ export default class BidController {
     // fetch request
     const request = await new Request()
       .select()
-      .where({
-        id: input.requestId,
-        requestStatus: 'active',
-        userId: [userId, '<>'],
-        'currentBids?.priceCent': [input.priceCent, '>'],
-      })
+      .where(and(
+        { id: input.requestId, requestStatus: 'active', userId: [userId, '<>'] },
+        or(
+          { 'currentBids?.priceCent': [input.priceCent, '>'] },
+          and({ 'currentBids?.priceCent': input.priceCent }, { 'currentBids?.priceCent': 0 }),
+        ),
+      ))
       .run(this.db.query);
 
     // throw an error if no valid request can be found (e.g. request does not exist,
-    // bidder and requester are the same, price is greater than or equal to current bid price, request is inactive...)
+    // bidder and requester are the same, price is greater than or equal to current bid price (except if 0), request is inactive...)
     if (!request) throw Error('Invalid bid');
 
     // fetch user item

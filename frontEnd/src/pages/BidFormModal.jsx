@@ -100,7 +100,7 @@ export default function BidFormModal({ showModal, setShowModal, request, updateR
     e.stopPropagation();
 
     if (!bidState.product) return setErrorMessage('You must select an item to bid with!');
-    if (bidState.price >= request.priceCent) return setErrorMessage('Your price is too high relative to the latest bids!');
+    if (bidState.price && bidState.price >= request.priceCent) return setErrorMessage('Your price is too high relative to the latest bids!');
 
     setShowSpinner('Saving...');
 
