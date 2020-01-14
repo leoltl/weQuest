@@ -16,11 +16,9 @@ const Requests = props => {
   useEffect(() => {
     props.setShowSpinner(true);
 
-    const serverActiveRequests = axios.get('/api/requests/active')
-      .then(res => setActiveRequests(arr2Obj(res.data)));
+    const serverActiveRequests = axios.get('/api/requests/active').then(res => setActiveRequests(arr2Obj(res.data)));
 
-    const serverCompletedRequests = axios.get('/api/requests/completed')
-      .then(res => setCompletedRequests(arr2Obj(res.data)));
+    const serverCompletedRequests = axios.get('/api/requests/completed').then(res => setCompletedRequests(arr2Obj(res.data)));
 
     Promise.all([serverActiveRequests, serverCompletedRequests])
       .catch(err => props.setErrorMessage('Error while loading requests'))
@@ -28,14 +26,14 @@ const Requests = props => {
 
     // socket connection
     socket.on('get-requests', event => {
-      console.log('EVENT', event);
+      // console.log('EVENT', event);
       const update = event.data;
 
       setActiveRequests(prev => {
         // if requestStatus changes remove it from requests
         if (prev[update.id].requestStatus !== update.requestStatus) {
           const { [update.id]: undefined, ...rest } = prev;
-          console.log('REST', rest);
+          // console.log('REST', rest);
           return rest;
         }
         return { ...prev, [update.id]: update };
@@ -46,6 +44,7 @@ const Requests = props => {
     });
 
     return () => {
+      console.log('unmounting activity-requests listener');
       socket.off('get-requests');
     };
   }, []);

@@ -3,18 +3,35 @@ import { IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonAvatar, IonImg
 import './BidModalListItem.scss';
 import { currencyFormatter } from '../../lib/utils';
 
-export default function BidListItem({ isExpanded, expand, isWinner, selectWinner, id, name, pictureUrl, priceCent, notes, description, username }) {
-
-  const handleExpand = useCallback((e)=> {
+export default function BidListItem({
+  isExpanded,
+  expand,
+  isWinner,
+  selectWinner,
+  id,
+  name,
+  pictureUrl,
+  priceCent,
+  notes,
+  description,
+  username,
+}) {
+  const handleExpand = useCallback(
+    e => {
       e.preventDefault();
       expand(id);
-    }, [id]);
+    },
+    [expand, id],
+  );
 
-  const handleWinner = useCallback((e) => {
+  const handleWinner = useCallback(
+    e => {
       e.preventDefault();
       e.stopPropagation();
       selectWinner(id);
-    }, [id]);
+    },
+    [id],
+  );
 
   return (
     <IonCard className={'bid-card'} onClick={handleExpand}>
@@ -25,7 +42,10 @@ export default function BidListItem({ isExpanded, expand, isWinner, selectWinner
             <IonImg src={pictureUrl} alt={name} title={name} />
           </IonAvatar>
         )}
-        <IonCardTitle className={'bid-card__header-name'}>{isWinner && 'Winner: '}{name}</IonCardTitle>
+        <IonCardTitle className={'bid-card__header-name'}>
+          {isWinner && 'Winner: '}
+          {name}
+        </IonCardTitle>
         <IonBadge className={'bid-card__header-price'}>{currencyFormatter(priceCent)}</IonBadge>
       </IonCardHeader>
       {isExpanded && (

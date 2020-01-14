@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { IonInput, IonButton, IonList, IonItem, IonAvatar, IonImg, IonLabel, IonTextarea } from '@ionic/react';
+import { IonInput, IonButton, IonList, IonItem, IonImg, IonLabel, IonTextarea } from '@ionic/react';
 import axios from 'axios';
 import { readFile } from '../lib/utils';
 
@@ -74,7 +74,15 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess }
             <IonLabel className={'product-form__img-label'} position='stacked'>
               Upload a Picture
             </IonLabel>
-            <IonImg className={'product-form__img-img'} src={pictureUrl || 'https://images.unsplash.com/photo-1504805572947-34fad45aed93?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80'} alt='New Item' title='New Item' />
+            <IonImg
+              className={'product-form__img-img'}
+              src={
+                pictureUrl ||
+                'https://images.unsplash.com/photo-1504805572947-34fad45aed93?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80'
+              }
+              alt='New Item'
+              title='New Item'
+            />
             <IonButton className={'product-form__img-btn'} onClick={e => e.currentTarget.querySelector('input').click()}>
               {pictureUrl ? 'Select New Picture' : 'Upload Picture'}
               <IonInput
@@ -111,7 +119,9 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess }
             ></IonTextarea>
           </IonItem>
         </IonList>
-        <IonButton className={'product-form__btn'} expand={'block'} type='submit'>Add Item</IonButton>
+        <IonButton className={'product-form__btn'} expand={'block'} type='submit'>
+          Add Item
+        </IonButton>
       </form>
     </Modal>
   );

@@ -16,7 +16,7 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    border: black 1px solid;
+    border: var(--ion-color-medium) 1px solid;
   }
 
   &__icon {
@@ -24,7 +24,7 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    border: black 1px solid;
+    border: var(--ion-color-medium) 1px solid;
     margin-bottom: 2.5%;
   }
 

@@ -9,9 +9,10 @@ import ErrorAlert from '../components/ErrorAlert';
 import { AuthContext } from '../contexts/authContext';
 import { arr2Obj } from '../lib/utils';
 import Notification from '../components/Notification';
+import './RequestFeed.scss';
 // import useOnClickOutside from '../components/useOnClickOutside';
 
-const RequestFeed = () => {
+export default function RequestFeed(props) {
   const [requests, setRequests] = useState({});
   const [selected, setSelected] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
@@ -73,7 +74,6 @@ const RequestFeed = () => {
   });
 
   const handleClickOutside = useCallback(event => {
-    console.log('PARENT EVENT', event);
     setSelected(null);
   });
 
@@ -97,6 +97,4 @@ const RequestFeed = () => {
       </IonContent>
     </IonPage>
   );
-};
-
-export default RequestFeed;
+}
