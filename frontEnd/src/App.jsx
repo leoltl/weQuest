@@ -31,10 +31,6 @@ const socket = io('/', { path: '/socket' });
 socket.on('connect', () => {
   console.log('socket connected', socket.connected);
 });
-const socketData = {
-  'get-bids': [],
-  'get-requests': [],
-};
 
 // socket.on('get-bids', data => {
 //   socketData['get-bids'].push(data.data);

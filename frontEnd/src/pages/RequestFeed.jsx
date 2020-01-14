@@ -8,7 +8,8 @@ import Spinner from '../components/Spinner';
 import ErrorAlert from '../components/ErrorAlert';
 import { AuthContext } from '../contexts/authContext';
 import { arr2Obj } from '../lib/utils';
-import { request } from 'https';
+import Notification from '../components/Notification';
+// import useOnClickOutside from '../components/useOnClickOutside';
 
 const RequestFeed = () => {
   const [requests, setRequests] = useState({});
@@ -20,14 +21,15 @@ const RequestFeed = () => {
   useIonViewDidEnter(() => {
     setShowSpinner(true);
 
-    axios.get('/api/requests')
+    axios
+      .get('/api/requests')
       .then(res => {
         setRequests(arr2Obj(res.data));
       })
       .catch(err => setErrorMessage('Error while loading the feed'))
       .finally(() => setShowSpinner(false));
 
-    // document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('click', handleClickOutside);
 
     socket.on('get-requests', event => {
       console.log('EVENT', event);
@@ -52,13 +54,11 @@ const RequestFeed = () => {
     });
   });
 
-  console.log('LOAD REQUESTS', requests);
-
   useIonViewWillLeave(() => {
-    // document.removeEventListener('mousedown', handleClickOutside);
+    document.removeEventListener('click', handleClickOutside);
 
     // disconnect from socket
-    console.log('unmount listener request feed')
+    console.log('unmount listener request feed');
     socket.off('get-requests');
   });
 
@@ -69,17 +69,19 @@ const RequestFeed = () => {
       .then(res => setRequests(res.data))
       .then(event.detail.complete())
       .catch(err => setErrorMessage('Error while loading bids'))
-      .finally(() => setShowSpinner(false))
+      .finally(() => setShowSpinner(false));
   });
 
-  // const handleClickOutside = useCallback(event => {
-  //   setSelected(null);
-  // });
+  const handleClickOutside = useCallback(event => {
+    console.log('PARENT EVENT', event);
+    setSelected(null);
+  });
 
   return (
     <IonPage>
       <Header title='Request Feed'></Header>
       <IonContent>
+        <Notification />
         {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
         <Spinner message={showSpinner} />
         <RequestList
