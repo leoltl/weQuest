@@ -7,20 +7,21 @@ import {
   IonSegmentButton,
   IonLabel,
   IonPage,
-  IonHeader,
   IonToolbar,
-  IonTitle,
   useIonViewDidLeave,
 } from '@ionic/react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { AuthContext } from '../contexts/authContext';
 import Header from '../components/Header';
+import Spinner from '../components/Spinner';
+import ErrorAlert from '../components/ErrorAlert';
 
 import './ActivityFeed.scss';
 
 export default function ActivityFeed(props) {
-  // const [tab, setTab] = useState('requests');
 
+  const [showSpinner, setShowSpinner] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const history = useHistory();
   const match = useRouteMatch('/activity/:tab');
   const tab = match && match.params.tab === 'bids' ? 'bids' : 'requests';
@@ -43,6 +44,8 @@ export default function ActivityFeed(props) {
     <IonPage id='activity-page'>
       <Header title='Activity'></Header>
       <IonContent>
+        {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
+        <Spinner message={showSpinner} />
         <IonToolbar className='activity-toolbar'>
           {/* <IonSegment onIonChange={e => setTab(e.detail.value)}> */}
           <IonSegment>
@@ -55,7 +58,9 @@ export default function ActivityFeed(props) {
               <IonLabel>Bids</IonLabel>
             </IonSegmentButton>
           </IonSegment>
-          {tab === 'requests' ? <Requests /> : <Bids />}
+          {tab === 'requests'
+            ? <Requests {...{ setErrorMessage, setShowSpinner }} />
+            : <Bids {...{ setErrorMessage, setShowSpinner }} />}
         </IonToolbar>
       </IonContent>
     </IonPage>

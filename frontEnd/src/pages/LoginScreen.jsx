@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import Login from '../components/User/Login';
-import Register from '../components/User/Register';
 import {
   IonSegment,
   IonSegmentButton,
@@ -9,12 +7,19 @@ import {
   IonHeader,
   IonToolbar,
 } from '@ionic/react';
+import Header from '../components/Header';
+import Login from '../components/User/Login';
+import Register from '../components/User/Register';
+import Spinner from '../components/Spinner';
+import ErrorAlert from '../components/ErrorAlert';
 
 import './LoginScreen.scss';
 
 const LoginScreen = props => {
   console.log('login rendered')
   const [segment, setSegment] = useState('login');
+  const [showSpinner, setShowSpinner] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // const getCurrentState = async e => {
   //   axios.get('/api/users').then(user => {
@@ -31,9 +36,7 @@ const LoginScreen = props => {
 
   return (
     <IonPage id='login-page'>
-      <IonHeader>
-        <IonToolbar></IonToolbar>
-      </IonHeader>
+      <Header title={segment === 'login' ? 'Login' : 'Register' } />
       <IonToolbar className='login-toolbar'>
         <IonSegment onIonChange={e => setSegment(e.detail.value)}>
           <IonSegmentButton value='login' checked={segment === 'login'}>
@@ -44,7 +47,11 @@ const LoginScreen = props => {
           </IonSegmentButton>
         </IonSegment>
       </IonToolbar>
-      {segment === 'login' ? <Login></Login> : <Register></Register>}
+      {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
+      <Spinner message={showSpinner} />
+      {segment === 'login'
+        ? <Login {...{ setErrorMessage, setShowSpinner }} />
+        : <Register {...{ setErrorMessage, setShowSpinner }} />}
     </IonPage>
   );
 };

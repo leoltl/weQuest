@@ -3,7 +3,6 @@ import { Redirect, Route } from 'react-router-dom';
 import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
 import { contact, search, list, addCircleOutline, home } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
-import Tab1 from './pages/Tab1';
 import NewRequest from './pages/NewRequest';
 import LoginScreen from './pages/LoginScreen';
 import RequestFeed from './pages/RequestFeed';
@@ -29,10 +28,9 @@ export default function Router(props) {
     getCurrentState();
   }, [user]);
 
-  return initialRender ? (
-    <Spinner message='weQuest'></Spinner>
-  ) : (
-    <IonReactRouter>
+  return initialRender
+    ? (<Spinner message='Welcome to weQuest. Please wait...' />)
+    : (<IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
           <Route path='/search' component={SearchPage} exact={true} />
@@ -61,6 +59,5 @@ export default function Router(props) {
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
-    </IonReactRouter>
-  );
+    </IonReactRouter>);
 }

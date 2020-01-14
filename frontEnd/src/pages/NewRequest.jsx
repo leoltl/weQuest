@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonPage } from '@ionic/react';
 import RequestForm from '../components/RequestForm/RequestForm.jsx';
 import Header from '../components/Header';
 import './NewRequest.scss';
