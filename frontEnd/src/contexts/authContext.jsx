@@ -38,9 +38,19 @@ export const AuthContext = createContext();
 const AuthContextProvider = props => {
   const [user, setUser] = useState({});
   const [socket, setSocket] = useState(props.socket);
+  const [notification, setNotification] = useState('');
+
   const hardChangeAuth = () => {
     setUser(prevState => (prevState ? null : 'Leo'));
   };
+
+  // notification listener
+  socket.on('get-requests', event => {
+    console.log('notifications', event.data);
+    const notification = event.data.title;
+    setNotification(notification);
+  });
+
   return (
     <AuthContext.Provider
       value={{
@@ -48,6 +58,7 @@ const AuthContextProvider = props => {
         setUser,
         hardChangeAuth,
         socket,
+        notification,
       }}
     >
       {props.children}

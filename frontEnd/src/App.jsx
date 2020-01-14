@@ -32,10 +32,6 @@ socket.on('connect', () => {
   console.log('socket connected', socket.connected);
   socket.emit('hi');
 });
-const socketData = {
-  'get-bids': [],
-  'get-requests': [],
-};
 
 // socket.on('get-bids', data => {
 //   socketData['get-bids'].push(data.data);

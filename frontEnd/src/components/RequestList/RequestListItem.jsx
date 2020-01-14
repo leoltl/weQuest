@@ -7,7 +7,12 @@ import './RequestListItem.scss';
 
 const RequestListItem = props => {
   return (
-    <IonCard onClick={props.selectCard}>
+    <IonCard
+      onClick={e => {
+        e.nativeEvent.stopImmediatePropagation();
+        props.selectCard();
+      }}
+    >
       <IonCardHeader>
         <div className='generic-card__header request-card__header'>
           <IonCardSubtitle className='request-card__request-title'>{props.requestDetails.title}</IonCardSubtitle>
