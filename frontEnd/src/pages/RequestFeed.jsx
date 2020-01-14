@@ -68,22 +68,24 @@ const RequestFeed = () => {
   });
 
   const handleClickOutside = useCallback(event => {
-      setSelectedId(prev => {
-        if (prev == event.target.id) {
-          return prev
-        }
-        return null;
-      });
+    console.log(event.target)
+    setSelectedId(prev => {
+      if (event.target.id === "request-list-outSide") {
+        return null
+      }
+      return prev;
+    });
   });
 
   return (
     <IonPage>
       <Header title='Request Feed'></Header>
-      <IonContent>
+      <IonContent id="request-list-outSide">
         <Notification />
         {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
         <Spinner message={showSpinner} />
         <RequestList
+          id="request-list-outSide"
           modal={BidFormModal}
           setRequests={setRequests}
           selectedId={selectedId}
