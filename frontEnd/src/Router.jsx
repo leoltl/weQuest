@@ -32,7 +32,7 @@ export default function Router(props) {
     ? (<Spinner message='Welcome to weQuest. Please wait...' />)
     : (<IonReactRouter>
       <IonTabs>
-        <IonRouterOutlet>
+        <IonRouterOutlet animated={false}>
           <Route path='/search' component={SearchPage} exact={true} />
           <Route path='/request/new' component={NewRequest} exact={true} />
           <Route path='/requests' component={RequestFeed} />
