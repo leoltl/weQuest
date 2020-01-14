@@ -9,7 +9,7 @@ import express, { Router, Request, Response } from 'express';
 // import RequestService from '../models/RequestService';
 // import { Request as UserRequest, Requests } from '../interfaces/requests';
 import UserRequest, { RequestInterface } from '../models/request';
-import { accessControl } from '../lib/utils';
+import { accessControl, sessionIdStore } from '../lib/utils';
 
 import Bid from '../models/bid';
 import DB from '../lib/db';
@@ -125,6 +125,10 @@ export default class RequestController {
         };
         await this.model.create({ ...requestData, userId }).run(this.db.query);
         res.sendStatus(201);
+
+        // send notification
+        const sessionId = sessionIdStore.get(req.session!.userId);
+        sessionId && this.socket.emitNotification(sessionId, 'New request created') || console.log('Could not find sessionId for user');
 
       } catch (err) {
         res.status(500).send({ error: 'Failed to create new request.' });

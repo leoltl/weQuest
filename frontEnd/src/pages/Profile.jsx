@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonContent, IonPage, IonHeader } from '@ionic/react';
+import { IonContent, IonPage } from '@ionic/react';
 import ProfileAvatar from '../components/User/ProfileAvatar';
 import Header from '../components/Header';
 

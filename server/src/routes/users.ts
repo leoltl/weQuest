@@ -2,7 +2,8 @@
 import { Router, Request } from 'express';
 import DB from '../lib/db';
 import User, { UserInterface } from '../models/user';
-import bcrypt, { hash } from 'bcrypt';
+import { sessionIdStore } from '../lib/utils';
+import bcrypt from 'bcrypt';
 
 export default class UserController {
   public path = '/api/users';
@@ -68,6 +69,10 @@ export default class UserController {
           req.body.password,
         );
         req.session!.userId = userData.id;
+
+        // map userId to sessionId
+        sessionIdStore.set(userData.id, req.sessionId!);
+
         res.json(userData);
       } catch (err) {
         res.status(403).json({ error: err.message, isLoggedIn: false });
