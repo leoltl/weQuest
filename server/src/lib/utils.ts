@@ -1,5 +1,6 @@
 // tslint:disable: import-name
 import { Request, Response, NextFunction } from 'express';
+import Socket from './socket';
 import socketIO from 'socket.io';
 
 declare module 'socket.io' {
@@ -20,11 +21,7 @@ declare global {
  * Middleware to check if user if logged in
  * If not logged responds with error
  */
-export function accessControl(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Response | void {
+export function accessControl(req: Request, res: Response, next: NextFunction): Response | void {
   if (!req.session || !req.session.userId) {
     return res.status(403).json({ error: 'Unauthorized acess' });
   }
@@ -109,3 +106,8 @@ export class SessionIdStore {
 }
 
 export const sessionIdStore = new SessionIdStore();
+
+// send notification to user
+export function notifyUser(userId: number, message: string, socket: Socket): void {
+  sessionIdStore.has(userId) && socket.emitNotification(sessionIdStore.get(userId), message);
+}

@@ -9,7 +9,7 @@ import express, { Router, Request, Response } from 'express';
 // import RequestService from '../models/RequestService';
 // import { Request as UserRequest, Requests } from '../interfaces/requests';
 import UserRequest, { RequestInterface } from '../models/request';
-import { accessControl, sessionIdStore } from '../lib/utils';
+import { accessControl, notifyUser } from '../lib/utils';
 
 import Bid from '../models/bid';
 import DB from '../lib/db';
@@ -152,14 +152,11 @@ export default class RequestController {
 
         // NOTIFICATIONS
         // to requester
-        this.socket.emitNotification(sessionIdStore.get(request.userId), 'Bidder has been notified. Thank you for using weQuest!');
+        notifyUser(request.userId, 'Bidder has been notified. Thank you for using weQuest!', this.socket);
 
         // to winner
         const winningBid = await new Bid().select('items.users.id').where({ id: request.winningBidId }).limit(1).run(this.db.query);
-        this.socket.emitNotification(
-          sessionIdStore.get(winningBid.id),
-          `Congratulations! Your bid for ${request.title} has been accepted.`,
-        );
+        notifyUser(winningBid.id, `Congratulations! Your bid for ${request.title} has been accepted.`, this.socket);
 
         // to losers
         const losingBids = await new Bid()
@@ -168,10 +165,7 @@ export default class RequestController {
           .limit(1)
           .run(this.db.query);
         losingBids.forEach(({ userId }: { userId: number }) => {
-          this.socket.emitNotification(
-            sessionIdStore.get(userId),
-            `Unfortunately your bid for ${request.title} was not selected by the requester. We hope to see you soon on weQuest!`,
-          );
+          notifyUser(userId, `Unfortunately your bid for ${request.title} was not selected by the requester. We hope to see you soon on weQuest!`, this.socket);
         });
 
         res.status(200).send(updatedRequest);

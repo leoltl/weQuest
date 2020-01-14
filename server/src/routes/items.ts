@@ -29,7 +29,7 @@ export default class ItemController {
           res.json(output);
 
         } catch (err) {
-          res.status(404).json({ error: 'Failed to retrieve items for user' });
+          res.status(500).json({ error: 'Failed to retrieve items for user' });
         }
       })
       .post(async (req, res) => {
@@ -41,7 +41,7 @@ export default class ItemController {
           res.json(output);
 
         } catch (err) {
-          res.status(404).json({ error: 'Failed to save item' });
+          res.status(500).json({ error: 'Failed to save item' });
         }
       });
   }

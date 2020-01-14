@@ -73,8 +73,8 @@ const RequestFeed = () => {
   });
 
   const handleClickOutside = useCallback(event => {
-    console.log('PARENT EVENT', event);
-    setSelected(null);
+    // console.log('PARENT EVENT', event);
+    // setSelected(null);
   });
 
   return (
