@@ -112,7 +112,7 @@ export default class Bid extends Model {
   }
 
   public findByRequestSafe(requestId: number, userId: number): SQL {
-    return this.select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId', 'isActive', ['requests.users.name', 'username'], 'priceCent')
+    return this.select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId', 'isActive', ['items.users.name', 'username'], 'priceCent')
       .where({ requestId, 'requests.userId': userId })
       .order([['id', 'DESC']]);
   }
