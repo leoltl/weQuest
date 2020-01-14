@@ -44,9 +44,11 @@ const RequestList = ({ modal: Modal, ...props }) => {
   };
 
   const renderedRequestItem = requests.map(listItem => {
+    console.log(listItem)
     return (
       <RequestListItem
         key={listItem.id}
+        id={listItem.id}
         currentBid={listItem.priceCent}
         user={listItem.email}
         requestDetails={listItem}
