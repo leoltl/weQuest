@@ -6,6 +6,7 @@ import BidFormModal from './BidFormModal';
 import Header from '../components/Header';
 import { AuthContext } from '../contexts/authContext';
 import { arr2Obj } from '../lib/utils';
+import { request } from 'https';
 
 const RequestFeed = () => {
   const [requests, setRequests] = useState({});
@@ -24,14 +25,25 @@ const RequestFeed = () => {
       const update = event.data;
 
       // only update requests if something is changed
+      // console.log('PREV REQUESTS', requests);
       setRequests(prev => {
-        if (prev[update.id] !== update.priceCent) {
+        // console.log('PREV', prev);
+        // console.log('PREV ITEM', prev[update.id]);
+        // console.log('INC', update);
+        if (prev[update.id].priceCent !== update.priceCent) {
           return { ...prev, [update.id]: update };
+        } else if (prev[update.id].requestStatus !== update.requestStatus) {
+          const { [update.id]: undefined, ...rest } = prev;
+          console.log('REST', rest);
+          return rest;
         }
+
         return { ...prev };
       });
     });
   });
+
+  console.log('LOAD REQUESTS', requests);
 
   useIonViewWillLeave(() => {
     // document.removeEventListener('mousedown', handleClickOutside);
