@@ -11,7 +11,6 @@ import { isEmail } from '../../lib/utils';
 const Login = props => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [formErrors, setFormErrors] = useState({});
   const { setUser } = useContext(AuthContext);
   const history = useHistory();
 
@@ -104,7 +103,6 @@ const Login = props => {
             submit(e);
           }}
         >
-          <div>{formErrors ? formErrors.message : null}</div>
           <IonList>
             <IonItem>
               <IonLabel position='floating'>Email</IonLabel>
@@ -117,7 +115,7 @@ const Login = props => {
           </IonList>
           <IonItem lines='none'>
             <IonButton id="login__login-btn" expand='block' fill='outline' type='submit'>
-              <IonRippleEffect></IonRippleEffect>
+              <IonRippleEffect />
               Login
             </IonButton>
           </IonItem>
@@ -126,7 +124,7 @@ const Login = props => {
               appId='625636154855382'
               fields='name,email,picture'
               callback={responseFacebook}
-              onFailure={responseFacebook}
+              onFailure={() => props.setErrorMessage('Error while logging in')}
               render={renderProps => (
                 <button className='login-button login-button--facebook' onClick={ e => {
                   e.preventDefault();
@@ -142,7 +140,7 @@ const Login = props => {
               clientId='90834222802-0s3k5otim13fak7fbdhaambgh1vjb3vt.apps.googleusercontent.com'
               buttonText='LOGIN WITH GOOGLE'
               onSuccess={responseGoogle}
-              onFailure={responseGoogle}
+              onFailure={() => props.setErrorMessage('Error while logging in')}
               render={renderProps => (
                 <button className='login-button login-button--google' onClick={ e => {
                   e.preventDefault();

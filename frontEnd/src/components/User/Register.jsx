@@ -3,6 +3,7 @@ import axios from 'axios';
 import { IonContent, IonItem, IonLabel, IonInput, IonList, IonButton } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authContext';
+import { isEmail } from '../../lib/utils';
 
 const Register = props => {
   const [name, setName] = useState('');
@@ -11,21 +12,29 @@ const Register = props => {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const history = useHistory();
 
-  const [formErrors, setFormErrors] = useState({});
-
-  const validateForm = e => {
+  const validateForm = () => {
     if (name.length < 1) {
-      setFormErrors({ message: 'Name cannot be empty' });
+      props.setErrorMessage('Name cannot be empty');
+      return false;
     }
     if (email.length < 1) {
-      setFormErrors({ message: 'Email cannot be empty' });
+     props.setErrorMessage('Email cannot be empty');
+     return false;
+    }
+    if (!isEmail(email)) {
+     props.setErrorMessage('Email is invalid');
+     return false;
     }
     if (password.length < 1) {
-      setFormErrors({ message: 'Password cannot be empty' });
+     props.setErrorMessage('Password cannot be empty');
+     return false;
     }
     if (password !== passwordConfirmation) {
-      setFormErrors({ message: 'Passwords Do Not Match' });
+     props.setErrorMessage('Passwords Do Not Match');
+     return false;
     }
+
+    return true;
   };
 
   const { setUser } = useContext(AuthContext);
@@ -37,20 +46,26 @@ const Register = props => {
     setPasswordConfirmation('');
   };
 
-  const submit = async e => {
-    validateForm(e);
+  const submit = async () => {
+
+    if (!validateForm()) return;
+
     try {
-      await axios
+      props.setShowSpinner(true);
+      const serverResponse = await axios
         .post('/api/users', {
-          user: { name: name, email: email, password: password },
+          user: { name, email, password },
         })
-        .then(res => {
-          setUser(res.data);
-          clearForm();
-        });
+
+      setUser(serverResponse.data);
+      clearForm();
       history.push('/requests');
-    } catch (e) {
-      setFormErrors(e);
+
+    } catch (err) {
+      props.setErrorMessage('Error while signing up');
+
+    } finally {
+      props.setShowSpinner(false);
     }
   };
 
@@ -60,22 +75,21 @@ const Register = props => {
         <form
           onSubmit={e => {
             e.preventDefault();
-            submit(e);
+            submit();
           }}
         >
-          <div>{formErrors ? formErrors.message : null}</div>
           <IonList>
             <IonItem>
               <IonLabel position='floating'>Name</IonLabel>
-              <IonInput name='name' type='name' value={name} clearInput autcomplete='on' onIonChange={e => setName(e.target.value)} />
+              <IonInput name='name' type='name' value={name} clearInput autcomplete='on' onIonChange={e => setName(e.target.value)} required />
             </IonItem>
             <IonItem>
               <IonLabel position='floating'>Email</IonLabel>
-              <IonInput name='email' type='email' value={email} clearInput autcomplete='on' onIonChange={e => setEmail(e.target.value)} />
+              <IonInput name='email' type='email' value={email} clearInput autcomplete='on' onIonChange={e => setEmail(e.target.value)} required />
             </IonItem>
             <IonItem>
               <IonLabel position='floating'>Password</IonLabel>
-              <IonInput name='password' type='password' value={password} onIonChange={e => setPassword(e.target.value)} />
+              <IonInput name='password' type='password' value={password} onIonChange={e => setPassword(e.target.value)} required />
             </IonItem>
             <IonItem>
               <IonLabel position='floating'>Password Confirmation</IonLabel>
@@ -84,6 +98,7 @@ const Register = props => {
                 type='password'
                 value={passwordConfirmation}
                 onIonChange={e => setPasswordConfirmation(e.target.value)}
+                required
               />
             </IonItem>
           </IonList>
