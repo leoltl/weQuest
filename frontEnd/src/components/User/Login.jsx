@@ -58,7 +58,7 @@ const Login = props => {
       setUser(response);
       redirectOnSuccess();
     } catch (err) {
-      props.setErrorMessage('Error while logging in');
+      props.setErrorMessage('Error while logging in with Facebook');
     } finally {
       props.setShowSpinner(false);
     }
@@ -85,7 +85,7 @@ const Login = props => {
           }),
       );
     } catch (err) {
-      props.setErrorMessage('Error while logging in');
+      props.setErrorMessage('Error while logging in with Google');
     } finally {
       props.setShowSpinner(false);
     }
@@ -153,7 +153,7 @@ const Login = props => {
               appId='625636154855382'
               fields='name,email,picture'
               callback={responseFacebook}
-              onFailure={() => props.setErrorMessage('Error while logging in')}
+              onFailure={() => props.setErrorMessage('Error while logging in with Facebook')}
               render={renderProps => (
                 <button
                   className='login-button login-button--facebook'
@@ -173,7 +173,7 @@ const Login = props => {
               clientId='90834222802-0s3k5otim13fak7fbdhaambgh1vjb3vt.apps.googleusercontent.com'
               buttonText='LOGIN WITH GOOGLE'
               onSuccess={responseGoogle}
-              onFailure={() => props.setErrorMessage('Error while logging in')}
+              // onFailure={() => props.setErrorMessage('Error while logging in with Google')}
               render={renderProps => (
                 <button
                   className='login-button login-button--google'
