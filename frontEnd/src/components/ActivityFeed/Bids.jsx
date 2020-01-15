@@ -46,6 +46,7 @@ const Bids = props => {
       });
 
     return () => {
+      console.log('unmounting bid socket')
       socket.off('get-bids');
     };
   }, []);
