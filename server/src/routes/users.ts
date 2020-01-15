@@ -81,7 +81,7 @@ export default class UserController {
 
     // logout
     this.router.get('/logout', (req, res) => {
-      req.session!.id && sessionIdStore.delete(req.session!.id);
+      sessionIdStore.delete({ userId: req.session!.userId });
       this.logout(req);
       res.end();
     });
