@@ -55,7 +55,7 @@ const Bids = props => {
       <IonListHeader>Active Bids</IonListHeader>
       <BidList
         modal={BidFormModal}
-        bids={Object.values(activeBids)}
+        bids={Object.values(activeBids).reverse()}
         setBids={setActiveBids}
         selectedId={selected}
         onClick={setSelected}
@@ -66,7 +66,7 @@ const Bids = props => {
       <IonListHeader>Completed Bids</IonListHeader>
       <BidList
         modal={BidFormModal}
-        bids={Object.values(completedBids)}
+        bids={Object.values(completedBids).reverse()}
         setBids={setCompletedBids}
         selectedId={selected}
         onClick={setSelected}

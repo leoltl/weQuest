@@ -52,7 +52,7 @@ export default function SearchPage(props) {
           onClick={setSelected}
           buttonTitle='Bid Now'
           // refractor to work with objs instead of passing down array
-          requests={Object.values(requests)}
+          requests={Object.values(requests).reverse()}
         />
       </IonContent>
     </IonPage>
