@@ -82,7 +82,7 @@ const RequestList = ({ modal: Modal, ...props }) => {
         </IonRefresher>
       )}
 
-      <IonList class='request-feed__list-container'>{renderedRequestItem}</IonList>
+      <IonList className='request-feed__list-container'>{renderedRequestItem}</IonList>
     </>
   );
 };
