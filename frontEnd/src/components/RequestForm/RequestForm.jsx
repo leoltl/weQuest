@@ -64,6 +64,10 @@ const RequestForm = props => {
       setErrorMessage('Invalid start/end date');
       return false;
     } 
+    if (new Date(data.borrowStart) < Date.now() || new Date(data.borrowEnd) < Date.now()) {
+      setErrorMessage('Start/end date should be later than today');
+      return false;
+    }
     return true
   };
 
