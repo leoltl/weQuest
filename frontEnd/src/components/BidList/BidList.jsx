@@ -67,7 +67,7 @@ const BidList = ({ modal: Modal, ...props }) => {
           }}
         />
       )}
-      <IonList>{renderedRequestItem}</IonList>
+      <IonList className='request-feed__list-container'>{renderedRequestItem}</IonList>
     </>
   );
 };

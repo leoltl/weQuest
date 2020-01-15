@@ -73,9 +73,13 @@ http://ionicframework.com/docs/theming/ */
 }
 
 /* override ion default tab select color, not using primary color  */
-.tab-selected, .segment-button-checked {
+.tab-selected, .segment-button-checked.md {
   color: #642d91 !important;
   border-bottom: 2px solid #642d91 !important;
+}
+
+.tab-selected.ios {
+  color: white;
 }
 
 .tab-selected {
