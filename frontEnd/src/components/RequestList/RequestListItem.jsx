@@ -6,6 +6,7 @@ import { currencyFormatter } from '../../lib/utils';
 import './RequestListItem.scss';
 
 const RequestListItem = props => {
+  console.log(props.requestDetails);
   return (
     <IonCard
       onClick={e => {
@@ -32,10 +33,16 @@ const RequestListItem = props => {
       </IonCardHeader>
       {props.isSelected && (
         <>
-          <IonCardContent>{props.requestDetails.description}</IonCardContent>
+          <IonCardContent className="request-card__details">
+            {props.requestDetails.borrowStart && props.requestDetails.borrowEnd && <><span className="request-card__details-indicator">Item needed from:</span> <br /><span className="request-card__date">{moment(props.requestDetails.borrowStart).format('ddd, MMM Do')} to {moment(props.requestDetails.borrowEnd).format('ddd, MMM do, YYYY')}</span></>}
+            <br />
+            
+            {props.requestDetails.description && 
+            <><span className="request-card__details-indicator">Request Notes:</span> <br /> {props.requestDetails.description}</>}
           <IonButton id={props.requestDetails.id} className='ion-margin generic-card__button' expand='block' onClick={props.onBidClick}>
             {props.buttonTitle}
           </IonButton>
+          </IonCardContent>
         </>
       )}
     </IonCard>

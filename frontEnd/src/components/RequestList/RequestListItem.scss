@@ -4,6 +4,16 @@
     padding: 0;
     color: #642d91;
   }
+  &__details-indicator{
+    font-weight: 700;
+  }
+  &__details-indicator {
+    font-size: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  &__details {
+    padding-top: 0;
+  }
 }
 
 .generic-card {
