@@ -7,6 +7,7 @@ import { AuthContext } from '../contexts/authContext';
 import Header from '../components/Header';
 import Spinner from '../components/Spinner';
 import ErrorAlert from '../components/ErrorAlert';
+import Notification from '../components/Notification';
 
 import './ActivityFeed.scss';
 
@@ -35,6 +36,8 @@ export default function ActivityFeed(props) {
     <IonPage id='activity-page'>
       <Header title='Activity'></Header>
       <IonContent>
+        <Notification />
+
         {errorMessage && <ErrorAlert {...{ message: errorMessage, clear: () => setErrorMessage('') }} />}
         <Spinner message={showSpinner} />
         <IonToolbar className='activity__toolbar'>

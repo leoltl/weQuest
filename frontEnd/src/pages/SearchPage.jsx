@@ -6,6 +6,7 @@ import { AuthContext } from '../contexts/authContext';
 import { arr2Obj } from '../lib/utils';
 import BidFormModal from './BidFormModal';
 import Header from '../components/Header';
+import Notification from '../components/Notification';
 
 import './SearchPage.scss';
 
@@ -42,7 +43,8 @@ export default function SearchPage(props) {
     <IonPage id='search-page'>
       <Header title='Search'></Header>
       <IonContent>
-        <IonSearchbar className='search__bar' debounce={500} onIonChange={e => setQuery(e.target.value)}></IonSearchbar>
+        <Notification />
+        <IonSearchbar className='search__bar' debounce={350} onIonChange={e => setQuery(e.target.value)}></IonSearchbar>
         <RequestList
           modal={BidFormModal}
           setRequests={setRequests}
