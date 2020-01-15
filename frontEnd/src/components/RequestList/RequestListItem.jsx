@@ -6,7 +6,6 @@ import { currencyFormatter } from '../../lib/utils';
 import './RequestListItem.scss';
 
 const RequestListItem = props => {
-  console.log(props.requestDetails);
   return (
     <IonCard
       onClick={e => {
