@@ -22,32 +22,34 @@ const Requests = props => {
 
     Promise.all([serverActiveRequests, serverCompletedRequests])
       .catch(err => props.setErrorMessage('Error while loading requests'))
-      .finally(() => props.setShowSpinner(false));
+      .finally(() => {
+        props.setShowSpinner(false)
+        //socket connection
+        console.log('mounting activity feed request socket')
+        socket.on('get-requests', event => {
+          // console.log('EVENT', event);
+          const update = event.data;
 
-    // socket connection
-    socket.on('get-requests', event => {
-      // console.log('EVENT', event);
-      const update = event.data;
-
-      setActiveRequests(prev => {
-        // if requestStatus changes remove it from requests
-        if (prev[update.id].requestStatus !== update.requestStatus) {
-          const { [update.id]: undefined, ...rest } = prev;
-          // console.log('REST', rest);
-          return rest;
-        }
-        return { ...prev, [update.id]: update };
-      });
-      setCompletedRequests(prev => {
-        if (prev[update.id] && prev[update.id].requestStatus !== update.requestStatus) {
-          return { ...prev, [update.id]: update };
-        }
-        return prev
-      });
+          setActiveRequests(prev => {
+            // if requestStatus changes remove it from requests
+            if (prev[update.id].requestStatus !== update.requestStatus) {
+              const { [update.id]: undefined, ...rest } = prev;
+              // console.log('REST', rest);
+              return rest;
+            }
+            return { ...prev, [update.id]: update };
+          });
+          setCompletedRequests(prev => {
+            if (prev[update.id] && prev[update.id].requestStatus !== update.requestStatus) {
+              return { ...prev, [update.id]: update };
+            }
+            return prev
+          });
+        });
     });
 
     return () => {
-      console.log('unmounting activity-requests listener');
+      console.log('unmounting activity requests listener');
       socket.off('get-requests');
     };
   }, []);
