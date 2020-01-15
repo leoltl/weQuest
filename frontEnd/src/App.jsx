@@ -28,9 +28,9 @@ import './theme/variables.css';
 import io from 'socket.io-client';
 const socket = io('/', { path: '/socket' });
 // const socket = io('/');
-socket.on('connect', () => {
-  console.log('socket connected', socket.connected);
-});
+// socket.on('connect', () => {
+//   console.log('socket connected', socket.connected);
+// });
 
 // socket.on('get-bids', data => {
 //   socketData['get-bids'].push(data.data);

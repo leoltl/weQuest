@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useContext } from 'react';
 import Requests from '../components/ActivityFeed/Requests';
 import Bids from '../components/ActivityFeed/Bids';
-import { IonSegment, IonContent, IonSegmentButton, IonLabel, IonPage, IonToolbar, useIonViewDidLeave } from '@ionic/react';
+import { IonSegment, IonContent, IonSegmentButton, IonLabel, IonPage, IonToolbar, useIonViewWillLeave } from '@ionic/react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { AuthContext } from '../contexts/authContext';
 import Header from '../components/Header';
@@ -27,7 +27,8 @@ export default function ActivityFeed(props) {
     [history],
   );
 
-  useIonViewDidLeave(() => {
+  useIonViewWillLeave(() => {
+    console.log('UNMOUNT BOTH')
     socket.off('get-requests');
     socket.off('get-bids');
   });

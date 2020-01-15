@@ -4,7 +4,7 @@ import BidList from '../BidList/BidList';
 import BidFormModal from '../../pages/BidFormModal';
 import axios from 'axios';
 import { AuthContext } from '../../contexts/authContext';
-import { arr2Obj } from '../../lib/utils';
+import { arrayToObject } from '../../lib/utils';
 
 const Bids = props => {
   const [activeBids, setActiveBids] = useState({});
@@ -15,9 +15,9 @@ const Bids = props => {
   useEffect(() => {
     props.setShowSpinner(true);
 
-    const serverActiveBids = axios.get('/api/bids').then(res => setActiveBids(arr2Obj(res.data)));
+    const serverActiveBids = axios.get('/api/bids').then(res => setActiveBids(arrayToObject(res.data)));
 
-    const serverCompletedBids = axios.get('/api/bids/?completed=true').then(res => setCompletedBids(arr2Obj(res.data)));
+    const serverCompletedBids = axios.get('/api/bids/?completed=true').then(res => setCompletedBids(arrayToObject(res.data)));
 
     Promise.all([serverActiveBids, serverCompletedBids])
       .catch(err => props.setErrorMessage('Error while loading bids'))
@@ -55,7 +55,7 @@ const Bids = props => {
       <IonListHeader>Active Bids</IonListHeader>
       <BidList
         modal={BidFormModal}
-        bids={Object.values(activeBids)}
+        bids={Object.values(activeBids).reverse()}
         setBids={setActiveBids}
         selectedId={selected}
         onClick={setSelected}
@@ -66,7 +66,7 @@ const Bids = props => {
       <IonListHeader>Completed Bids</IonListHeader>
       <BidList
         modal={BidFormModal}
-        bids={Object.values(completedBids)}
+        bids={Object.values(completedBids).reverse()}
         setBids={setCompletedBids}
         selectedId={selected}
         onClick={setSelected}
