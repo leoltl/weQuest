@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { IonInput, IonButton, IonList, IonItem, IonImg, IonLabel, IonTextarea } from '@ionic/react';
+import { IonInput, IonButton, IonList, IonItem, IonImg, IonIcon, IonLabel, IonTextarea } from '@ionic/react';
+import { image as imageIcon } from 'ionicons/icons';
 import axios from 'axios';
 import { readFile } from '../lib/utils';
 
@@ -74,7 +75,27 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess }
             <IonLabel className={'product-form__img-label'} position='stacked'>
               Upload a Picture
             </IonLabel>
-            <IonImg
+            <div className={'product-form__img-container'} onClick={e => e.currentTarget.querySelector('input').click()}>
+              { pictureUrl
+                ? <IonImg
+                  className={'product-form__img-img'}
+                  src={pictureUrl}
+                  alt='New Item'
+                  title='New Item'
+                />
+                : <IonIcon className='product-form__img-img product-form__img-icon' icon={imageIcon} />}
+                <IonButton className={'product-form__img-btn'}>
+                  {pictureUrl ? 'Select New Picture' : 'Upload Picture'}
+                </IonButton>
+                <IonInput
+                type='file'
+                name='pictureUrl'
+                accept='image/png, image/jpeg, image/gif, image/heif, image/heic'
+                onIonChange={loadPicture}
+                style={{ display: 'none' }}
+              />
+            </div>
+            {/* <IonImg
               className={'product-form__img-img'}
               src={
                 pictureUrl ||
@@ -92,7 +113,7 @@ export default function ProductFormScreen({ showModal, setShowModal, onSuccess }
                 onIonChange={loadPicture}
                 style={{ display: 'none' }}
               />
-            </IonButton>
+            </IonButton> */}
           </IonItem>
           <IonItem>
             <IonLabel position='floating'>Name</IonLabel>
