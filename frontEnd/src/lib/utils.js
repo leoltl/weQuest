@@ -35,7 +35,7 @@ export function isEmail(str) {
   );
 }
 
-export function arr2Obj(array) {
+export function arrayToObject(array) {
   return array.reduce((obj, item) => {
     obj[item['id']] = item;
     return obj;

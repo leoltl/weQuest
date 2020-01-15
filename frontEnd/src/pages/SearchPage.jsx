@@ -3,7 +3,7 @@ import { IonContent, IonPage, IonSearchbar, useIonViewDidEnter, useIonViewWillLe
 import RequestList from '../components/RequestList/RequestList';
 import axios from 'axios';
 import { AuthContext } from '../contexts/authContext';
-import { arr2Obj } from '../lib/utils';
+import { arrayToObject } from '../lib/utils';
 import BidFormModal from './BidFormModal';
 import Header from '../components/Header';
 import Notification from '../components/Notification';
@@ -18,7 +18,7 @@ export default function SearchPage(props) {
 
   useEffect(() => {
     axios.get(`/api/requests/?query=${query}`).then(res => {
-      setRequests(arr2Obj(res.data));
+      setRequests(arrayToObject(res.data));
     });
   }, [query]);
 
