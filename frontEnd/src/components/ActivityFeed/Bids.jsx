@@ -27,7 +27,7 @@ const Bids = props => {
       // socket connection
       console.log('mount activity feed bid socket')
       socket.on('get-bids', event => {
-      // console.log('BID EVENT', event);
+      console.log('BID EVENT', event);
       const update = event.data;
       setActiveBids(prev => {
         // if requestStatus changes remove it from requests
