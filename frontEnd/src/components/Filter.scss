@@ -1,0 +1,22 @@
+.search-page {
+  &__filter {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0.25rem 0.5rem 0;
+  }
+  &__filter-selector {
+    white-space: nowrap;
+    margin-right: 0.3rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid whitesmoke;
+    background: darkgrey;
+    color: white;
+    border-radius: 25px;
+    padding-top: 0.45rem;
+  }
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
