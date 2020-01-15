@@ -93,7 +93,7 @@ const RequestForm = props => {
       .post('/api/requests', { payload: data })
       .then(res => {
         resetFields();
-        props.history.push('/requests');
+        props.history.push('/search');
       })
       .catch(() => setErrorMessage('Error while saving'))
       .finally(() => setShowSpinner(false));

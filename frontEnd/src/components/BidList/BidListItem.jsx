@@ -11,7 +11,7 @@ const BidListItem = props => {
     <IonCard onClick={props.selectCard}>
       {isWinning && (
         <IonBadge className='activity-bid-card__badge' color='medium'>
-          Currently winning
+          {props.requestDetails.isActive? 'Currently winning' :  'Winner'}
         </IonBadge>
       )}
       <IonCardHeader className='activity-bid-card__content'>
