@@ -48,7 +48,8 @@ function ProfileAvatar(props) {
             onClick={() => signOut()}
             expand='border'
             fill='solid'
-            color='tertiary'
+            color='primary'
+            style={{ opacity: 0.8 }}
           >
             Logout
           </IonButton>

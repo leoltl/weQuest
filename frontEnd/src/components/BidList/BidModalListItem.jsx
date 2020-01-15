@@ -46,7 +46,7 @@ export default function BidListItem({
           {isWinner && 'Winner: '}
           {name}
         </IonCardTitle>
-        <IonBadge className={'bid-card__header-price'}>{currencyFormatter(priceCent)}</IonBadge>
+        <IonBadge className={`bid-card__header-price ${isExpanded ? 'bid-card__header-price--expanded' : ''}`}>{currencyFormatter(priceCent)}</IonBadge>
       </IonCardHeader>
       {isExpanded && (
         <IonCardContent>

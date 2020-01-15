@@ -8,7 +8,7 @@ export default function Modal({ showModal, setShowModal, showSpinner = false, ti
   return (
     <IonModal isOpen={showModal} onIonModalWillDismiss={e => setShowModal(false)}>
       <IonHeader>
-        <IonToolbar color='primary'>
+        <IonToolbar color='light'>
           <IonButtons slot='start'>
             <IonButton onClick={e => setShowModal(false)}>
               <IonIcon slot='icon-only' icon={arrowBack} />
