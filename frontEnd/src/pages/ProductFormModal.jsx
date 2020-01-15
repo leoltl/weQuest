@@ -9,7 +9,7 @@ import ErrorAlert from '../components/ErrorAlert';
 import './ProductFormModal.scss';
 
 export default function ProductFormScreen({ showModal, setShowModal, onSuccess }) {
-  console.log('rendering new product form');
+  // console.log('rendering new product form');
 
   const [showSpinner, setShowSpinner] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');

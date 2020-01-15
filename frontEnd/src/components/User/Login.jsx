@@ -36,7 +36,7 @@ const Login = props => {
     setShowToast(false);
   });
 
-  console.log(history.location.state, showToast);
+  // console.log(history.location.state, showToast);
 
   const redirectOnSuccess = () => {
     //redirectOnSuccess comes from Request Form

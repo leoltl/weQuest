@@ -32,6 +32,7 @@ export default function RequestFeed(props) {
 
     document.addEventListener('click', handleClickOutside);
 
+    console.log('mounting request feed socket');
     socket.on('get-requests', event => {
       console.log('EVENT', event);
       const update = event.data;

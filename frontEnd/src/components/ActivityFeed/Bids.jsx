@@ -21,11 +21,13 @@ const Bids = props => {
 
     Promise.all([serverActiveBids, serverCompletedBids])
       .catch(err => props.setErrorMessage('Error while loading bids'))
-      .finally(() => props.setShowSpinner(false));
+      .finally(() => {
+        props.setShowSpinner(false)
 
-    // socket connection
-    socket.on('get-bids', event => {
-      console.log('BID EVENT', event);
+      // socket connection
+      console.log('mount activity feed bid socket')
+      socket.on('get-bids', event => {
+      // console.log('BID EVENT', event);
       const update = event.data;
       setActiveBids(prev => {
         // if requestStatus changes remove it from requests
@@ -40,6 +42,8 @@ const Bids = props => {
         return { ...prev, [update.id]: update };
       });
     });
+        
+      });
 
     return () => {
       socket.off('get-bids');

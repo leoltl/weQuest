@@ -9,7 +9,7 @@ import ErrorAlert from '../components/ErrorAlert';
 import './LoginScreen.scss';
 
 const LoginScreen = props => {
-  console.log('login rendered');
+  // console.log('login rendered');
   const [segment, setSegment] = useState('login');
   const [showSpinner, setShowSpinner] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
