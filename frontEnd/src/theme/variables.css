@@ -3,7 +3,12 @@ http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
 :root {
+  /* background: #FC466B;  fallback for old browsers */
+/* background: /-webkit-linear-gradient(to right, #3F5EFB, #FC466B);  Chrome 10-25, Safari 5.1-6 */
+/* background: linear-gradient(to right, #3F5EFB, #FC466B); W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   --ion-color-primary: #642d91;
+  --ion-color-primary: linear-gradient(326deg, #a4508b 0%, #5f0a87 74%);
+  
   --ion-color-primary-rgb: 100, 45, 145;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
@@ -17,7 +22,7 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-secondary-shade: #947e97;
   --ion-color-secondary-tint: #b19ab4;
 
-  --ion-color-tertiary: #d4b2d8;
+  --ion-color-tertiary: #642d91;
   --ion-color-tertiary-rgb: 112, 68, 255;
   --ion-color-tertiary-contrast: #ffffff;
   --ion-color-tertiary-contrast-rgb: 255, 255, 255;
@@ -65,4 +70,15 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d1d1d1;
   --ion-color-light-tint: #f0f0f0;
+}
+
+/* override ion default tab select color, not using primary color  */
+.tab-selected, .segment-button-checked {
+  color: #642d91 !important;
+  border-bottom: 2px solid #642d91 !important;
+}
+
+.tab-selected {
+  box-sizing: border-box;
+  border-bottom: 2px solid rgba(95, 10, 135, 0.7);
 }

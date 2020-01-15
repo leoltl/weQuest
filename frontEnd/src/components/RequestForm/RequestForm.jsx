@@ -43,7 +43,28 @@ const RequestForm = props => {
   };
 
   const isValid = data => {
-    return data.title && data.budgetCent && data.borrowStart && data.borrowEnd && data.borrowStart <= data.borrowEnd;
+    //TOBE refactored...
+    if (!data.title) {
+      setErrorMessage('Title cannot be blank');
+      return false;
+    } 
+    if (!data.budgetCent) {
+      setErrorMessage('Budget cannot be blank');
+      return false;
+    }
+    if (!data.borrowStart) {
+      setErrorMessage('Start date cannot be blank');
+      return false;
+    }
+    if (!data.borrowEnd) {
+      setErrorMessage('End date cannot be blank');
+      return false;
+    }
+    if (data.borrowStart > data.borrowEnd) {
+      setErrorMessage('Invalid start/end date');
+      return false;
+    } 
+    return true
   };
 
   const submit = () => {
@@ -60,7 +81,7 @@ const RequestForm = props => {
       description: notes,
     };
 
-    if (!isValid(data)) return setErrorMessage('Invalid form.');
+    if (!isValid(data)) return
 
     setShowSpinner('Saving...');
     axios
