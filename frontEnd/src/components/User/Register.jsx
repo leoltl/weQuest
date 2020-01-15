@@ -5,6 +5,11 @@ import { useHistory } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authContext';
 import { isEmail } from '../../lib/utils';
 
+const _firstName = ["Adam", "Alex", "Aaron", "Ben", "Carl", "Dan", "David", "Edward", "Fred", "Frank", "George", "Hal", "Hank", "Ike", "John", "Jack", "Joe", "Larry", "Monte", "Matthew", "Mark", "Nathan", "Otto", "Paul", "Peter", "Roger", "Roger", "Steve", "Thomas", "Tim", "Ty", "Victor", "Walter"];   
+	
+const _lastName = ["Anderson", "Ashwoon", "Aikin", "Bateman", "Bongard", "Bowers", "Boyd", "Cannon", "Cast", "Deitz", "Dewalt", "Ebner", "Frick", "Hancock", "Haworth", "Hesch", "Hoffman", "Kassing", "Knutson", "Lawless", "Lawicki", "Mccord", "McCormack", "Miller", "Myers", "Nugent", "Ortiz", "Orwig", "Ory", "Paiser", "Pak", "Pettigrew", "Quinn", "Quizoz", "Ramachandran", "Resnick", "Sagar", "Schickowski", "Schiebel", "Sellon", "Severson", "Shaffer", "Solberg", "Soloman", "Sonderling", "Soukup", "Soulis", "Stahl", "Sweeney", "Tandy", "Trebil", "Trusela", "Trussel", "Turco", "Uddin", "Uflan", "Ulrich", "Upson", "Vader", "Vail", "Valente", "Van Zandt", "Vanderpoel", "Ventotla", "Vogal", "Wagle", "Wagner", "Wakefield", "Weinstein", "Weiss", "Woo", "Yang", "Yates", "Yocum", "Zeaser", "Zeller", "Ziegler", "Bauer", "Baxster", "Casal", "Cataldi", "Caswell", "Celedon", "Chambers", "Chapman", "Christensen", "Darnell", "Davidson", "Davis", "DeLorenzo", "Dinkins", "Doran", "Dugelman", "Dugan", "Duffman", "Eastman", "Ferro", "Ferry", "Fletcher", "Fietzer", "Hylan", "Hydinger", "Illingsworth", "Ingram", "Irwin", "Jagtap", "Jenson", "Johnson", "Johnsen", "Jones", "Jurgenson", "Kalleg", "Kaskel", "Keller", "Leisinger", "LePage", "Lewis", "Linde", "Lulloff", "Maki", "Martin", "McGinnis", "Mills", "Moody", "Moore", "Napier", "Nelson", "Norquist", "Nuttle", "Olson", "Ostrander", "Reamer", "Reardon", "Reyes", "Rice", "Ripka", "Roberts", "Rogers", "Root", "Sandstrom", "Sawyer", "Schlicht", "Schmitt", "Schwager", "Schutz", "Schuster", "Tapia", "Thompson", "Tiernan", "Tisler" ];
+
+
 const Register = props => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -12,29 +17,19 @@ const Register = props => {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const history = useHistory();
 
-  const validateForm = () => {
-    if (name.length < 1) {
-      props.setErrorMessage('Name cannot be empty');
-      return false;
-    }
-    if (email.length < 1) {
-      props.setErrorMessage('Email cannot be empty');
-      return false;
-    }
-    if (!isEmail(email)) {
-      props.setErrorMessage('Email is invalid');
-      return false;
-    }
-    if (password.length < 1) {
-      props.setErrorMessage('Password cannot be empty');
-      return false;
-    }
-    if (password !== passwordConfirmation) {
-      props.setErrorMessage('Passwords Do Not Match');
-      return false;
-    }
+  const autoFillInfo = () => {
 
-    return true;
+    const firstName = _firstName[Math.floor(Math.random()*(_firstName.length))]
+    console.log(Math.random()*(_firstName.length) + 1)
+    const lastName = _lastName[Math.floor(Math.random()*(_lastName.length))]
+    console.log(_lastName)
+    const email = Math.random()
+      .toString(36)
+      .substring(7);
+    setName(firstName + " " + lastName)
+    setEmail(email + '@gmail.com');
+    setPassword(email);
+    setPasswordConfirmation(email);
   };
 
   const { setUser } = useContext(AuthContext);
@@ -47,8 +42,6 @@ const Register = props => {
   };
 
   const submit = async () => {
-    if (!validateForm()) return;
-
     try {
       props.setShowSpinner(true);
       const serverResponse = await axios.post('/api/users', {
@@ -82,7 +75,8 @@ const Register = props => {
                 type='name'
                 value={name}
                 clearInput
-                autcomplete='on'
+                // autcomplete='on'
+                onIonFocus={() => autoFillInfo()}
                 onIonChange={e => setName(e.target.value)}
                 required
               />
@@ -94,7 +88,7 @@ const Register = props => {
                 type='email'
                 value={email}
                 clearInput
-                autcomplete='on'
+                // autcomplete='on'
                 onIonChange={e => setEmail(e.target.value)}
                 required
               />

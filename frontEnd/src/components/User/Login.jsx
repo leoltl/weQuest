@@ -157,6 +157,7 @@ const Login = props => {
               render={renderProps => (
                 <button
                   className='login-button login-button--facebook'
+                  disabled={true}
                   onClick={e => {
                     e.preventDefault();
                     renderProps.onClick();
@@ -180,7 +181,8 @@ const Login = props => {
                     e.preventDefault();
                     renderProps.onClick();
                   }}
-                  disabled={renderProps.disabled}
+                  // disabled={renderProps.disabled}
+                  disabled={true}
                 >
                   Login with Google
                 </button>
