@@ -5,7 +5,7 @@
 // tslint:disable: import-name
 import socketIO from 'socket.io';
 import http from 'http';
-import { socketSessionIdParser, sessionIdStore } from './utils';
+import { socketSessionIdParser } from './utils';
 
 export type SocketParams = {
   server: http.Server,
@@ -141,7 +141,6 @@ export default class Socket {
         console.error('ERROR: Attempting to unsubscribe from an event that does not exist or that the user is not subscribed to');
         return this;
       }
-      // this.events[event] = this.events[event] || {};
 
       // unsubscribe from eventKey only if supplied
       if (eventKey) {
@@ -157,8 +156,6 @@ export default class Socket {
         this.unsubscribe(sessionId, event, eventKey);
       }
 
-      // remove from event
-      // this.events[event].default && this.events[event].default.delete(client);
       // remove from subscriptions
       delete subscriptions[event];
 

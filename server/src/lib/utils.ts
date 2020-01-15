@@ -84,7 +84,8 @@ export function sessionIdParser(req: Request, res: Response, next: NextFunction)
 // express middleware to store userId/session combo
 export function storeSessionId(req: Request, res: Response, next: NextFunction) {
   const userId = req.session!.userId;
-  if (userId && !sessionIdStore.has(userId)) sessionIdStore.set(userId, req.sessionId!);
+  const sessionId = req.sessionId!;
+  if (userId && sessionId && sessionIdStore.get(userId) !== sessionId) sessionIdStore.set(userId, sessionId);
   next();
 }
 
@@ -95,13 +96,18 @@ export class SessionIdStore {
     return this.sessions[userId];
   }
 
-  public set(userId: number, sessionId: string) {
+  public set(userId: number, sessionId: string): this {
     this.sessions[userId] = sessionId;
+    return this;
+  }
+
+  public delete(userId: number): this {
+    delete this.sessions[userId];
+    return this;
   }
 
   public has(userId: number): boolean {
     return userId in this.sessions;
-
   }
 }
 
