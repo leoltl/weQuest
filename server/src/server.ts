@@ -18,7 +18,7 @@ import { dbParams, storageParams } from './lib/config-vars';
 import DB from './lib/db';
 import Storage from './lib/storage';
 import Socket from './lib/socket';
-import { sessionIdParser, forceSession, storeSessionId } from './lib/utils';
+import { sessionIdParser, forceSession, storeSessionId, sessionIdStore } from './lib/utils';
 import path from 'path';
 
 // server config
@@ -80,13 +80,13 @@ app.use([
     keys: ['Coolstuffgoesonhere'],
     maxAge: 365 * 24 * 60 * 60 * 1000 /* 1 year */,
   }),
-  forceSession,
+  // forceSession,
   sessionIdParser,
   storeSessionId,
 ]);
 
 const server = http.createServer(app);
-const socket = new Socket({ server, path: '/socket' });
+const socket = new Socket({ server, sessionIdStore, path: '/socket' });
 
 const userController = new UserController(db);
 const requestController = new RequestController(db, socket);
