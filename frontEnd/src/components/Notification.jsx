@@ -14,7 +14,7 @@ export default function Notification(props) {
       setShowToast(true);
       setTimeout(() => {
         setNotification('');
-      }, 5050);
+      }, 4050);
     } else {
       setInitialRender(false);
     }
@@ -36,7 +36,7 @@ export default function Notification(props) {
         isOpen={showToast}
         onDidDismiss={() => setShowToast(false)}
         message={notification}
-        duration={5000}
+        duration={4000}
         position={'top'}
       />
     </CSSTransition>

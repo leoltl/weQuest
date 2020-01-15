@@ -10,9 +10,9 @@ import Profile from './pages/Profile';
 import ActivityFeed from './pages/ActivityFeed';
 import ProtectedRoute from './Routes/ProtectedRoute';
 import { AuthContext } from './contexts/authContext';
-import Spinner from './components/Spinner';
 import axios from 'axios';
 import SearchPage from './pages/SearchPage';
+import SplashPage from './components/SpashPage';
 
 export default function Router(props) {
   const [initialRender, setinitialRender] = useState(true);
@@ -28,9 +28,10 @@ export default function Router(props) {
     getCurrentState();
   }, [user]);
 
-  return initialRender
-    ? (<Spinner message='Welcome to weQuest. Please wait...' />)
-    : (<IonReactRouter>
+  return initialRender ? (
+    <SplashPage />
+  ) : (
+    <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet animated={false}>
           <Route path='/search' component={SearchPage} exact={true} />
@@ -41,8 +42,8 @@ export default function Router(props) {
           <ProtectedRoute path='/activity/:tab' component={ActivityFeed} />
           <ProtectedRoute path='/profile' component={Profile} />
         </IonRouterOutlet>
-        <IonTabBar className="tab-bar" slot='bottom'> 
-          <IonTabButton tab='requestFeed' href='/requests'  color={'tertiary'}>
+        <IonTabBar className='tab-bar' slot='bottom'>
+          <IonTabButton tab='requestFeed' href='/requests' color={'tertiary'}>
             <IonIcon alt='home feed' icon={home} />
           </IonTabButton>
           <IonTabButton tab='search' href='/search'>
@@ -52,12 +53,13 @@ export default function Router(props) {
             <IonIcon alt='create new request' icon={addCircleOutline} />
           </IonTabButton>
           <IonTabButton tab='activityFeed' href='/activity/requests/'>
-            <IonIcon alt='activity feed'icon={list} />
+            <IonIcon alt='activity feed' icon={list} />
           </IonTabButton>
           <IonTabButton tab='profile' href='/profile'>
             <IonIcon alt='profile' icon={contact} />
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
-    </IonReactRouter>);
+    </IonReactRouter>
+  );
 }
