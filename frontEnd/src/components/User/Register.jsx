@@ -1,9 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import axios from 'axios';
 import { IonContent, IonItem, IonLabel, IonInput, IonList, IonButton } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authContext';
-import { isEmail } from '../../lib/utils';
+import { isEmail, readFile } from '../../lib/utils';
 
 const _firstName = ["Adam", "Alex", "Aaron", "Ben", "Carl", "Dan", "David", "Edward", "Fred", "Frank", "George", "Hal", "Hank", "Ike", "John", "Jack", "Joe", "Larry", "Monte", "Matthew", "Mark", "Nathan", "Otto", "Paul", "Peter", "Roger", "Roger", "Steve", "Thomas", "Tim", "Ty", "Victor", "Walter"];   
 	
@@ -16,8 +16,10 @@ const Register = props => {
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const history = useHistory();
+  const { setNotification } = useContext(AuthContext);
 
-  const autoFillInfo = () => {
+  // AUTO FILL FOR DEMO PURPOSES ONLY
+  const autoFillInfo = useCallback(() => {
 
     const firstName = _firstName[Math.floor(Math.random()* (_firstName.length))]
     const lastName = _lastName[Math.floor(Math.random()*(_lastName.length))]
@@ -28,7 +30,25 @@ const Register = props => {
     setEmail(email + '@gmail.com');
     setPassword(email);
     setPasswordConfirmation(email);
-  };
+  });
+
+  // AUTO ITEM CREATION FOR DEMO PURPOSES ONLY
+  const createItem = useCallback(() => {
+
+    props.setShowSpinner(true);
+
+    const product = {
+      name: 'Thumbs Up',
+      description: 'Per urbandictionary.com: What you must give to this definition, or my parents will beat me.',
+      pictureUrl: 'secretdefaultdev',
+    };
+
+    axios.post('/api/items', product)
+      .then(() => setNotification('An item has been automatically added to your item list. Let\'s get the bidding started!'))
+      .catch(err => console.log('Failed to add item automatically', err))
+      .finally(() => props.setShowSpinner(false));
+
+  });
 
   const { setUser } = useContext(AuthContext);
 
@@ -48,6 +68,10 @@ const Register = props => {
 
       setUser(serverResponse.data);
       clearForm();
+
+      //DEMO ONLY: create dummy item
+      await createItem();
+
       history.push('/requests');
     } catch (err) {
       props.setErrorMessage('Error while signing up');

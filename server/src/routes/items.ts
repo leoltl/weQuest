@@ -41,6 +41,7 @@ export default class ItemController {
           res.json(output);
 
         } catch (err) {
+          console.log(err);
           res.status(500).json({ error: 'Failed to save item' });
         }
       });
@@ -65,11 +66,25 @@ export default class ItemController {
           .create({ ...input, pictureUrl: 'https://example.com' })
           .run(query);
 
+        // DEV CODE
+        // for demo purposes only - if pictureUrl is string 'secretdefaultdev' add default picture
+        const isDefault: boolean = input.pictureUrl === 'secretdefaultdev';
         // upload image to storage
-        const { url } = await this.storage.upload64(
-          input.pictureUrl,
-          `item-${item.id}`,
-        );
+
+        let url = 'https://images.unsplash.com/photo-1564544430321-8d0eb062b11e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=564&q=80';
+        if (!isDefault) {
+          const img = await this.storage.upload64(
+            input.pictureUrl,
+            `item-${item.id}`,
+          );
+          url = img.url;
+        }
+
+        // PROD CODE
+        // const { url } = await this.storage.upload64(
+        //   input.pictureUrl,
+        //   `item-${item.id}`,
+        // );
         // update item with saved picture url
         const { id, name, description, pictureUrl } = await this.model
           .update({ pictureUrl: url })
