@@ -121,7 +121,8 @@ const RequestForm = props => {
           }}
           formValues={{ budget, item, startDate, endDate, notes }}
         />
-        <IonButton className='new-request__button' expand='block' type='submit'>
+        <br />
+        <IonButton className='new-request__button' expand='block' type='submit' style={{opacity: 0.8}}>
           {user ? 'Request It' : 'Login to request'}
         </IonButton>
         <IonButton expand='block' fill='clear' type='button' onClick={onCancel}>

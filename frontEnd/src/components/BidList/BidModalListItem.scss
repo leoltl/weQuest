@@ -36,6 +36,9 @@
       justify-self: end;
       font-size: 1.2rem;
     }
+    &-price--expanded {
+      background: transparent;
+    }
   }
 
   .bid-card &__heading {
