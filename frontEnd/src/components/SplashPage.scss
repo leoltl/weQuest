@@ -1,16 +1,27 @@
 .splash-page {
+  background: var(--ion-color-primary);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   height: 100vh;
 
-  &__container {
-    margin: 0 auto;
-    margin-bottom: 40%;
-    font-size: 2rem;
-    padding: 5%;
-    border: 1px solid var(--ion-color-primary);
+  &__icon {
+    align-self: center;
+    font-size: 3rem;
     border-radius: 0.5rem;
     font-family: var(--ion-default-font);
+    color: white;
+    margin-bottom: 20%;
+  }
+
+  &__container {
+    margin: 0 auto;
+    margin-bottom: 10%;
+    font-size: 2.5rem;
+    // padding: 15%;
+    // border: 3px solid white;
+    border-radius: 0.5rem;
+    font-family: var(--ion-default-font);
+    color: white;
   }
 }

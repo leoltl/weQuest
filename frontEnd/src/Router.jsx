@@ -12,7 +12,6 @@ import ProtectedRoute from './Routes/ProtectedRoute';
 import { AuthContext } from './contexts/authContext';
 import axios from 'axios';
 import SearchPage from './pages/SearchPage';
-import { Wave } from 'react-animated-text';
 import SplashPage from './components/SpashPage';
 
 export default function Router(props) {
@@ -44,7 +43,7 @@ export default function Router(props) {
           <ProtectedRoute path='/profile' component={Profile} />
         </IonRouterOutlet>
         <IonTabBar className='tab-bar' slot='bottom'>
-          <IonTabButton tab='requestFeed' href='/requests'>
+          <IonTabButton tab='requestFeed' href='/requests' color={'tertiary'}>
             <IonIcon alt='home feed' icon={home} />
           </IonTabButton>
           <IonTabButton tab='search' href='/search'>

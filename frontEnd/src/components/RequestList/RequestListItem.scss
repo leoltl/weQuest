@@ -2,6 +2,7 @@
   &__request-current-price {
     font-size: 1.2rem;
     padding: 0;
+    color: #642d91;
   }
 }
 
@@ -13,5 +14,6 @@
   
   &__button {
     text-transform: capitalize;
+    opacity: 0.8;
   }
 }
