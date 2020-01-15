@@ -7,7 +7,7 @@ import Header from '../components/Header';
 import Spinner from '../components/Spinner';
 import ErrorAlert from '../components/ErrorAlert';
 import { AuthContext } from '../contexts/authContext';
-import { arr2Obj } from '../lib/utils';
+import { arrayToObject } from '../lib/utils';
 import Notification from '../components/Notification';
 import './RequestFeed.scss';
 // import useOnClickOutside from '../components/useOnClickOutside';
@@ -25,13 +25,14 @@ export default function RequestFeed(props) {
     axios
       .get('/api/requests')
       .then(res => {
-        setRequests(arr2Obj(res.data));
+        setRequests(arrayToObject(res.data));
       })
       .catch(err => setErrorMessage('Error while loading the feed'))
       .finally(() => setShowSpinner(false));
 
     document.addEventListener('click', handleClickOutside);
 
+    console.log('mounting request feed socket');
     socket.on('get-requests', event => {
       console.log('EVENT', event);
       const update = event.data;
@@ -62,7 +63,7 @@ export default function RequestFeed(props) {
     setShowSpinner(true);
     axios
       .get('/api/requests')
-      .then(res => setRequests(res.data))
+      .then(res => setRequests(arrayToObject(res.data)))
       .then(event.detail.complete())
       .catch(err => setErrorMessage('Error while loading bids'))
       .finally(() => setShowSpinner(false));
@@ -92,7 +93,7 @@ export default function RequestFeed(props) {
           onClick={setSelectedId}
           buttonTitle='Bid Now'
           // refractor to work with objs instead of passing down array
-          requests={Object.values(requests)}
+          requests={Object.values(requests).reverse()}
           onRefresh={onRefresh}
         />
       </IonContent>

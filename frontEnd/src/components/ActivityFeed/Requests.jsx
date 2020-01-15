@@ -4,7 +4,7 @@ import BidModal from '../../pages/BidModal';
 import RequestList from '../RequestList/RequestList';
 import axios from 'axios';
 import { AuthContext } from '../../contexts/authContext';
-import { arr2Obj } from '../../lib/utils';
+import { arrayToObject } from '../../lib/utils';
 
 const Requests = props => {
   const [activeRequests, setActiveRequests] = useState({});
@@ -16,38 +16,43 @@ const Requests = props => {
   useEffect(() => {
     props.setShowSpinner(true);
 
-    const serverActiveRequests = axios.get('/api/requests/active').then(res => setActiveRequests(arr2Obj(res.data)));
+    const serverActiveRequests = axios.get('/api/requests/active').then(res => setActiveRequests(arrayToObject(res.data)));
 
-    const serverCompletedRequests = axios.get('/api/requests/completed').then(res => setCompletedRequests(arr2Obj(res.data)));
+    const serverCompletedRequests = axios.get('/api/requests/completed').then(res => setCompletedRequests(arrayToObject(res.data)));
 
     Promise.all([serverActiveRequests, serverCompletedRequests])
       .catch(err => props.setErrorMessage('Error while loading requests'))
-      .finally(() => props.setShowSpinner(false));
+      .finally(() => {
+        props.setShowSpinner(false)
+        //socket connection
+        console.log('mounting activity feed request socket')
+        socket.on('get-requests', event => {
+          // console.log('EVENT', event);
+          const update = event.data;
 
-    // socket connection
-    socket.on('get-requests', event => {
-      // console.log('EVENT', event);
-      const update = event.data;
-
-      setActiveRequests(prev => {
-        // if requestStatus changes remove it from requests
-        if (prev[update.id].requestStatus !== update.requestStatus) {
-          const { [update.id]: undefined, ...rest } = prev;
-          // console.log('REST', rest);
-          return rest;
-        }
-        return { ...prev, [update.id]: update };
-      });
-      setCompletedRequests(prev => {
-        if (prev[update.id] && prev[update.id].requestStatus !== update.requestStatus) {
-          return { ...prev, [update.id]: update };
-        }
-        return prev
-      });
+          setActiveRequests(prev => {
+            console.log('prev', prev[update.id], update)
+            // if requestStatus changes remove it from requests
+            if (prev[update.id].requestStatus !== update.requestStatus) {
+              const { [update.id]: undefined, ...rest } = prev;
+              // console.log('REST', rest);
+              return rest;
+            }
+            return { ...prev, [update.id]: update };
+          });
+          setCompletedRequests(prev => {
+            if (prev[update.id] && prev[update.id].requestStatus !== update.requestStatus) {
+              return { ...prev, [update.id]: update };
+            }
+            return prev
+          });
+        });
     });
 
+    console.log(activeRequests);
+
     return () => {
-      console.log('unmounting activity-requests listener');
+      console.log('unmounting activity requests listener');
       socket.off('get-requests');
     };
   }, []);
@@ -58,7 +63,7 @@ const Requests = props => {
       <RequestList
         modal={BidModal}
         // refractor to work with objs instead of passing down array
-        requests={Object.values(activeRequests)}
+        requests={Object.values(activeRequests).reverse()}
         setRequests={setActiveRequests}
         selectedId={selected}
         onClick={setSelected}
@@ -70,7 +75,7 @@ const Requests = props => {
       <RequestList
         modal={BidModal}
         // refractor to work with objs instead of passing down array
-        requests={Object.values(completedRequests)}
+        requests={Object.values(completedRequests).reverse()}
         setRequests={setCompletedRequests}
         selectedId={selected}
         onClick={setSelected}

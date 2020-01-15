@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { IonApp } from '@ionic/react';
 
 import Router from './Router';
@@ -28,9 +28,9 @@ import './theme/variables.css';
 import io from 'socket.io-client';
 const socket = io('/', { path: '/socket' });
 // const socket = io('/');
-socket.on('connect', () => {
-  console.log('socket connected', socket.connected);
-});
+// socket.on('connect', () => {
+//   console.log('socket connected', socket.connected);
+// });
 
 // socket.on('get-bids', data => {
 //   socketData['get-bids'].push(data.data);
@@ -46,12 +46,25 @@ socket.on('connect', () => {
 //   console.log(socketData);
 // });
 
-const App = () => (
-  <IonApp>
+const App = () => {
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('socket connected', socket.connected);
+    });
+
+    return (() =>{
+      socket.off('notifications')
+      socket.off('get-requests')
+      socket.off('get-bids')
+      socket.emit('disconnect')
+    })
+  }, [])
+
+  return (<IonApp>
     <AuthContextProvider socket={socket}>
       <Router />
     </AuthContextProvider>
-  </IonApp>
-);
+  </IonApp>)
+};
 
 export default App;

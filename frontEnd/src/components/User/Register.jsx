@@ -21,10 +21,8 @@ const Register = props => {
   // AUTO FILL FOR DEMO PURPOSES ONLY
   const autoFillInfo = useCallback(() => {
 
-    const firstName = _firstName[Math.floor(Math.random()*(_firstName.length))]
-    console.log(Math.random()*(_firstName.length) + 1)
+    const firstName = _firstName[Math.floor(Math.random()* (_firstName.length))]
     const lastName = _lastName[Math.floor(Math.random()*(_lastName.length))]
-    console.log(_lastName)
     const email = Math.random()
       .toString(36)
       .substring(7);
