@@ -77,7 +77,7 @@ export default class Request extends Model {
 
   public findSafe(id?: number, status?: RequestStatus, excludeUsers?: number[]): SQL {
     const query = this.sql(
-      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, requests.request_status, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
+      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, requests.request_status, requests.borrow_start, requests.borrow_end, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
       FROM requests
       JOIN users ON requests.user_id = users.id
       LEFT JOIN bids on requests.current_bid_id = bids.id
@@ -105,7 +105,7 @@ export default class Request extends Model {
 
   public findSafeByUserId(userId: number, status?: RequestStatus): SQL {
     return this.sql(
-      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, requests.request_status, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
+      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, requests.request_status, requests.borrow_start, requests.borrow_end, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
       FROM requests
       JOIN users ON requests.user_id = users.id
       LEFT JOIN bids on requests.current_bid_id = bids.id
@@ -118,7 +118,7 @@ export default class Request extends Model {
 
   public findSafeByQuery(query: string, userId: number): SQL {
     return this.sql(
-      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, requests.request_status, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
+      `SELECT requests.id, requests.title, requests.auction_end, requests.description, requests.current_bid_id, requests.request_status, requests.borrow_start, requests.borrow_end, users.name, COALESCE(bids.price_cent, requests.budget_cent) as price_cent, bids.item_id
       FROM requests
       LEFT JOIN users ON requests.user_id = users.id
       LEFT JOIN bids on requests.current_bid_id = bids.id
