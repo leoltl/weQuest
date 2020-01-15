@@ -1,0 +1,16 @@
+.splash-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100vh;
+
+  &__container {
+    margin: 0 auto;
+    margin-bottom: 40%;
+    font-size: 2rem;
+    padding: 5%;
+    border: 1px solid var(--ion-color-primary);
+    border-radius: 0.5rem;
+    font-family: var(--ion-default-font);
+  }
+}
