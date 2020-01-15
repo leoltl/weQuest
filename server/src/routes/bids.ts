@@ -3,7 +3,7 @@ import { Router } from 'express';
 import DB from '../lib/db';
 import { and, or } from '../lib/sql';
 import Socket from '../lib/socket';
-import { accessControl, sessionIdStore, notifyUser } from '../lib/utils';
+import { accessControl, notifyUser } from '../lib/utils';
 import Request from '../models/request';
 import Bid, { BidInterface } from '../models/bid';
 import Item, { ItemInterface } from '../models/item';

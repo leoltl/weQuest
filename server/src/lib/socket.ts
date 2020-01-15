@@ -5,11 +5,12 @@
 // tslint:disable: import-name
 import socketIO from 'socket.io';
 import http from 'http';
-import { socketSessionIdParser } from './utils';
+import { socketSessionIdParser, SessionIdStore } from './utils';
 
 export type SocketParams = {
   server: http.Server,
   path?: string,
+  sessionIdStore?: SessionIdStore,
 };
 
 export type SocketEmitOptions = {
@@ -31,6 +32,7 @@ export default class Socket {
   private clients: Record<string, socketIO.Socket> = {};
   // client to sessinId
   private sessions: Map<socketIO.Socket, string> = new Map();
+  private sessionIdStore: SessionIdStore | undefined;
 
   // SUBSCRIPTIONS LOOKUP - uses set instead of arrays for constant time add/delete operations
   // event to sockets
@@ -39,7 +41,7 @@ export default class Socket {
   private subscriptions: Map<socketIO.Socket, Record<string, Set<string>>> = new Map();
 
   private static instances: Socket[] = [];
-  private static instanceEqualityChecks: (keyof SocketParams)[] = ['server', 'path'];
+  private static instanceEqualityChecks: (keyof SocketParams)[] = ['server', 'path', 'sessionIdStore'];
 
   constructor(private params: SocketParams) {
     const existingInstance = Socket.findInstance(params);
@@ -49,11 +51,17 @@ export default class Socket {
       ? socketIO(params.server, { path: params.path })
       : socketIO(params.server);
 
+    // register sessionIdStore if provided (to store authId <-> socketId combos)
+    'sessionIdStore' in params && (this.sessionIdStore = params.sessionIdStore);
+
     // register middleware to attach sessionId to client objects
     this.io.use(socketSessionIdParser);
 
     // init
     this.io.on('connection', (client) => {
+
+      client.sessionId = client.id;
+
       this.registerSocket(client);
       client.on('disconnect', () => this.unregisterSocket(client));
     });
@@ -94,6 +102,9 @@ export default class Socket {
     // remove client from lookup maps
     delete this.clients[sessionId];
     this.sessions.delete(client);
+
+    // remove sessionId from sessionIdStore if provided
+    this.sessionIdStore && this.sessionIdStore.delete({ sessionId });
 
   }
 
