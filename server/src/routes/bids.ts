@@ -69,7 +69,7 @@ export default class BidController {
           if (pastBid) {
             const pastBidUser = await this.model.select('items.users.id').where({ id: pastBid.id }).limit(1).run(this.db.query);
 
-            pastBidUser !== req.session!.userId && notifyUser(pastBidUser.id, `Your bid for ${updatedRequest.title} has been overtaken. Not all hope is lost though. The requester might still accept it. When in doubt... bid again!`, this.socket);
+            pastBidUser.id !== req.session!.userId && notifyUser(pastBidUser.id, `Your bid for ${updatedRequest.title} has been overtaken. Not all hope is lost though. The requester might still accept it. When in doubt... bid again!`, this.socket);
           }
 
           // respond with safe bid
