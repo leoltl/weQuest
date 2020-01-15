@@ -5,17 +5,21 @@ import { CSSTransition } from 'react-transition-group';
 
 export default function Notification(props) {
   const [showToast, setShowToast] = useState(false);
-  const { notification } = useContext(AuthContext);
+  const { notification, setNotification } = useContext(AuthContext);
   const [initalRender, setInitialRender] = useState(true);
 
   // show toast when notification hook is changed
   useEffect(() => {
     if (!initalRender) {
       setShowToast(true);
+      setTimeout(() => {
+        setNotification('');
+      }, 5050);
+    } else {
+      setInitialRender(false);
     }
 
     // ensures notificaiton does not show up on load
-    setInitialRender(false);
   }, [notification]);
 
   return (
@@ -32,7 +36,7 @@ export default function Notification(props) {
         isOpen={showToast}
         onDidDismiss={() => setShowToast(false)}
         message={notification}
-        duration={2000}
+        duration={5000}
         position={'top'}
       />
     </CSSTransition>

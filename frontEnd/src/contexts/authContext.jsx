@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 export const AuthContext = createContext();
 
@@ -44,13 +44,18 @@ const AuthContextProvider = props => {
     setUser(prevState => (prevState ? null : 'Leo'));
   };
 
-  // notification listener
-  socket.on('notifications', event => {
-    // console.log('notifications EVENT', event);
-    // console.log('notifications', event.data);
-    const notification = event.data;
-    setNotification(notification);
-  });
+  useEffect(() => {
+    // notification listener
+    socket.on('notifications', event => {
+      console.log('notifications', event.data);
+      const notification = event.data;
+      setNotification(notification);
+    });
+
+    return () => {
+      socket.off('notifications');
+    };
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -60,6 +65,7 @@ const AuthContextProvider = props => {
         hardChangeAuth,
         socket,
         notification,
+        setNotification,
       }}
     >
       {props.children}
