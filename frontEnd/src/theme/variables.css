@@ -7,7 +7,7 @@ http://ionicframework.com/docs/theming/ */
 /* background: /-webkit-linear-gradient(to right, #3F5EFB, #FC466B);  Chrome 10-25, Safari 5.1-6 */
 /* background: linear-gradient(to right, #3F5EFB, #FC466B); W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   --ion-color-primary: #642d91;
-  --ion-color-primary: linear-gradient(326deg, #a4508b 0%, #5f0a87 74%);
+  /* --ion-color-primary: linear-gradient(326deg, #a4508b 0%, #5f0a87 74%); */
   
   --ion-color-primary-rgb: 100, 45, 145;
   --ion-color-primary-contrast: #ffffff;
