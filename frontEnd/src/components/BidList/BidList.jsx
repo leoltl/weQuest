@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useContext } from 'react';
-import { IonList } from '@ionic/react';
+import { IonList, IonRefresher, IonRefresherContent } from '@ionic/react';
 import BidListItem from './BidListItem';
 
 import { AuthContext } from '../../contexts/authContext';
@@ -67,6 +67,18 @@ const BidList = ({ modal: Modal, ...props }) => {
           }}
         />
       )}
+
+      {props.onRefresh && (
+        <IonRefresher slot='fixed' onIonRefresh={props.onRefresh}>
+          <IonRefresherContent
+            pullingIcon='arrow-dropdown'
+            pullingText='Pull to refresh'
+            refreshingSpinner='bubbles'
+            refreshingText='Refreshing...'
+          />
+        </IonRefresher>
+      )}
+
       <IonList className='request-feed__list-container'>{renderedRequestItem}</IonList>
     </>
   );

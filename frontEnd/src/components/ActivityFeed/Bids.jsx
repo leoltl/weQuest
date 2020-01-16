@@ -1,15 +1,18 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { IonListHeader } from '@ionic/react';
 import BidList from '../BidList/BidList';
 import BidFormModal from '../../pages/BidFormModal';
 import axios from 'axios';
 import { AuthContext } from '../../contexts/authContext';
 import { arrayToObject } from '../../lib/utils';
+import Spinner from '../Spinner';
+
 
 const Bids = props => {
   const [activeBids, setActiveBids] = useState({});
   const [completedBids, setCompletedBids] = useState({});
   const [selected, setSelected] = useState(null);
+  const [showSpinner, setShowSpinner] = useState(false);
   const { socket } = useContext(AuthContext);
 
   useEffect(() => {
@@ -51,6 +54,21 @@ const Bids = props => {
     };
   }, []);
 
+  const onRefresh = useCallback(event => {
+    setShowSpinner(true);
+
+    const serverActiveBids = axios.get('/api/bids').then(res => setActiveBids(arrayToObject(res.data)));
+
+    const serverCompletedBids = axios.get('/api/bids/?completed=true').then(res => setCompletedBids(arrayToObject(res.data)));
+
+    Promise.all([serverActiveBids, serverCompletedBids])
+      .catch(err => props.setErrorMessage('Error while loading bids'))
+      .finally(() => {
+        event.detail.complete()
+        props.setShowSpinner(false)
+      });
+  });
+
   return (
     <>
       <IonListHeader>Active Bids</IonListHeader>
@@ -63,6 +81,8 @@ const Bids = props => {
         buttonTitle='Bid Again'
         setErrorMessage={props.setErrorMessage}
         setShowSpinner={props.setShowSpinner}
+        onRefresh={onRefresh}
+
       />
       <IonListHeader>Completed Bids</IonListHeader>
       <BidList
@@ -73,6 +93,8 @@ const Bids = props => {
         onClick={setSelected}
         setErrorMessage={props.setErrorMessage}
         setShowSpinner={props.setShowSpinner}
+        onRefresh={onRefresh}
+
       />
     </>
   );
