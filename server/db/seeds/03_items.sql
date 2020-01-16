@@ -11,10 +11,19 @@ insert into items (user_id, name, description, picture_url) values
 (2, ' Classic Snow Pants', 'Next generation performace focus snowpants', 'https://images-na.ssl-images-amazon.com/images/I/81bBSG32BdL._SL1500_.jpg');
 
 insert into items (user_id, name, description, picture_url) values 
-(2, 'Space Suit', 'Mint condition', 'https://upload.wikimedia.org/wikipedia/commons/e/e3/Aldrin_Apollo_11_cropped.jpg');
+(1, 'Thumbs Up', 'Per urbandictionary.com: What you must give to this definition, or my parents will beat me.', 'https://images.unsplash.com/photo-1564544430321-8d0eb062b11e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=564&q=80');
 
 insert into items (user_id, name, description, picture_url) values 
-(2, 'Space Suit', 'Best one in town!', 'https://media.endclothing.com/media/catalog/product/2/0/20-12-2019_medicom_vcdspacesuit_orange_4530956213248_si_1.jpg');
+(2, 'Thumbs Up', 'Per urbandictionary.com: What you must give to this definition, or my parents will beat me.', 'https://images.unsplash.com/photo-1564544430321-8d0eb062b11e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=564&q=80');
 
 insert into items (user_id, name, description, picture_url) values 
-(2, 'Grandma', 'Most friendly grandma you have ever met', 'https://i.ytimg.com/vi/tL3c7ewdGIo/maxresdefault.jpg');
+(3, 'Thumbs Up', 'Per urbandictionary.com: What you must give to this definition, or my parents will beat me.', 'https://images.unsplash.com/photo-1564544430321-8d0eb062b11e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=564&q=80');
+
+-- insert into items (user_id, name, description, picture_url) values 
+-- (2, 'Space Suit', 'Mint condition', 'https://upload.wikimedia.org/wikipedia/commons/e/e3/Aldrin_Apollo_11_cropped.jpg');
+
+-- insert into items (user_id, name, description, picture_url) values 
+-- (2, 'Space Suit', 'Best one in town!', 'https://media.endclothing.com/media/catalog/product/2/0/20-12-2019_medicom_vcdspacesuit_orange_4530956213248_si_1.jpg');
+
+-- insert into items (user_id, name, description, picture_url) values 
+-- (2, 'Grandma', 'Most friendly grandma you have ever met', 'https://i.ytimg.com/vi/tL3c7ewdGIo/maxresdefault.jpg');
