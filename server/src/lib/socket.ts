@@ -48,8 +48,8 @@ export default class Socket {
     if (existingInstance) return existingInstance;
 
     this.io = params.path
-      ? socketIO(params.server, { path: params.path })
-      : socketIO(params.server);
+      ? socketIO(params.server, { path: params.path, transports: ['websocket'] })
+      : socketIO(params.server, { transports: ['websocket'] });
 
     // register sessionIdStore if provided (to store authId <-> socketId combos)
     'sessionIdStore' in params && (this.sessionIdStore = params.sessionIdStore);

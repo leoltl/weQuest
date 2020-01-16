@@ -26,7 +26,8 @@ import './theme/variables.css';
 
 //instantiate socket connection
 import io from 'socket.io-client';
-const socket = io('/', { path: '/socket' });
+import axios from 'axios';
+const socket = io('/', { path: '/socket', transports: ['websocket'] });
 // const socket = io('/');
 // socket.on('connect', () => {
 //   console.log('socket connected', socket.connected);
@@ -49,7 +50,7 @@ const socket = io('/', { path: '/socket' });
 const App = () => {
   useEffect(() => {
     socket.on('connect', () => {
-      console.log('socket connected', socket.connected);
+      axios.get('/api/connect');
     });
 
     return (() =>{

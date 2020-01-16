@@ -98,6 +98,11 @@ app.use(requestController.path, requestController.router);
 app.use(bidController.path, bidController.router);
 app.use(itemController.path, itemController.router);
 
+app.get('/api/connect', async (req, res) => {
+  console.log('Socket reconnecting. Session', req.sessionId);
+  res.sendStatus(200);
+});
+
 // dummy login for dev
 app.get('/api/login/:id', async (req, res) => {
   req.session!.userId = parseInt(req.params.id, 10);
