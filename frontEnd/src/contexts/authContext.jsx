@@ -47,7 +47,7 @@ const AuthContextProvider = props => {
   useEffect(() => {
     // notification listener
     socket.on('notifications', event => {
-      console.log('notifications', event.data);
+      console.log('notifications', event);
       const notification = event.data;
       setNotification(notification);
     });

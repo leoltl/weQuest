@@ -60,7 +60,7 @@ const Requests = props => {
       <RequestList
         modal={BidModal}
         // refractor to work with objs instead of passing down array
-        requests={Object.values(activeRequests)}
+        requests={Object.values(activeRequests).reverse()}
         setRequests={setActiveRequests}
         selectedId={selected}
         onClick={setSelected}
