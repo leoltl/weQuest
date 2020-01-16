@@ -105,10 +105,6 @@ export class SessionIdStore {
   private sessions: Record<number, string> = {};
   private users: Record<string, number> = {};
 
-  // public get(userId: number): string {
-  //   return this.sessions[userId];
-  // }
-
   get(options: SessionIdStoreOptionsUserId): string;
   get(options: SessionIdStoreOptionsSessionId): number;
   public get(options: SessionIdStoreOptionsUserId | SessionIdStoreOptionsSessionId): number | string | undefined {
@@ -118,17 +114,14 @@ export class SessionIdStore {
   }
 
   public set(userId: number, sessionId: string): this {
+    const prevSessionId = this.sessions[userId];
+
     this.sessions[userId] = sessionId;
+    delete this.users[prevSessionId];
     this.users[sessionId] = userId;
+
     return this;
   }
-
-  // public delete(userId: number): this {
-  //   const sessionId = this.sessions[userId];
-  //   delete this.sessions[userId];
-  //   delete this.users[sessionId];
-  //   return this;
-  // }
 
   delete(options: SessionIdStoreOptionsUserId): this;
   delete(options: SessionIdStoreOptionsSessionId): this;
@@ -142,9 +135,6 @@ export class SessionIdStore {
     return this;
   }
 
-  // public has(userId: number): boolean {
-  //   return userId in this.sessions;
-  // }
   has(options: SessionIdStoreOptionsUserId): boolean;
   has(options: SessionIdStoreOptionsSessionId): boolean;
   public has(options: SessionIdStoreOptionsUserId | SessionIdStoreOptionsSessionId): boolean {

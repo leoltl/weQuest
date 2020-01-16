@@ -44,6 +44,9 @@ export default class BidController {
       })
       .post(async (req, res) => {
         try {
+          // validate request and item
+          const [requesterId, lastBidId, lastBidUserId] = await this.validateCreate(req.body, req.session!.userId);
+
           // create and return a safe bid
           const bid = await this.create(req.body, req.session!.userId);
 
@@ -52,25 +55,17 @@ export default class BidController {
           this.socket.broadcast('get-requests', updatedRequest, { eventKey: String(bid.requestId) });
 
           // send updates to past bid through socket
-          const pastBid = await this.model.
-            select('items.name', 'items.description', 'items.pictureUrl', 'id', 'priceCent', 'notes', 'requestId', 'isActive')
-            .where({ requestId: bid.requestId, 'items.userId': req.session!.userId, isActive: false })
-            .order([['id', 'DESC']])
-            .limit(1)
-            .run(this.db.query);
-          pastBid && this.socket.broadcast('get-bids', pastBid, { eventKey: String(bid.id) });
+          const pastBids = await this.model.findByActivityRequestSafe(bid.requestId!).run(this.db.query);
+          pastBids.length && this.socket.broadcast('get-bids', pastBids, { eventKey: String(bid.id) });
+
+          // subscribe user for updates to new bid
+          this.socket.subscribe(req.sessionId!, 'get-bids', String(bid.id));
 
           // send notification to requester
-          const requester = await this.model.select('requests.users.id').where({ requestId: bid.requestId }).limit(1).run(this.db.query);
-
-          notifyUser(requester.id, `A new bid has been placed on your request: ${updatedRequest.title}.`, this.socket);
+          notifyUser(requesterId, `A new bid has been placed on your request: ${updatedRequest.title}.`, this.socket);
 
           // send notification to past bid if from different bidder
-          if (pastBid) {
-            const pastBidUser = await this.model.select('items.users.id').where({ id: pastBid.id }).limit(1).run(this.db.query);
-
-            pastBidUser.id !== req.session!.userId && notifyUser(pastBidUser.id, `Your bid for ${updatedRequest.title} has been overtaken. Not all hope is lost though. The requester might still accept it. When in doubt... bid again!`, this.socket);
-          }
+          lastBidUserId !== req.session!.userId && notifyUser(lastBidUserId, `Your bid for ${updatedRequest.title} has been overtaken. Not all hope is lost though. The requester might still accept it. When in doubt... bid again!`, this.socket);
 
           // respond with safe bid
           res.json(bid);
@@ -81,18 +76,24 @@ export default class BidController {
       });
   }
 
-  public async create(input: Partial<ItemInterface & BidInterface>, userId: number): Promise<Partial<ItemInterface & BidInterface>> {
+  // validates that item and request in input are valid
+  public async validateCreate(input: Partial<ItemInterface & BidInterface>, userId: number): Promise<[number, number, number]> {
 
     // fetch request
     const request = await new Request()
-      .select()
-      .where(and(
-        { id: input.requestId, requestStatus: 'active', userId: [userId, '<>'] },
-        or(
-          { 'currentBids?.priceCent': [input.priceCent, '>'] },
-          and({ 'currentBids?.priceCent': input.priceCent }, { 'currentBids?.priceCent': 0 }),
-        ),
-      ))
+      .sql(
+        `SELECT requests.user_id as requester_id, requests.current_bid_id, items.user_id
+        FROM requests
+        LEFT JOIN bids ON requests.current_bid_id = bids.id
+        LEFT JOIN items ON bids.item_id = items.id
+        WHERE requests.id = $1 AND requests.request_status = $2 AND requests.user_id <> $3 AND
+          (items.name IS NULL OR bids.price_cent > $4 OR
+            (bids.price_cent = $4 AND bids.price_cent = $5))
+        LIMIT 1
+        `,
+        [input.requestId, 'active', userId, input.priceCent, 0],
+      )
+      .limit(1)
       .run(this.db.query);
 
     // throw an error if no valid request can be found (e.g. request does not exist,
@@ -100,10 +101,17 @@ export default class BidController {
     if (!request) throw Error('Invalid bid');
 
     // fetch user item
-    const item = await new Item().select().where({ userId, id: input.itemId });
+    const item = await new Item().select().where({ userId, id: input.itemId }).limit(1).run(this.db.query);
 
     // throw if item cannot be found based on itemId and userId (e.g. item does not exist or is not owned by the bidder)
     if (!item) throw Error('Invalid bid');
+
+    // if validation is successful return current bid id and user id of last bidder
+    return [request.requesterId, request.currentBidId, request.userId];
+
+  }
+
+  public async create(input: Partial<ItemInterface & BidInterface>, userId: number): Promise<Partial<ItemInterface & BidInterface>> {
 
     // proceed with creating the bid
     const bid: BidInterface = await this.db.transaction(
