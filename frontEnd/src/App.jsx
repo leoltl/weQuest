@@ -27,7 +27,8 @@ import './theme/variables.css';
 //instantiate socket connection
 import io from 'socket.io-client';
 import axios from 'axios';
-const socket = io('/', { path: '/socket', transports: ['websocket'] });
+const socket = io('/', { path: '/socket' });
+// const socket = io('/', { path: '/socket', transports: ['websocket'] });
 // const socket = io('/');
 // socket.on('connect', () => {
 //   console.log('socket connected', socket.connected);
