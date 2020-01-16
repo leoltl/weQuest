@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { IonContent, IonPage, IonSearchbar, useIonViewDidEnter, useIonViewWillLeave } from '@ionic/react';
 import RequestList from '../components/RequestList/RequestList';
 import axios from 'axios';
@@ -7,6 +7,8 @@ import { arrayToObject } from '../lib/utils';
 import BidFormModal from './BidFormModal';
 import Header from '../components/Header';
 import Notification from '../components/Notification';
+import Spinner from '../components/Spinner';
+
 
 import './SearchPage.scss';
 
@@ -14,6 +16,7 @@ export default function SearchPage(props) {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState(null);
   const [requests, setRequests] = useState({});
+  const [showSpinner, setShowSpinner] = useState(false);
   const { socket } = useContext(AuthContext);
 
   useEffect(() => {
@@ -39,6 +42,16 @@ export default function SearchPage(props) {
     socket.off('get-requests');
   });
 
+  const onRefresh = useCallback(event => {
+    setShowSpinner(true);
+    axios
+      .get(`/api/requests/?query=${query}`)
+      .then(res => setRequests(arrayToObject(res.data)))
+      .then(event.detail.complete())
+      .catch(err => console.log('Error while requests bids'))
+      .finally(() => setShowSpinner(false));
+  });
+
   return (
     <IonPage id='search-page'>
       <Header title='Search'></Header>
@@ -53,6 +66,7 @@ export default function SearchPage(props) {
           buttonTitle='Bid Now'
           // refractor to work with objs instead of passing down array
           requests={Object.values(requests).reverse()}
+          onRefresh={onRefresh}
         />
       </IonContent>
     </IonPage>
